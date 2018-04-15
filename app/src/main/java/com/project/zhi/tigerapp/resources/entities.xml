@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<data xmlns="http://www.example.org/Intelligence">
+    <entities entityTypeKey="person">
+        <id>SANG HEILI</id>
+        <attributes attributeKey="urn" type="TEXT" stringValue="SANG HEILI"/>
+    </entities>
+    <entities entityTypeKey="person">
+        <id>MUZNA_Nawwaara_MP_03367</id>
+        <scratchpad></scratchpad>
+        <attributes attributeKey="urn" type="TEXT" stringValue="MUZNA_Nawwaara_MP_03367"/>
+        <attributes attributeKey="gender" type="TEXT" stringValue="Male"/>
+        <attributes attributeKey="height1" type="TEXT" stringValue="Average"/>
+        <attributes attributeKey="haircolour" type="TEXT" stringValue="Dark"/>
+        <attributes attributeKey="habitualdress" type="TEXT" stringValue="Fashionably dressed - jeans, sneakers / trainers, BLUE windbreaker jacket"/>
+        <attributes attributeKey="firstname" type="TEXT" stringValue="Nawwaara"/>
+        <attributes attributeKey="familyname" type="TEXT" stringValue="MUZNA"/>
+    </entities>
+    <entities entityTypeKey="person">
+        <id>BILAT_Ayu_Bin_MP/0045</id>
+        <scratchpad>'20170814 SANG HEILI interview #13.doc' states that two men visit Bilat around the full moon of most months.  Couldl they be poachers for him - visiting either before going into Muadzam Park to discuss the trip, or afterwards to give him animal parts?  RT, 17 Aug 18</scratchpad>
+        <attributes attributeKey="urn" type="TEXT" stringValue="BILAT_Ayu_Bin_MP/0045"/>
+        <attributes attributeKey="familyname" type="TEXT" stringValue="Bilat"/>
+        <attributes attributeKey="firstname" type="TEXT" stringValue="Ayu"/>
+        <attributes attributeKey="middlename" type="TEXT" stringValue="Bin"/>
+        <attributes attributeKey="gender" type="TEXT" stringValue="Male"/>
+        <attributes attributeKey="haircolour" type="TEXT" stringValue="Dark"/>
+        <attributes attributeKey="marksscarstatoos" type="TEXT" stringValue="Chest tattoo, details unclear"/>
+        <attributes attributeKey="age1" type="NUMERIC" doubleValue="38.0"/>
+        <attributes attributeKey="phonenumber1" type="TEXT" stringValue="5604647343"/>
+        <attributes attributeKey="drugsalcohol" type="TEXT" stringValue="Drinks frequently; favourite drink is beer"/>
+        <attributes attributeKey="height1" type="TEXT" stringValue="5'6&quot;"/>
+        <attributes attributeKey="currentaddress" type="TEXT" stringValue="Lorong Tenagh C, Muadzam Shah"/>
+        <attributes attributeKey="otheroccupantsataddress" type="TEXT" stringValue="One other male flatmate, no further details"/>
+        <attributes attributeKey="vehicledetails" type="TEXT" stringValue="Matt black VW Golf"/>
+        <attributes attributeKey="alias" type="TEXT" stringValue="The Joker"/>
+        <attachments filename="Bilat.jpg" isPrimary="true"/>
+    </entities>
+    <entities entityTypeKey="person">
+        <id>MUZNA_Sameeha_MP_03368</id>
+        <scratchpad></scratchpad>
+        <attributes attributeKey="urn" type="TEXT" stringValue="MUZNA_Sameeha_MP_03368"/>
+        <attributes attributeKey="gender" type="TEXT" stringValue="Male"/>
+        <attributes attributeKey="height1" type="TEXT" stringValue="Average"/>
+        <attributes attributeKey="haircolour" type="TEXT" stringValue="Dark"/>
+        <attributes attributeKey="habitualdress" type="TEXT" stringValue="Fashionably dressed - jeans, sneakers / trainers, windbreaker jacket"/>
+        <attributes attributeKey="firstname" type="TEXT" stringValue="Sameeha"/>
+        <attributes attributeKey="familyname" type="TEXT" stringValue="MUZNA"/>
+    </entities>
+    <entities entityTypeKey="person">
+        <id>MAHURA_Putih_Bin_MP</id>
+        <scratchpad>Updated from Bilat potential sucessor based on picture and info in The Star Maedia Article CH 20180327</scratchpad>
+        <attributes attributeKey="urn" type="TEXT" stringValue="MAHURA_Putih_Bin_MP"/>
+        <attributes attributeKey="haircolour" type="TEXT" stringValue="short, spikey, Dark hair"/>
+        <attributes attributeKey="marksscarstatoos" type="TEXT" stringValue="Cat tattoo on left arm"/>
+        <attributes attributeKey="habitualdress" type="TEXT" stringValue="tshirt, gold chain"/>
+        <attributes attributeKey="familyname" type="TEXT" stringValue="MAHURA"/>
+        <attributes attributeKey="firstname" type="TEXT" stringValue="Putih_Bin"/>
+        <attachments filename="PbM.jpg" isPrimary="true"/>
+    </entities>
+    <entities entityTypeKey="person">
+        <id>TAQIYYA_bin_Nabeeha_MP/00387</id>
+        <scratchpad>Taqiyya was encountered in the east of the park in Sept 17, possibly hunting / spear fishing.  Would be good to find out more about him. AD, Oct 17</scratchpad>
+        <attributes attributeKey="urn" type="TEXT" stringValue="TAQIYYA_bin_Nabeeha_MP/00387"/>
+        <attributes attributeKey="familyname" type="TEXT" stringValue="Taqiyya"/>
+        <attributes attributeKey="firstname" type="TEXT" stringValue="Nabeeha"/>
+        <attributes attributeKey="middlename" type="TEXT" stringValue="bin"/>
+        <attributes attributeKey="gender" type="TEXT" stringValue="Male"/>
+        <attributes attributeKey="age1" type="NUMERIC" doubleValue="35.0"/>
+        <attributes attributeKey="nationalidnumber" type="TEXT" stringValue="IR648239"/>
+        <attributes attributeKey="fathersnames" type="TEXT" stringValue="Chahaya Taqiyya"/>
+        <attributes attributeKey="weapons" type="TEXT" stringValue="Potentially carries rifle / spear"/>
+        <attributes attributeKey="height1" type="TEXT" stringValue="5'8&quot;"/>
+        <attributes attributeKey="build" type="TEXT" stringValue="Skinny"/>
+        <attributes attributeKey="haircolour" type="TEXT" stringValue="Black, thick &amp; curly"/>
+        <attributes attributeKey="habitualdress" type="TEXT" stringValue="T-shirt, shorts, sandals"/>
+        <attributes attributeKey="currentaddress" type="TEXT" stringValue="Kampung Permatang Durian"/>
+        <attachments filename="20170923 Patrol Alpha #0087 image 1.jpg" isPrimary="true"/>
+    </entities>
+</data>
