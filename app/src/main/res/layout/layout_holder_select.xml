@@ -79,15 +79,15 @@
                 android:layout_height="wrap_content"
                 android:visibility="gone"
                 android:orientation="vertical">
-                <com.vonchenchen.menudemo.complexmenu.holder.RadioItemView
+                <com.project.zhi.tigerapp.complexmenu.holder.RadioItemView
                     android:id="@+id/riv_gender_norule"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/px_80"/>
-                <com.vonchenchen.menudemo.complexmenu.holder.RadioItemView
+                <com.project.zhi.tigerapp.complexmenu.holder.RadioItemView
                     android:id="@+id/riv_gender_boy"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/px_80" />
-                <com.vonchenchen.menudemo.complexmenu.holder.RadioItemView
+                <com.project.zhi.tigerapp.complexmenu.holder.RadioItemView
                     android:id="@+id/riv_gender_girl"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/px_80" />
@@ -137,15 +137,15 @@
                 android:layout_height="wrap_content"
                 android:visibility="gone"
                 android:orientation="vertical">
-                <com.vonchenchen.menudemo.complexmenu.holder.RadioItemView
+                <com.project.zhi.tigerapp.complexmenu.holder.RadioItemView
                      android:id="@+id/riv_type_norule"
                      android:layout_width="match_parent"
                      android:layout_height="@dimen/px_80" />
-                <com.vonchenchen.menudemo.complexmenu.holder.RadioItemView
+                <com.project.zhi.tigerapp.complexmenu.holder.RadioItemView
                       android:id="@+id/riv_type_teacherToHome"
                       android:layout_width="match_parent"
                       android:layout_height="@dimen/px_80" />
-                <com.vonchenchen.menudemo.complexmenu.holder.RadioItemView
+                <com.project.zhi.tigerapp.complexmenu.holder.RadioItemView
                       android:id="@+id/riv_type_studentToSchool"
                       android:layout_width="match_parent"
                       android:layout_height="@dimen/px_80" />

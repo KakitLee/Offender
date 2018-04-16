@@ -8,6 +8,11 @@
     <include
         android:id="@+id/toolbar"
         layout="@layout/toolbar" />
+    <com.project.zhi.tigerapp.complexmenu.SelectMenuView
+        android:id="@+id/menu"
+        android:layout_below="@id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
     <GridView xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/gridview"
         android:layout_width="fill_parent"
@@ -19,6 +24,6 @@
         android:background="#e5e5e5"
         android:stretchMode="columnWidth"
         android:gravity="center"
-        android:layout_below="@id/toolbar"
+        android:layout_below="@id/menu"
         />
 </RelativeLayout>
