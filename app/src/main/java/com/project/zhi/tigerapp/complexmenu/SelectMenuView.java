@@ -15,9 +15,12 @@ import android.widget.TextView;
 
 
 import com.project.zhi.tigerapp.R;
+import com.project.zhi.tigerapp.Services.MenuService;
 import com.project.zhi.tigerapp.complexmenu.holder.SelectHolder;
 import com.project.zhi.tigerapp.complexmenu.holder.SortHolder;
 import com.project.zhi.tigerapp.complexmenu.holder.SubjectHolder;
+
+import org.androidannotations.annotations.Bean;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -64,11 +67,13 @@ public class SelectMenuView extends LinearLayout{
     private TextView mSelectText;
     private ImageView mSelectArrowImage;
 
-    private List<String> mGroupList;
-    private List<String> mPrimaryList;
-    private List<String> mJuniorList;
-    private List<String> mHighList;
-    private List<List<String>> mSubjectDataList;
+    private List<MenuModel> mGroupList;
+    private List<MenuModel> mPrimaryList;
+    private List<MenuModel> mJuniorList;
+    private List<MenuModel> mHighList;
+    private List<List<MenuModel>> mSubjectDataList;
+
+    MenuService menuService = new MenuService();
 
     private int mTabRecorder = -1;
 
@@ -88,36 +93,18 @@ public class SelectMenuView extends LinearLayout{
 
     private void init(){
 
-        mGroupList = new ArrayList<String>();
-        mGroupList.add("A");
-        mGroupList.add("B");
-        mGroupList.add("C");
-        mPrimaryList = new ArrayList<String>();
-        mPrimaryList.add("A1");
-        mPrimaryList.add("A2");
-        mPrimaryList.add("A3");
-        mJuniorList = new ArrayList<String>();
-        mJuniorList.add("B1");
-        mJuniorList.add("B2");
-        mJuniorList.add("B3");
-        mJuniorList.add("B4");
-        mJuniorList.add("B5");
-        mJuniorList.add("B6");
-        mJuniorList.add("B7");
-        mJuniorList.add("B8");
-        mJuniorList.add("B9");
-        mHighList = new ArrayList<String>();
-        mHighList.add("C1");
-        mHighList.add("C2");
-        mHighList.add("C3");
-        mHighList.add("C4");
-        mHighList.add("C5");
-        mHighList.add("C6");
-        mHighList.add("C7");
-        mHighList.add("C8");
-        mHighList.add("C9");
+        mGroupList = new ArrayList<MenuModel>();
+        mGroupList = menuService.getMainMenus();
 
-        mSubjectDataList = new ArrayList<List<String>>();
+        mPrimaryList = new ArrayList<MenuModel>();
+        mPrimaryList = menuService.getNamesMenus();
+
+        mJuniorList = new ArrayList<MenuModel>();
+        mJuniorList = menuService.getMainDemographic();
+        mHighList = new ArrayList<MenuModel>();
+        mHighList = menuService.getOtherDemographic();
+
+        mSubjectDataList = new ArrayList<List<MenuModel>>();
         mSubjectDataList.add(mGroupList);
         mSubjectDataList.add(mPrimaryList);
         mSubjectDataList.add(mJuniorList);
@@ -137,7 +124,7 @@ public class SelectMenuView extends LinearLayout{
                     mOnMenuSelectDataChangedListener.onSubjectChanged(grade+"", subject+"");
                 }
 
-                dismissPopupWindow();
+//                dismissPopupWindow();
                 //Toast.makeText(UIUtils.getContext(), text, Toast.LENGTH_SHORT).show();
                 mSubjectText.setText(text);
             }

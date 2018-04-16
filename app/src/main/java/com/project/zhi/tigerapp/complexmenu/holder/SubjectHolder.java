@@ -1,16 +1,21 @@
 package com.project.zhi.tigerapp.complexmenu.holder;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.text.InputType;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
 
 import com.project.zhi.tigerapp.R;
+import com.project.zhi.tigerapp.complexmenu.MenuModel;
 
 import java.util.List;
 
@@ -18,9 +23,9 @@ import java.util.List;
  * 科目
  * Created by vonchenchen on 2016/4/5 0005.
  */
-public class SubjectHolder extends BaseWidgetHolder<List<List<String>>> {
+public class SubjectHolder extends BaseWidgetHolder<List<List<MenuModel>>> {
 
-    private List<List<String>> mDataList;
+    private List<List<MenuModel>> mDataList;
 
     private ListView mLeftListView;
     private ListView mRightListView;
@@ -75,35 +80,68 @@ public class SubjectHolder extends BaseWidgetHolder<List<List<String>>> {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 mRightSelectedIndex = position;
                 mLeftSelectedIndexRecord = mLeftSelectedIndex;
-                ImageView imageView = (ImageView) view.findViewById(R.id.list2_right);
+//                ImageView imageView = (ImageView) view.findViewById(R.id.list2_right);
+                TextView textView = (TextView) view.findViewById(R.id.child_textDisplayView);
 
                 if(mRightRecordImageView != null) {
                     mRightRecordImageView.setVisibility(View.INVISIBLE);
                 }
 
-                imageView.setVisibility(View.VISIBLE);
+//                imageView.setVisibility(View.VISIBLE);
 
-                mRightRecordImageView = imageView;
+//                mRightRecordImageView = imageView;
 
                 if(mOnRightListViewItemSelectedListener != null){
 
-                    List<String> dataList = mDataList.get(mLeftSelectedIndex+1);
-                    String text = dataList.get(mRightSelectedIndex);
+                    List<MenuModel> dataList = mDataList.get(mLeftSelectedIndex+1);
+                    String text = dataList.get(mRightSelectedIndex).getAttributeDisplayText();
 
                     mOnRightListViewItemSelectedListener.OnRightListViewItemSelected(mLeftSelectedIndex, mRightSelectedIndex, text);
                 }
+                List<MenuModel> dataList2 = mDataList.get(mLeftSelectedIndex+1);
+                MenuModel menuModel =  dataList2.get(mRightSelectedIndex);
+                dialog(textView, menuModel);
             }
         });
 
         return view;
     }
 
-    @Override
-    public void refreshView(List<List<String>> data) {
+    private void dialog(final TextView displayView, MenuModel menuModel){
+        final String[] m_Text = {""};
+        AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+        builder.setTitle("Title");
+
+// Set up the input
+        final EditText input = new EditText(mContext);
+// Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
+        input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+        builder.setView(input);
+
+// Set up the buttons
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                menuModel.setValue(input.getText().toString());
+                displayView.setText(input.getText().toString());
+            }
+        });
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+
+        builder.show();
+    }
+
+
+    public void refreshView(List<List<MenuModel>> data) {
 
     }
 
-    public void refreshData(List<List<String>> data, int leftSelectedIndex, int rightSelectedIndex){
+    public void refreshData(List<List<MenuModel>> data, int leftSelectedIndex, int rightSelectedIndex){
 
         this.mDataList = data;
 
@@ -122,9 +160,9 @@ public class SubjectHolder extends BaseWidgetHolder<List<List<String>>> {
 
     private class LeftAdapter extends BaseAdapter{
 
-        private List<String> mLeftDataList;
+        private List<MenuModel> mLeftDataList;
 
-        public LeftAdapter(List<String> list, int leftIndex){
+        public LeftAdapter(List<MenuModel> list, int leftIndex){
             this.mLeftDataList = list;
             mLeftSelectedIndex = leftIndex;
         }
@@ -158,7 +196,7 @@ public class SubjectHolder extends BaseWidgetHolder<List<List<String>>> {
                 holder = (LeftViewHolder) convertView.getTag();
             }
 
-            holder.leftText.setText(mLeftDataList.get(position));
+            holder.leftText.setText(mLeftDataList.get(position).getAttributeDisplayText());
             if(mLeftSelectedIndex == position){
                 holder.backgroundView.setBackgroundResource(R.color.white);  //选中项背景
                 if(position == 0 && mIsFirstMeasureLeft){
@@ -179,14 +217,14 @@ public class SubjectHolder extends BaseWidgetHolder<List<List<String>>> {
 
     private class RightAdapter extends BaseAdapter{
 
-        private List<String> mRightDataList;
+        private List<MenuModel> mRightDataList;
 
-        public RightAdapter(List<String> list, int rightSelectedIndex){
+        public RightAdapter(List<MenuModel> list, int rightSelectedIndex){
             this.mRightDataList = list;
             mRightSelectedIndex = rightSelectedIndex;
         }
 
-        public void setDataList(List<String> list, int rightSelectedIndex){
+        public void setDataList(List<MenuModel> list, int rightSelectedIndex){
             this.mRightDataList = list;
             mRightSelectedIndex = rightSelectedIndex;
         }
@@ -214,18 +252,20 @@ public class SubjectHolder extends BaseWidgetHolder<List<List<String>>> {
                 holder = new RightViewHolder();
                 convertView = View.inflate(mContext, R.layout.layout_child_menu_item, null);
                 holder.rightText = (TextView) convertView.findViewById(R.id.child_textView);
-                holder.selectedImage = (ImageView)convertView.findViewById(R.id.list2_right);
+//                holder.selectedImage = (ImageView)convertView.findViewById(R.id.list2_right);
+                holder.rightDisplayText = (TextView) convertView.findViewById(R.id.child_textDisplayView);
                 convertView.setTag(holder);
             }else{
                 holder = (RightViewHolder) convertView.getTag();
             }
 
-            holder.rightText.setText(mRightDataList.get(position));
+            holder.rightText.setText(mRightDataList.get(position).getAttributeDisplayText());
+            holder.rightDisplayText.setText(mRightDataList.get(position).getValue());
             if(mRightSelectedIndex == position && mLeftSelectedIndex == mLeftSelectedIndexRecord){
-                holder.selectedImage.setVisibility(View.VISIBLE);
-                mRightRecordImageView = holder.selectedImage;
+//                holder.selectedImage.setVisibility(View.VISIBLE);
+//                mRightRecordImageView = holder.selectedImage;
             }else{
-                holder.selectedImage.setVisibility(View.INVISIBLE);
+//                holder.selectedImage.setVisibility(View.INVISIBLE);
             }
 
             return convertView;
@@ -239,8 +279,10 @@ public class SubjectHolder extends BaseWidgetHolder<List<List<String>>> {
 
     private static class RightViewHolder{
         TextView rightText;
-        ImageView selectedImage;
+        TextView rightDisplayText;
+//        ImageView selectedImage;
     }
+
 
     public void setOnRightListViewItemSelectedListener(OnRightListViewItemSelectedListener onRightListViewItemSelectedListener){
         this.mOnRightListViewItemSelectedListener = onRightListViewItemSelectedListener;

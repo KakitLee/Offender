@@ -12,6 +12,7 @@
         android:cacheColorHint="#f5f5f5"
         android:divider="@null"
         android:dividerHeight="1dp"
+        android:minHeight = "500px"
         android:scrollbars="none" />
 
     <View

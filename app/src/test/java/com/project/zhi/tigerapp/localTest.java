@@ -71,4 +71,10 @@ public class localTest {
         List<Entities> entities = getData().getEntitiesList();
         assertEquals("Nawwaara MUZNA", dataFilteringService.getPersonName(entities.get(1)));
     }
+    @Test
+    public void DataSourceServiceUniqueKeyTest(){
+        DataSourceServices dataSourceServices = new DataSourceServices();
+        assertEquals(6,getData().getEntitiesList().size());
+    }
+
 }

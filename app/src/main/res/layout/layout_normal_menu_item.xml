@@ -8,12 +8,14 @@
     <TextView
         android:id="@+id/group_textView"
         android:layout_width="wrap_content"
-        android:layout_height="@dimen/px_80"
+        android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
         android:layout_marginLeft="@dimen/px_66"
         android:textSize="@dimen/text_size_28_px"
         android:textColor="@color/text_color_gey"
         android:gravity="center_vertical"
+        android:paddingTop="10px"
+        android:paddingBottom="10px"
          />
 
 </LinearLayout>
