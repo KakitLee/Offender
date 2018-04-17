@@ -8,6 +8,7 @@ import com.project.zhi.tigerapp.Entities.Entities;
 import com.project.zhi.tigerapp.R;
 
 import org.androidannotations.annotations.EBean;
+import org.apache.commons.collections4.CollectionUtils;
 import org.simpleframework.xml.Serializer;
 import org.simpleframework.xml.core.Persister;
 
@@ -42,16 +43,18 @@ public class DataSourceServices implements IDataSourceServices {
         }
     }
 
-//    public ArrayList<Entities> getUniqueKey(Context context){
-//        Data data = getPeopleSource(context);
-//        ArrayList<Attributes> attributesList = new ArrayList<Attributes>();
-//        for (Entities entity: data.getEntitiesList()
-//             ) {
-//            for (Attributes attributes: entity.getList()
-//                 ) {
-//                if(attributesList.contains())
-//            }
-//        }
-//    }
+    public ArrayList<String> getUniqueKey(Data data){
+        ArrayList<String> attributesList = new ArrayList<String>();
+        for (Entities entity: data.getEntitiesList()
+                ) {
+            for (Attributes attributes: entity.getList()
+                    ) {
+                if(!attributesList.contains(attributes.getAttributeKey())){
+                    attributesList.add(attributes.getAttributeKey());
+                }
+            }
+        }
+        return attributesList;
+    }
 }
 

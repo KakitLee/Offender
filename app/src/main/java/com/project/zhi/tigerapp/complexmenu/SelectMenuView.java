@@ -14,7 +14,9 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 
+import com.project.zhi.tigerapp.Entities.Data;
 import com.project.zhi.tigerapp.R;
+import com.project.zhi.tigerapp.Services.DataSourceServices;
 import com.project.zhi.tigerapp.Services.MenuService;
 import com.project.zhi.tigerapp.complexmenu.holder.SelectHolder;
 import com.project.zhi.tigerapp.complexmenu.holder.SortHolder;
@@ -74,7 +76,7 @@ public class SelectMenuView extends LinearLayout{
     private List<List<MenuModel>> mSubjectDataList;
 
     MenuService menuService = new MenuService();
-
+    DataSourceServices dataSourceServices = new DataSourceServices();
     private int mTabRecorder = -1;
 
     public SelectMenuView(Context context) {
@@ -93,17 +95,19 @@ public class SelectMenuView extends LinearLayout{
 
     private void init(){
 
+        Data data = dataSourceServices.getPeopleSource(this.mContext);
+        ArrayList<String> keys = dataSourceServices.getUniqueKey(data);
+        ArrayList<ArrayList<MenuModel>> allMenus = menuService.getAllMenus(keys);
         mGroupList = new ArrayList<MenuModel>();
         mGroupList = menuService.getMainMenus();
 
         mPrimaryList = new ArrayList<MenuModel>();
-        mPrimaryList = menuService.getNamesMenus();
+        mPrimaryList = allMenus.get(0);
 
         mJuniorList = new ArrayList<MenuModel>();
-        mJuniorList = menuService.getMainDemographic();
+        mJuniorList = allMenus.get(1);
         mHighList = new ArrayList<MenuModel>();
-        mHighList = menuService.getOtherDemographic();
-
+        mHighList = allMenus.get(2);
         mSubjectDataList = new ArrayList<List<MenuModel>>();
         mSubjectDataList.add(mGroupList);
         mSubjectDataList.add(mPrimaryList);
