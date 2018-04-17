@@ -1,9 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical" >
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/searchLF"
         android:layout_width="match_parent"
@@ -12,7 +8,7 @@
         <ListView
             android:id="@+id/listView1"
             android:layout_width="@dimen/px_240"
-            android:layout_height="@dimen/px_720"
+            android:layout_height="@dimen/px_650"
             android:background="#f5f5f5"
             android:cacheColorHint="#f5f5f5"
             android:divider="@null"
@@ -24,14 +20,14 @@
             android:visibility="gone"
             android:id="@+id/line"
             android:layout_width="1dp"
-            android:layout_height="@dimen/px_720"
+            android:layout_height="@dimen/px_650"
             android:layout_toRightOf="@+id/listView1"
             android:background="@color/child_item_diveder" />
 
         <ListView
             android:id="@+id/listView2"
             android:layout_width="fill_parent"
-            android:layout_height="@dimen/px_720"
+            android:layout_height="@dimen/px_650"
             android:layout_toRightOf="@+id/line"
             android:layout_weight="2"
             android:background="@color/white"
@@ -52,34 +48,21 @@
             <!--android:gravity="center"-->
             <!--android:layout_height="@dimen/px_66" />-->
     <!--</LinearLayout>-->
-</RelativeLayout>
-        <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-            android:id="@+id/comfirmBelow"
-            android:layout_width="match_parent"
+        <Button
+            android:id="@+id/btnClear"
+            android:layout_width="@dimen/px_240"
             android:layout_height="wrap_content"
-            android:orientation="horizontal" >
-                <Button
-                    android:id="@+id/btnClear"
-                    android:layout_width="@dimen/px_240"
-                    android:layout_height="wrap_content"
-                    android:divider="@null"
-                    android:text="Clear"
-                    android:scrollbars="none" />
+            android:layout_below="@id/listView1"
+            android:divider="@null"
+            android:text="Clear"
+            android:scrollbars="none" />
 
-                <View
-                    android:visibility="gone"
-                    android:id="@+id/line2"
-                    android:layout_width="1dp"
-                    android:layout_height="@dimen/px_720"
-                    android:layout_toRightOf="@+id/btnClear"
-                    android:background="@color/child_item_diveder" />
-
-                <Button
-                    android:id="@+id/btnSearch"
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_toRightOf="@+id/line2"
-                    android:text="Search"
-                    android:scrollbars="none" />
-        </RelativeLayout>
-</LinearLayout>
+        <Button
+            android:id="@+id/btnSearch"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/btnClear"
+            android:text="Search"
+            android:layout_below="@id/listView2"
+            android:scrollbars="none" />
+</RelativeLayout>
