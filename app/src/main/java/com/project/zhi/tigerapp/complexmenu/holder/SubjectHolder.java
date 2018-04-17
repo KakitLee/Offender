@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -30,6 +31,8 @@ public class SubjectHolder extends BaseWidgetHolder<List<List<MenuModel>>> {
     private ListView mLeftListView;
     private ListView mRightListView;
 
+    private Button mBtnSearch;
+
     private LeftAdapter mLeftAdapter;
     private RightAdapter mRightAdapter;
 
@@ -49,6 +52,8 @@ public class SubjectHolder extends BaseWidgetHolder<List<List<MenuModel>>> {
 
     private OnRightListViewItemSelectedListener mOnRightListViewItemSelectedListener;
 
+    private OnSearchBtnListener onSearchBtnListener;
+
     public SubjectHolder(Context context) {
         super(context);
     }
@@ -58,6 +63,7 @@ public class SubjectHolder extends BaseWidgetHolder<List<List<MenuModel>>> {
         View view = View.inflate(mContext, R.layout.layout_holder_subject, null);
         mLeftListView = (ListView) view.findViewById(R.id.listView1);
         mRightListView = (ListView) view.findViewById(R.id.listView2);
+        mBtnSearch = (Button) view.findViewById(R.id.btnSearch);
 
         mLeftListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -80,7 +86,7 @@ public class SubjectHolder extends BaseWidgetHolder<List<List<MenuModel>>> {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 mRightSelectedIndex = position;
                 mLeftSelectedIndexRecord = mLeftSelectedIndex;
-//                ImageView imageView = (ImageView) view.findViewById(R.id.list2_right);
+                ImageView imageView = (ImageView) view.findViewById(R.id.list2_right);
                 TextView textView = (TextView) view.findViewById(R.id.child_textDisplayView);
 
                 if(mRightRecordImageView != null) {
@@ -89,7 +95,7 @@ public class SubjectHolder extends BaseWidgetHolder<List<List<MenuModel>>> {
 
 //                imageView.setVisibility(View.VISIBLE);
 
-//                mRightRecordImageView = imageView;
+                mRightRecordImageView = imageView;
 
                 if(mOnRightListViewItemSelectedListener != null){
 
@@ -100,35 +106,62 @@ public class SubjectHolder extends BaseWidgetHolder<List<List<MenuModel>>> {
                 }
                 List<MenuModel> dataList2 = mDataList.get(mLeftSelectedIndex+1);
                 MenuModel menuModel =  dataList2.get(mRightSelectedIndex);
-                dialog(textView, menuModel);
+                dialog(textView, menuModel,imageView);
+            }
+        });
+        mBtnSearch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onSearchBtnListener.OnSearchBtnListener();
             }
         });
 
         return view;
     }
 
-    private void dialog(final TextView displayView, MenuModel menuModel){
+    private void dialog(final TextView displayView, MenuModel menuModel, final ImageView imageView){
         final String[] m_Text = {""};
         AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
         builder.setTitle("Title");
 
 // Set up the input
         final EditText input = new EditText(mContext);
+        input.setText(menuModel.getValue());
 // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
-        input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+        input.setInputType(InputType.TYPE_CLASS_TEXT );
         builder.setView(input);
 
 // Set up the buttons
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                menuModel.setValue(input.getText().toString());
-                displayView.setText(input.getText().toString());
+                String value = input.getText().toString();
+                menuModel.setValue(value);
+                displayView.setText(value);
+                if(value != null && !value.isEmpty()) {
+                    displayView.setVisibility(View.VISIBLE);
+                    imageView.setVisibility(View.VISIBLE);
+                }
+                else{
+                    displayView.setVisibility(View.GONE);
+                    imageView.setVisibility(View.INVISIBLE);
+                }
             }
         });
         builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
+                String value = input.getText().toString();
+                menuModel.setValue(value);
+                displayView.setText(value);
+                if(value != null && !value.isEmpty()) {
+                    displayView.setVisibility(View.VISIBLE);
+                    imageView.setVisibility(View.VISIBLE);
+                }
+                else{
+                    displayView.setVisibility(View.GONE);
+                    imageView.setVisibility(View.INVISIBLE);
+                }
                 dialog.cancel();
             }
         });
@@ -252,7 +285,7 @@ public class SubjectHolder extends BaseWidgetHolder<List<List<MenuModel>>> {
                 holder = new RightViewHolder();
                 convertView = View.inflate(mContext, R.layout.layout_child_menu_item, null);
                 holder.rightText = (TextView) convertView.findViewById(R.id.child_textView);
-//                holder.selectedImage = (ImageView)convertView.findViewById(R.id.list2_right);
+                holder.selectedImage = (ImageView)convertView.findViewById(R.id.list2_right);
                 holder.rightDisplayText = (TextView) convertView.findViewById(R.id.child_textDisplayView);
                 convertView.setTag(holder);
             }else{
@@ -260,7 +293,16 @@ public class SubjectHolder extends BaseWidgetHolder<List<List<MenuModel>>> {
             }
 
             holder.rightText.setText(mRightDataList.get(position).getAttributeDisplayText());
-            holder.rightDisplayText.setText(mRightDataList.get(position).getValue());
+            if(mRightDataList.get(position).getValue() != null && !mRightDataList.get(position).getValue().isEmpty()) {
+                holder.rightDisplayText.setVisibility(View.VISIBLE);
+                holder.rightDisplayText.setText(mRightDataList.get(position).getValue());
+                holder.selectedImage.setVisibility(View.VISIBLE);
+                mRightRecordImageView = holder.selectedImage;
+            }
+            else{
+                holder.rightDisplayText.setVisibility(View.GONE);
+                holder.selectedImage.setVisibility(View.INVISIBLE);
+            }
             if(mRightSelectedIndex == position && mLeftSelectedIndex == mLeftSelectedIndexRecord){
 //                holder.selectedImage.setVisibility(View.VISIBLE);
 //                mRightRecordImageView = holder.selectedImage;
@@ -280,7 +322,7 @@ public class SubjectHolder extends BaseWidgetHolder<List<List<MenuModel>>> {
     private static class RightViewHolder{
         TextView rightText;
         TextView rightDisplayText;
-//        ImageView selectedImage;
+        ImageView selectedImage;
     }
 
 
@@ -290,5 +332,13 @@ public class SubjectHolder extends BaseWidgetHolder<List<List<MenuModel>>> {
 
     public interface OnRightListViewItemSelectedListener{
         void OnRightListViewItemSelected(int leftIndex, int rightIndex, String text);
+    }
+
+
+    public void setOnSearchBtnListner(OnSearchBtnListener onSearchBtnListener){
+        this.onSearchBtnListener = onSearchBtnListener;
+    }
+    public interface OnSearchBtnListener{
+        void OnSearchBtnListener();
     }
 }

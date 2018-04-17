@@ -1,10 +1,20 @@
 package com.project.zhi.tigerapp.Services;
 
+import com.project.zhi.tigerapp.Entities.Data;
+import com.project.zhi.tigerapp.Entities.Entities;
+import com.project.zhi.tigerapp.Utils.Utils;
 import com.project.zhi.tigerapp.complexmenu.MenuModel;
+import com.project.zhi.tigerapp.complexmenu.MenuTuple;
 
 import org.androidannotations.annotations.EBean;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
+
+import lombok.experimental.var;
+import lombok.val;
 
 @EBean
 public class MenuService {
@@ -27,51 +37,115 @@ public class MenuService {
         return newListModel;
     }
 
-    public ArrayList<MenuModel> getNamesMenus (){
+    public ArrayList<ArrayList<MenuModel>> getAllMenus(ArrayList<String> keys){
+        ArrayList<ArrayList<MenuModel>> allMenuModels = new ArrayList<ArrayList<MenuModel>>();
+        var nameMenuTuple = getNamesMenusWithRemove(keys);
+        allMenuModels.add(nameMenuTuple.getMenuModels());
+        var mainMenuTuple = getMainDemographicWithRemove(nameMenuTuple.getLeftKeys());
+        allMenuModels.add(mainMenuTuple.getMenuModels());
+        var otherMenu = getOtherDemographic(mainMenuTuple.getLeftKeys());
+        allMenuModels.add(otherMenu);
+        return allMenuModels;
+    }
+
+    public ArrayList<MenuModel> getNamesMenus (ArrayList<String> keys){
         ArrayList<MenuModel> newListModel = new ArrayList<>();
-        MenuModel firstName= new MenuModel();
-        firstName.setAttributeKey("firstname");
-        firstName.setAttributeDisplayText("Firstname");
-
-        MenuModel middleName= new MenuModel();
-        middleName.setAttributeKey("middleName");
-        middleName.setAttributeDisplayText("MiddleName");
-
-        MenuModel lastName= new MenuModel();
-        lastName.setAttributeKey("lastName");
-        lastName.setAttributeDisplayText("LastName");
-        newListModel.add(firstName);
-        newListModel.add(middleName);
-        newListModel.add(lastName);
+        for (String key: keys
+             ) {
+            switch (key){
+                case "firstName":
+                case "middleName":
+                case "lastName":
+                case "nationalidnumber":
+                    MenuModel newModel= new MenuModel();
+                    newModel.setAttributeKey(key);
+                    newModel.setAttributeDisplayText(Utils.displayKeyValue(key));
+                    newListModel.add(newModel);
+            }
+        }
         return newListModel;
     }
-    public ArrayList<MenuModel> getMainDemographic (){
+
+    public MenuTuple getNamesMenusWithRemove (ArrayList<String> keys){
+
         ArrayList<MenuModel> newListModel = new ArrayList<>();
-        MenuModel age= new MenuModel();
-        age.setAttributeKey("age1");
-        age.setAttributeDisplayText("Age");
+        for (Iterator<String> iterator = keys.iterator(); iterator.hasNext(); ) {
+            String key = iterator.next();
+            switch (key){
+                case "firstname":
+                case "middlename":
+                case "familyname":
+                case "nationalidnumber":
+                    MenuModel newModel= new MenuModel();
+                    newModel.setAttributeKey(key);
+                    newModel.setAttributeDisplayText(Utils.displayKeyValue(key));
+                    newListModel.add(newModel);
+                    iterator.remove();
+            }
+        }
+        MenuTuple menuTuple = new MenuTuple();
+        menuTuple.setMenuModels(newListModel);
+        menuTuple.setLeftKeys(keys);
+        return menuTuple;
+    }
 
-        MenuModel height= new MenuModel();
-        height.setAttributeKey("height1");
-        height.setAttributeDisplayText("Height");
+    public ArrayList<MenuModel> getMainDemographic (ArrayList<String> keys){
+        ArrayList<MenuModel> newListModel = new ArrayList<>();
 
-        newListModel.add(age);
-        newListModel.add(height);
+        for (String key: keys
+                ) {
+            switch (key){
+                case "gender":
+                case "height1":
+                case "currentaddress":
+                case "otheroccupantsataddress":
+                case "phonenumber1":
+                case "age1":
+                    MenuModel newModel= new MenuModel();
+                    newModel.setAttributeKey(key);
+                    newModel.setAttributeDisplayText(Utils.displayKeyValue(key));
+                    newListModel.add(newModel);
+                    break;
+            }
+        }
 
         return newListModel;
     }
-    public ArrayList<MenuModel> getOtherDemographic (){
+    public MenuTuple getMainDemographicWithRemove (ArrayList<String> keys){
+
         ArrayList<MenuModel> newListModel = new ArrayList<>();
-        MenuModel haircolour= new MenuModel();
-        haircolour.setAttributeKey("haircolour");
-        haircolour.setAttributeDisplayText("Haircolour");
+        for (Iterator<String> iterator = keys.iterator(); iterator.hasNext(); ) {
+            String key = iterator.next();
+            switch (key){
+                case "gender":
+                case "height1":
+                case "currentaddress":
+                case "otheroccupantsataddress":
+                case "phonenumber1":
+                case "age1":
+                    MenuModel newModel= new MenuModel();
+                    newModel.setAttributeKey(key);
+                    newModel.setAttributeDisplayText(Utils.displayKeyValue(key));
+                    newListModel.add(newModel);
+                    iterator.remove();
+            }
+        }
+        MenuTuple menuTuple = new MenuTuple();
+        menuTuple.setMenuModels(newListModel);
+        menuTuple.setLeftKeys(keys);
+        return menuTuple;
+    }
 
-        MenuModel habitualdress= new MenuModel();
-        habitualdress.setAttributeKey("habitualdress");
-        habitualdress.setAttributeDisplayText("Habitualdress");
 
-        newListModel.add(haircolour);
-        newListModel.add(habitualdress);
+    public ArrayList<MenuModel> getOtherDemographic (ArrayList<String> keys){
+        ArrayList<MenuModel> newListModel = new ArrayList<>();
+        for (var otherDemo: keys
+             ) {
+            MenuModel newModel= new MenuModel();
+            newModel.setAttributeKey(otherDemo);
+            newModel.setAttributeDisplayText(Utils.displayKeyValue(otherDemo));
+            newListModel.add(newModel);
+        }
 
         return newListModel;
     }

@@ -8,25 +8,53 @@ import android.support.v7.widget.Toolbar;
 import android.os.Bundle;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.GridView;
 
 import com.project.zhi.tigerapp.Adapter.PeopleAdapter;
+import com.project.zhi.tigerapp.Services.DataFilteringService;
+import com.project.zhi.tigerapp.complexmenu.MenuModel;
+import com.project.zhi.tigerapp.complexmenu.SelectMenuView;
+import com.project.zhi.tigerapp.complexmenu.holder.SubjectHolder;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Bean;
+import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.ViewById;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import lombok.experimental.var;
 
 @EActivity(R.layout.activity_main)
 public class MainActivity extends AppCompatActivity {
     @ViewById(R.id.gridview)
     GridView gridview;
 
+    @ViewById(R.id.menu)
+    SelectMenuView menu;
+
     @ViewById(R.id.toolbar)
     Toolbar Toolbar;
 
     @Bean
     PeopleAdapter adapter;
+    @Bean
+    DataFilteringService dataFilteringService;
+
+    @ViewById(R.id.menu)
+    SelectMenuView selectMenuView;
+
+    @Click(R.id.btnSearch)
+    void setClickBtnYesClick(){
+        List<List<MenuModel>> mSubjectDataList = menu.getMSubjectDataList();
+        var aa = mSubjectDataList.get(1);
+        var bb = mSubjectDataList.get(2);
+    }
+
+    private SubjectHolder.OnSearchBtnListener onSearchBtnListener;
 
     @AfterViews
     void bindAdapter(){
@@ -42,6 +70,13 @@ public class MainActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 //        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_action_back);
         gridview.setAdapter(adapter);
+        selectMenuView.setOnFilteringBtnListener(new SelectMenuView.OnFilteringBtnListener() {
+            @Override
+            public void OnFiltering(ArrayList<MenuModel> nameMenus, ArrayList<MenuModel> mainDemoMenu, ArrayList<MenuModel> otherDemoMenu) {
+                
+                adapter.notifyDataSetChanged();
+            }
+        });
 
     }
 
@@ -50,4 +85,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
     }
+
+
 }

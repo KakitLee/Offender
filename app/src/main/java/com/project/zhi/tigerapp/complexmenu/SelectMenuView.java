@@ -4,9 +4,11 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.drawable.ColorDrawable;
 import android.util.AttributeSet;
+import android.util.Printer;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
@@ -14,22 +16,29 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 
+import com.project.zhi.tigerapp.Entities.Data;
 import com.project.zhi.tigerapp.R;
+import com.project.zhi.tigerapp.Services.DataSourceServices;
 import com.project.zhi.tigerapp.Services.MenuService;
 import com.project.zhi.tigerapp.complexmenu.holder.SelectHolder;
 import com.project.zhi.tigerapp.complexmenu.holder.SortHolder;
 import com.project.zhi.tigerapp.complexmenu.holder.SubjectHolder;
 
 import org.androidannotations.annotations.Bean;
+import org.androidannotations.annotations.EBean;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import lombok.Getter;
+import lombok.experimental.var;
 
 /**
  *
  * 搜索菜单栏
  * Created by vonchenchen on 2016/4/5 0005.
  */
+
 public class SelectMenuView extends LinearLayout{
 
     private static final int TAB_SUBJECT = 1;
@@ -37,8 +46,9 @@ public class SelectMenuView extends LinearLayout{
     private static final int TAB_SELECT = 3;
 
     private Context mContext;
-
+    @Getter
     private View mSubjectView;
+
     private View mSortView;
     private View mSelectView;
 
@@ -48,6 +58,8 @@ public class SelectMenuView extends LinearLayout{
 
     private RelativeLayout mMainContentLayout;
     private View mBackView;
+
+    private Button mBtnSearch;
 
     /** 科目 */
     private SubjectHolder mSubjectHolder;
@@ -67,13 +79,18 @@ public class SelectMenuView extends LinearLayout{
     private TextView mSelectText;
     private ImageView mSelectArrowImage;
 
-    private List<MenuModel> mGroupList;
-    private List<MenuModel> mPrimaryList;
-    private List<MenuModel> mJuniorList;
-    private List<MenuModel> mHighList;
+    private ArrayList<MenuModel> mGroupList;
+    private ArrayList<MenuModel> mPrimaryList;
+    private ArrayList<MenuModel> mJuniorList;
+    private ArrayList<MenuModel> mHighList;
+    @Getter
     private List<List<MenuModel>> mSubjectDataList;
 
+    private OnFilteringBtnListener onFilteringListener;
+
     MenuService menuService = new MenuService();
+
+    DataSourceServices dataSourceServices = new DataSourceServices();
 
     private int mTabRecorder = -1;
 
@@ -92,17 +109,19 @@ public class SelectMenuView extends LinearLayout{
     }
 
     private void init(){
-
+        Data data = dataSourceServices.getPeopleSource(this.mContext);
+        ArrayList<String> keys = dataSourceServices.getUniqueKey(data);
+        ArrayList<ArrayList<MenuModel>> allMenus = menuService.getAllMenus(keys);
         mGroupList = new ArrayList<MenuModel>();
         mGroupList = menuService.getMainMenus();
 
         mPrimaryList = new ArrayList<MenuModel>();
-        mPrimaryList = menuService.getNamesMenus();
+        mPrimaryList = allMenus.get(0);
 
         mJuniorList = new ArrayList<MenuModel>();
-        mJuniorList = menuService.getMainDemographic();
+        mJuniorList = allMenus.get(1);
         mHighList = new ArrayList<MenuModel>();
-        mHighList = menuService.getOtherDemographic();
+        mHighList = allMenus.get(2);
 
         mSubjectDataList = new ArrayList<List<MenuModel>>();
         mSubjectDataList.add(mGroupList);
@@ -127,6 +146,13 @@ public class SelectMenuView extends LinearLayout{
 //                dismissPopupWindow();
                 //Toast.makeText(UIUtils.getContext(), text, Toast.LENGTH_SHORT).show();
                 mSubjectText.setText(text);
+            }
+        });
+        mSubjectHolder.setOnSearchBtnListner(new SubjectHolder.OnSearchBtnListener() {
+            @Override
+            public void OnSearchBtnListener() {
+                dismissPopupWindow();
+                onFilteringListener.OnFiltering(mPrimaryList, mJuniorList, mHighList);
             }
         });
 
@@ -352,5 +378,12 @@ public class SelectMenuView extends LinearLayout{
         //清除菜单栏显示
         mSubjectText.setText("type1");
         mSortText.setText("type2");
+    }
+
+    public void setOnFilteringBtnListener(OnFilteringBtnListener onFilteringBtnListener){
+        this.onFilteringListener = onFilteringBtnListener;
+    }
+    public interface OnFilteringBtnListener{
+        void OnFiltering(ArrayList<MenuModel> nameMenus, ArrayList<MenuModel> mainDemoMenu, ArrayList<MenuModel> otherDemoMenu);
     }
 }
