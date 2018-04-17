@@ -1,5 +1,6 @@
 package com.project.zhi.tigerapp;
 
+import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
@@ -13,6 +14,7 @@ import android.widget.GridView;
 
 import com.project.zhi.tigerapp.Adapter.PeopleAdapter;
 import com.project.zhi.tigerapp.Services.DataFilteringService;
+import com.project.zhi.tigerapp.Services.DataSourceServices;
 import com.project.zhi.tigerapp.complexmenu.MenuModel;
 import com.project.zhi.tigerapp.complexmenu.SelectMenuView;
 import com.project.zhi.tigerapp.complexmenu.holder.SubjectHolder;
@@ -25,6 +27,8 @@ import org.androidannotations.annotations.ViewById;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.sql.DataSource;
 
 import lombok.experimental.var;
 
@@ -43,19 +47,14 @@ public class MainActivity extends AppCompatActivity {
     PeopleAdapter adapter;
     @Bean
     DataFilteringService dataFilteringService;
+    @Bean
+    DataSourceServices dataSourceServices;
 
     @ViewById(R.id.menu)
     SelectMenuView selectMenuView;
 
-    @Click(R.id.btnSearch)
-    void setClickBtnYesClick(){
-        List<List<MenuModel>> mSubjectDataList = menu.getMSubjectDataList();
-        var aa = mSubjectDataList.get(1);
-        var bb = mSubjectDataList.get(2);
-    }
-
     private SubjectHolder.OnSearchBtnListener onSearchBtnListener;
-
+    Context context= this;
     @AfterViews
     void bindAdapter(){
 //        setTheme(R.style.AppDarkTheme);
@@ -70,10 +69,12 @@ public class MainActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 //        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_action_back);
         gridview.setAdapter(adapter);
+
         selectMenuView.setOnFilteringBtnListener(new SelectMenuView.OnFilteringBtnListener() {
             @Override
             public void OnFiltering(ArrayList<MenuModel> nameMenus, ArrayList<MenuModel> mainDemoMenu, ArrayList<MenuModel> otherDemoMenu) {
-                
+                var newList = dataFilteringService.update(dataSourceServices.getPeopleSource(context).getEntitiesList(),nameMenus,mainDemoMenu,otherDemoMenu);
+                adapter.setDataList(newList);
                 adapter.notifyDataSetChanged();
             }
         });

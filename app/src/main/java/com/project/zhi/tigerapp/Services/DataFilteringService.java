@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import lombok.experimental.var;
+import lombok.val;
 
 @EBean
 public class DataFilteringService {
@@ -35,26 +36,27 @@ public class DataFilteringService {
     }
     public ArrayList<Entities> update(ArrayList<Entities> entities, ArrayList<MenuModel> nameMenu, ArrayList<MenuModel> mainDemoMenu, ArrayList<MenuModel> otherDemoMenu) {
         ArrayList<Entities> filteredEntities = new ArrayList<>();
-        nameMenu = nonEmptyCriteria(nameMenu);
-        mainDemoMenu = nonEmptyCriteria(mainDemoMenu);
-        otherDemoMenu = nonEmptyCriteria(otherDemoMenu);
+        val noneEmptyNameMenu = nonEmptyCriteria(nameMenu);
+        ArrayList<MenuModel> noneEmptyMainDemoMenu = nonEmptyCriteria(mainDemoMenu);
+        ArrayList<MenuModel> noneEmptyOtherDemoMenu = nonEmptyCriteria(otherDemoMenu);
         for (Entities entity : entities
                 ) {
-            if(isSatisfyAllCriteriaFromAListOfCriteria(nameMenu, entity.getList()) && isSatisfyAllCriteriaFromAListOfCriteria(mainDemoMenu, entity.getList()) && isSatisfyAllCriteriaFromAListOfCriteria(otherDemoMenu, entity.getList())){
+            if(isSatisfyAllCriteriaFromAListOfCriteria(noneEmptyNameMenu, entity.getList()) && isSatisfyAllCriteriaFromAListOfCriteria(noneEmptyMainDemoMenu, entity.getList()) && isSatisfyAllCriteriaFromAListOfCriteria(noneEmptyOtherDemoMenu, entity.getList())){
                 filteredEntities.add(entity);
             }
         }
         return filteredEntities;
     }
     public ArrayList<MenuModel> nonEmptyCriteria(ArrayList<MenuModel> menuList){
+        ArrayList<MenuModel> nonEmptyMenuList = new ArrayList<>(menuList);
         var nonEmptyFilter = new Predicate<MenuModel>() {
             @Override
             public boolean evaluate(MenuModel object) {
                 return object.getValue() != null && !object.getValue().isEmpty();
             }
         };
-        CollectionUtils.filter(menuList, nonEmptyFilter);
-        return menuList;
+        CollectionUtils.filter(nonEmptyMenuList, nonEmptyFilter);
+        return nonEmptyMenuList;
     }
     public boolean isSatisfyAllCriteriaFromAListOfCriteria(ArrayList<MenuModel> criterias, ArrayList<Attributes> attributes) {
         if(attributes == null && attributes.size() == 0){

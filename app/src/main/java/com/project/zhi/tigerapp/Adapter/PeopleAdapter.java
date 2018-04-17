@@ -13,6 +13,7 @@ import com.project.zhi.tigerapp.R;
 import com.project.zhi.tigerapp.Services.DataSourceServices;
 import com.project.zhi.tigerapp.ViewGroup.PersonItemView;
 import com.project.zhi.tigerapp.ViewGroup.PersonItemView_;
+import com.project.zhi.tigerapp.complexmenu.MenuModel;
 
 import org.androidannotations.annotations.AfterInject;
 import org.androidannotations.annotations.Bean;
@@ -20,6 +21,7 @@ import org.androidannotations.annotations.EBean;
 import org.androidannotations.annotations.RootContext;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by zhi on 30/09/2015.
@@ -39,6 +41,9 @@ public class PeopleAdapter extends BaseAdapter {
         entities = dataSourceServices.getPeopleSource(context).getEntitiesList();
         screenHeight = ((Activity) context).getWindowManager()
                 .getDefaultDisplay().getHeight();
+    }
+    public void setDataList(ArrayList<Entities> list){
+        entities = list;
     }
 
     @Override
