@@ -1,37 +1,13 @@
-<?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="horizontal" >
+<?xml version="1.0" encoding="UTF-8"?>
 
-    <ListView
-        android:id="@+id/listView1"
-        android:layout_width="@dimen/px_240"
-        android:layout_height="@dimen/px_720"
-        android:background="#f5f5f5"
-        android:cacheColorHint="#f5f5f5"
-        android:divider="@null"
-        android:dividerHeight="1dp"
-        android:minHeight = "500px"
-        android:scrollbars="none" />
+    <RelativeLayout android:orientation="horizontal" android:layout_height="wrap_content" android:layout_width="match_parent" xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <View
-        android:visibility="gone"
-        android:id="@+id/line"
-        android:layout_width="1dp"
-        android:layout_height="@dimen/px_720"
-        android:layout_toRightOf="@+id/listView1"
-        android:background="@color/child_item_diveder" />
+    <ListView android:layout_height="@dimen/px_650" android:layout_width="@dimen/px_240" android:scrollbars="none" android:minHeight="500px" android:dividerHeight="1dp" android:divider="@null" android:cacheColorHint="#f5f5f5" android:background="#f5f5f5" android:id="@+id/listView1"/>
 
-    <ListView
-        android:id="@+id/listView2"
-        android:layout_width="fill_parent"
-        android:layout_height="@dimen/px_720"
-        android:layout_toRightOf="@+id/line"
-        android:layout_weight="2"
-        android:background="@color/white"
-        android:cacheColorHint="@android:color/transparent"
-        android:divider="@null"
-        android:dividerHeight="1dp"
-        android:scrollbars="none" />
+    <View android:layout_height="@dimen/px_650" android:layout_width="1dp" android:background="@color/child_item_diveder" android:id="@+id/line" android:layout_toRightOf="@+id/listView1" android:visibility="gone"/>
+
+    <ListView android:layout_height="@dimen/px_650" android:layout_width="fill_parent" android:scrollbars="none" android:dividerHeight="1dp" android:divider="@null" android:cacheColorHint="@android:color/transparent" android:background="@color/white" android:id="@+id/listView2" android:layout_toRightOf="@+id/line" android:layout_weight="2"/>
+
+    <Button android:layout_height="wrap_content" android:layout_width="@dimen/px_240" android:layout_below="@id/listView1" android:id="@+id/btnClear" android:scrollbars="none" android:divider="@null" android:text="Clear"/>
+    <Button android:layout_height="wrap_content" android:layout_width="fill_parent" android:id="@+id/btnSearch" android:layout_below="@id/listView2" android:scrollbars="none" android:layout_toRightOf="@+id/btnClear" android:text="Search"/>
 </RelativeLayout>

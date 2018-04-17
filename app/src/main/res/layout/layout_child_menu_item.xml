@@ -20,30 +20,11 @@
         android:textSize="@dimen/text_size_28_px"
         android:textColor="@color/text_color_gey"
          />
-    <View
-        android:layout_width="match_parent"
-        android:layout_marginLeft="@dimen/px_44"
-        android:background="@color/line"
-        android:layout_below="@+id/child_textView"
-        android:layout_height="@dimen/px_1"></View>
-    <!--<ImageView-->
-        <!--android:visibility="invisible"-->
-        <!--android:id="@+id/list2_right"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_centerVertical="true"-->
-        <!--android:layout_alignParentRight="true"-->
-        <!--android:layout_marginRight="@dimen/px_54"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:src="@mipmap/check_down"/>-->
-    <TextView
-        android:id="@+id/child_textDisplayView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
-        android:layout_alignParentRight="true"
-        android:layout_marginRight="@dimen/px_54"
-        android:textSize="@dimen/text_size_28_px"
-        android:textColor="@color/text_color_gey"
+    <ImageView android:layout_height="wrap_content" android:layout_width="wrap_content" android:id="@+id/list2_right" android:src="@mipmap/check_down" android:layout_marginRight="@dimen/px_54" android:layout_alignParentRight="true" android:layout_centerVertical="true" android:visibility="invisible"/>
+
+    <TextView android:layout_height="@dimen/px_40" android:layout_width="wrap_content" android:textColor="@color/text_color_gey" android:textSize="@dimen/text_size_28_px" android:gravity="center_vertical" android:focusable="false" android:layout_marginLeft="@dimen/px_44" android:layout_gravity="center_vertical" android:id="@+id/child_textDisplayView" android:visibility="gone" android:layout_below="@id/child_textView"/>
+
+    <View android:layout_height="@dimen/px_1" android:layout_width="match_parent" android:background="@color/line" android:layout_marginLeft="@dimen/px_44" android:layout_below="@+id/child_textDisplayView"/>
         />
 </RelativeLayout>
 </LinearLayout>
