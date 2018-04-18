@@ -44,6 +44,7 @@ public class MenuService {
         var mainMenuTuple = getMainDemographicWithRemove(nameMenuTuple.getLeftKeys());
         allMenuModels.add(mainMenuTuple.getMenuModels());
         var otherMenu = getOtherDemographic(mainMenuTuple.getLeftKeys());
+
         allMenuModels.add(otherMenu);
         return allMenuModels;
     }
