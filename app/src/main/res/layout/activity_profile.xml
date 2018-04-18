@@ -17,12 +17,17 @@ tools:context=".MainActivity">
         android:layout_centerHorizontal="true"
         android:adjustViewBounds="true"
         android:scaleType="fitXY"
+        android:layout_marginTop="8dp"
         android:src="@drawable/place_holder" />
-    <include layout="@layout/profile_divider"
+
+    <include
         android:id="@+id/profile_divider"
-        android:layout_width="2dp"
-        android:layout_height="2dp"
-        android:layout_below="@id/imgProfilePic"/>
+        layout="@layout/profile_divider"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@id/imgProfilePic"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"/>
 
     <ListView
         android:id="@+id/attributeList"

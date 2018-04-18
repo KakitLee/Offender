@@ -3,7 +3,7 @@
     android:orientation="vertical" android:background="#fff"  android:gravity="center"  >
 
     <ImageView
-        android:id="@+id/img_drink_type_item"
+        android:id="@+id/imgPerson"
         android:layout_gravity="center"
         android:layout_width="88dp"
         android:layout_height="88dp"
@@ -11,7 +11,7 @@
         android:src="@drawable/place_holder" />
 
     <TextView
-        android:id="@+id/tv_drink_type_name"
+        android:id="@+id/tvPersonName"
         android:layout_gravity="center"
         android:gravity="center"
         android:layout_width="wrap_content"

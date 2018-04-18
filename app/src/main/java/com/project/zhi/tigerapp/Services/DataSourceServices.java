@@ -9,6 +9,7 @@ import com.project.zhi.tigerapp.R;
 
 import org.androidannotations.annotations.EBean;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.io.FilenameUtils;
 import org.simpleframework.xml.Serializer;
 import org.simpleframework.xml.core.Persister;
 
@@ -20,6 +21,8 @@ import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
+
+import lombok.experimental.var;
 
 interface  IDataSourceServices{
     Data getPeopleSource(Context context);
@@ -34,7 +37,7 @@ public class DataSourceServices implements IDataSourceServices {
         Data data = null;
         try {
             data = serializer.read(Data.class, input);
-            ArrayList<Entities> list = data.getEntitiesList();
+            data = setImagePath(data);
         } catch (Exception e) {
             //Likely to the issue with the data parser.
         }
@@ -55,6 +58,25 @@ public class DataSourceServices implements IDataSourceServices {
             }
         }
         return attributesList;
+    }
+    public Data setImagePath(Data data){
+        for (Entities entity: data.getEntitiesList()
+             ) {
+            if(entity.getAttachments() != null && entity.getAttachments().getFilename() != null && !entity.getAttachments().getFilename().isEmpty()){
+                entity.getAttachments().setFilename(setFileName(entity.getAttachments().getFilename()));
+            }
+        }
+        return data;
+    }
+
+    public String setFileName(String fileName){
+        fileName = fileName.toLowerCase();
+        fileName = fileName.replace(" ", "_");
+        fileName = fileName.replaceAll("^\\d+","");
+        fileName = fileName.replaceAll("[^a-z0-9\\\\_\\\\.]","_");
+        fileName = fileName.replaceAll("^\\_+","");
+        fileName = FilenameUtils.removeExtension(fileName);
+        return  fileName;
     }
 }
 

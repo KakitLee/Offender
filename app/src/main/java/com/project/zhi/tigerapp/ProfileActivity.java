@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.GridView;
+import android.widget.ImageView;
 import android.widget.ListView;
 
 import com.google.gson.Gson;
@@ -22,6 +23,7 @@ import com.project.zhi.tigerapp.Entities.Entities;
 import com.project.zhi.tigerapp.Services.DataFilteringService;
 import com.project.zhi.tigerapp.Services.DataSortService;
 import com.project.zhi.tigerapp.Services.DataSourceServices;
+import com.project.zhi.tigerapp.Utils.Utils;
 import com.project.zhi.tigerapp.complexmenu.MenuModel;
 import com.project.zhi.tigerapp.complexmenu.SelectMenuView;
 
@@ -42,6 +44,9 @@ public class ProfileActivity extends AppCompatActivity {
 
     @ViewById(R.id.attributeList)
     ListView listView;
+
+    @ViewById(R.id.imgProfilePic)
+    ImageView imageView;
 
     @Bean
     DataFilteringService dataFilteringService;
@@ -64,6 +69,7 @@ public class ProfileActivity extends AppCompatActivity {
         Entities entity = gS.fromJson(target, Entities.class);
         ArrayList<Attributes> attributes = entity.getList();
         attributes = dataSortService.sortAttributesGeneral(attributes);
+        imageView.setImageResource(Utils.getImageId(entity,this));
         adapter = new ProfileAdapter(this, attributes);
         listView.setAdapter(adapter);
 //        setTheme(R.style.AppDarkTheme);
