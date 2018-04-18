@@ -376,8 +376,8 @@ public class SelectMenuView extends LinearLayout{
         mSelectHolder.refreshView(null);
 
         //清除菜单栏显示
-        mSubjectText.setText("type1");
-        mSortText.setText("type2");
+        mSubjectText.setText("Filter");
+        mSortText.setText("Sort");
     }
 
     public void setOnFilteringBtnListener(OnFilteringBtnListener onFilteringBtnListener){

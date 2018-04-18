@@ -1,6 +1,7 @@
 package com.project.zhi.tigerapp;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
@@ -12,7 +13,9 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.GridView;
 
+import com.google.gson.Gson;
 import com.project.zhi.tigerapp.Adapter.PeopleAdapter;
+import com.project.zhi.tigerapp.Entities.Entities;
 import com.project.zhi.tigerapp.Services.DataFilteringService;
 import com.project.zhi.tigerapp.Services.DataSourceServices;
 import com.project.zhi.tigerapp.complexmenu.MenuModel;
@@ -23,6 +26,7 @@ import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EActivity;
+import org.androidannotations.annotations.ItemClick;
 import org.androidannotations.annotations.ViewById;
 
 import java.util.ArrayList;
@@ -58,6 +62,7 @@ public class MainActivity extends AppCompatActivity {
     @AfterViews
     void bindAdapter(){
 //        setTheme(R.style.AppDarkTheme);
+
         setSupportActionBar(Toolbar);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             Window window = this.getWindow();
@@ -80,6 +85,15 @@ public class MainActivity extends AppCompatActivity {
         });
 
     }
+    @ItemClick(R.id.gridview)
+    void gridViewItemClicked(Entities entity){
+        Gson gson = new Gson();
+        String objStr = gson.toJson(entity);
+        Intent intent = new Intent(this, ProfileActivity_.class);
+        intent.putExtra("Profile",objStr);
+        startActivity(intent);
+    }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

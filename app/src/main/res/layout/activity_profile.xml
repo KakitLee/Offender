@@ -1,0 +1,33 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+xmlns:tools="http://schemas.android.com/tools"
+android:layout_width="fill_parent"
+android:layout_height="match_parent"
+xmlns:app="http://schemas.android.com/apk/res-auto"
+android:background="#fff"
+tools:context=".MainActivity">
+<include
+    android:id="@+id/toolbar"
+    layout="@layout/toolbar" />
+
+    <ImageView
+        android:id="@+id/imgProfilePic"
+        android:layout_width="137dp"
+        android:layout_height="135dp"
+        android:layout_below="@+id/toolbar"
+        android:layout_centerHorizontal="true"
+        android:adjustViewBounds="true"
+        android:scaleType="fitXY"
+        android:src="@drawable/place_holder" />
+    <include layout="@layout/profile_divider"
+        android:id="@+id/profile_divider"
+        android:layout_width="2dp"
+        android:layout_height="2dp"
+        android:layout_below="@id/imgProfilePic"/>
+
+    <ListView
+        android:id="@+id/attributeList"
+        android:layout_below="@+id/profile_divider"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@android:color/white"></ListView>
+</RelativeLayout>

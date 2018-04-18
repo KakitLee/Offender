@@ -8,4 +8,7 @@ public class Utils {
     public static String displayKeyValue(String key){
         return WordUtils.capitalize(key);
     }
+    public static String displayKeyAsTitle(String key){
+        return WordUtils.capitalize(key);
+    }
 }

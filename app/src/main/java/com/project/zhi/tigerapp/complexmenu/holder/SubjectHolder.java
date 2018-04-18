@@ -16,6 +16,7 @@ import android.widget.TextView;
 
 
 import com.project.zhi.tigerapp.R;
+import com.project.zhi.tigerapp.Utils.Utils;
 import com.project.zhi.tigerapp.complexmenu.MenuModel;
 
 import java.util.List;
@@ -122,16 +123,14 @@ public class SubjectHolder extends BaseWidgetHolder<List<List<MenuModel>>> {
     private void dialog(final TextView displayView, MenuModel menuModel, final ImageView imageView){
         final String[] m_Text = {""};
         AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
-        builder.setTitle("Title");
+        builder.setTitle(Utils.displayKeyAsTitle(menuModel.getAttributeKey()));
 
-// Set up the input
         final EditText input = new EditText(mContext);
         input.setText(menuModel.getValue());
-// Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
+
         input.setInputType(InputType.TYPE_CLASS_TEXT );
         builder.setView(input);
 
-// Set up the buttons
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {

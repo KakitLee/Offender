@@ -41,7 +41,7 @@ public class DataFilteringService {
         ArrayList<MenuModel> noneEmptyOtherDemoMenu = nonEmptyCriteria(otherDemoMenu);
         for (Entities entity : entities
                 ) {
-            if(isSatisfyAllCriteriaFromAListOfCriteria(noneEmptyNameMenu, entity.getList()) && isSatisfyAllCriteriaFromAListOfCriteria(noneEmptyMainDemoMenu, entity.getList()) && isSatisfyAllCriteriaFromAListOfCriteria(noneEmptyOtherDemoMenu, entity.getList())){
+            if(isSatisfyAllCriteriaFromAListOfCriteria(noneEmptyNameMenu, entity.getList(), true) && isSatisfyAllCriteriaFromAListOfCriteria(noneEmptyMainDemoMenu, entity.getList(),false) && isSatisfyAllCriteriaFromAListOfCriteria(noneEmptyOtherDemoMenu, entity.getList(),false)){
                 filteredEntities.add(entity);
             }
         }
@@ -58,14 +58,20 @@ public class DataFilteringService {
         CollectionUtils.filter(nonEmptyMenuList, nonEmptyFilter);
         return nonEmptyMenuList;
     }
-    public boolean isSatisfyAllCriteriaFromAListOfCriteria(ArrayList<MenuModel> criterias, ArrayList<Attributes> attributes) {
+    public boolean isSatisfyAllCriteriaFromAListOfCriteria(ArrayList<MenuModel> criterias, ArrayList<Attributes> attributes, boolean fuzzyMatch ) {
         if(attributes == null && attributes.size() == 0){
             return true;
         }
         for (var criteria : criterias
                 ) {
-            if (!isSatisySignleCriteria(criteria, attributes)) {
-                return false;
+            if(fuzzyMatch){
+                if(!isSatisyFuzzySignleCriteria(criteria, attributes))
+                    return false;
+            }
+            else {
+                if (!isSatisySignleCriteria(criteria, attributes)) {
+                    return false;
+                }
             }
         }
         return true;
@@ -83,6 +89,24 @@ public class DataFilteringService {
                 value = attribute.getDoubleValue().toString();
             }
             if(criteria.getAttributeKey().equalsIgnoreCase(key) && criteria.getValue().equalsIgnoreCase(value)){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean isSatisyFuzzySignleCriteria(MenuModel criteria, ArrayList<Attributes> attributes){
+        for(var i =0; i< attributes.size(); i++){
+            var attribute= attributes.get(i);
+            var key = attribute.getAttributeKey();
+            var value = "";
+            if(attribute.getType().equalsIgnoreCase("TEXT")){
+                value = attribute.getStringValue();
+            }
+            else{
+                value = attribute.getDoubleValue().toString();
+            }
+            if(criteria.getAttributeKey().equalsIgnoreCase(key) && value.toLowerCase().contains(criteria.getValue().toLowerCase())){
                 return true;
             }
         }

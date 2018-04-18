@@ -1,8 +1,10 @@
 package com.project.zhi.tigerapp;
 
+import com.project.zhi.tigerapp.Entities.Attributes;
 import com.project.zhi.tigerapp.Entities.Data;
 import com.project.zhi.tigerapp.Entities.Entities;
 import com.project.zhi.tigerapp.Services.DataFilteringService;
+import com.project.zhi.tigerapp.Services.DataSortService;
 import com.project.zhi.tigerapp.Services.DataSourceServices;
 import com.project.zhi.tigerapp.Services.MenuService;
 import com.project.zhi.tigerapp.Utils.Utils;
@@ -121,10 +123,23 @@ public class localTest {
         assertEquals(4,nameMenus.size());
         assertEquals(6,allMenus.get(1).size());
         assertEquals(10,allMenus.get(2).size());
-        nameMenus.get(0).setValue("Ayu");
+        nameMenus.get(0).setValue("Ay");
         ArrayList<Entities>  list = dataFilteringService.update(data.getEntitiesList(),nameMenus, allMenus.get(1), allMenus.get(2));
         assertEquals(1,list.size());
 
     }
+    @Test
+    public void SortServiceUniqueKeyRemoveTest(){
+        DataSourceServices dataSourceServices = new DataSourceServices();
+        MenuService menuService= new MenuService();
+        DataFilteringService dataFilteringService = new DataFilteringService();
 
+        Data data = getData();
+        ArrayList<String> keys =  dataSourceServices.getUniqueKey(data);
+        assertEquals(20,keys.size());
+        DataSortService dataSortService = new DataSortService();
+        ArrayList<Attributes> attributes = dataSortService.sortAttributesGeneral(data.getEntitiesList().get(2).getList());
+        assertEquals("firstname",attributes.get(0).getAttributeKey());
+
+    }
 }

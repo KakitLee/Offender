@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="?attr/selectableItemBackground"
+    android:clickable="true"
+    android:padding="@dimen/activity_horizontal_margin"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <ImageView
+        android:id="@+id/ivContactItem2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginEnd="@dimen/activity_horizontal_margin"
+        android:layout_marginRight="@dimen/activity_horizontal_margin"
+        android:visibility="invisible" />
+
+    <TextView
+        android:id="@+id/tvProfileSubTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/activity_horizontal_margin"
+        android:layout_marginStart="@dimen/activity_horizontal_margin"
+        android:layout_toEndOf="@id/ivContactItem2"
+        android:layout_toRightOf="@id/ivContactItem2"
+        android:text="(321) 654-0987"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+        android:textColor="#212121" />
+
+    <TextView
+        android:id="@+id/tvProfileContent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tvProfileSubTitle"
+        android:layout_marginLeft="@dimen/activity_horizontal_margin"
+        android:layout_marginStart="@dimen/activity_horizontal_margin"
+        android:layout_marginTop="8dp"
+        android:layout_toEndOf="@id/ivContactItem2"
+        android:layout_toRightOf="@id/ivContactItem2"
+        android:text="Work"
+        android:textAppearance="@style/TextAppearance.AppCompat.Small"
+        android:textColor="#727272" />
+
+    <!--<ToggleButton-->
+        <!--android:id="@+id/chkState2"-->
+        <!--android:layout_width="24dp"-->
+        <!--android:layout_height="24dp"-->
+        <!--android:layout_alignParentEnd="true"-->
+        <!--android:layout_alignParentRight="true"-->
+        <!--android:layout_centerVertical="true"-->
+        <!--android:layout_marginLeft="@dimen/activity_horizontal_margin"-->
+        <!--android:layout_marginStart="@dimen/activity_horizontal_margin"-->
+        <!--android:background="@drawable/toggle_selector"-->
+        <!--android:checked="false"-->
+        <!--android:padding="6dp"-->
+        <!--android:textOff=""-->
+        <!--android:textOn="" />-->
+
+</RelativeLayout>
