@@ -65,13 +65,15 @@ public class MainActivity extends AppCompatActivity {
 
         setSupportActionBar(Toolbar);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            Window window = this.getWindow();
-            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            window.setStatusBarColor(getResources().getColor(R.color.primary_dark_material_dark));
+//            Window window = this.getWindow();
+//            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+//            window.setStatusBarColor(getResources().getColor(R.color.primary_dark_material_dark));
 //            getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor("#ff000000")));
 //            Toolbar.setTitleTextColor(Color.WHITE);
         }
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+//        getSupportActionBar().s
+//        getSupportActionBar().hide();
 //        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_action_back);
         gridview.setAdapter(adapter);
 

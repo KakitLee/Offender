@@ -7,7 +7,8 @@
     tools:context=".MainActivity">
     <include
         android:id="@+id/toolbar"
-        layout="@layout/toolbar" />
+        layout="@layout/toolbar"
+        />
     <com.project.zhi.tigerapp.complexmenu.SelectMenuView
         android:id="@+id/menu"
         android:layout_below="@id/toolbar"

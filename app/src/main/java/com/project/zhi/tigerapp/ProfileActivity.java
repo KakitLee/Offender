@@ -82,6 +82,7 @@ public class ProfileActivity extends AppCompatActivity {
 //            Toolbar.setTitleTextColor(Color.WHITE);
         }
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        setTitle(dataFilteringService.getPersonName(entity));
     }
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
