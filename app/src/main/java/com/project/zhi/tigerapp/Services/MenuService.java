@@ -149,4 +149,14 @@ public class MenuService {
 
         return newListModel;
     }
+
+    public ArrayList<MenuModel> clearMenuValue (ArrayList<MenuModel> menus){
+        for (var menu: menus
+                ) {
+            if(menu.getValue() != null && !menu.getValue().isEmpty()){
+                menu.setValue(null);
+            }
+        }
+        return menus;
+    }
 }

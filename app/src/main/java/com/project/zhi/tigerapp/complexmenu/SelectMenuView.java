@@ -155,6 +155,16 @@ public class SelectMenuView extends LinearLayout{
                 onFilteringListener.OnFiltering(mPrimaryList, mJuniorList, mHighList);
             }
         });
+        mSubjectHolder.setOnClearBtnLIstener(new SubjectHolder.OnClearBtnListener(){
+
+            @Override
+            public void OnClearBtnListenerClick() {
+                menuService.clearMenuValue(mPrimaryList);
+                menuService.clearMenuValue(mJuniorList);
+                menuService.clearMenuValue(mHighList);
+                mSubjectHolder.notifyListChange();
+            }
+        });
 
         //综合排序
         mSortHolder = new SortHolder(mContext);

@@ -33,6 +33,7 @@ public class SubjectHolder extends BaseWidgetHolder<List<List<MenuModel>>> {
     private ListView mRightListView;
 
     private Button mBtnSearch;
+    private Button mBtnClear;
 
     private LeftAdapter mLeftAdapter;
     private RightAdapter mRightAdapter;
@@ -54,6 +55,7 @@ public class SubjectHolder extends BaseWidgetHolder<List<List<MenuModel>>> {
     private OnRightListViewItemSelectedListener mOnRightListViewItemSelectedListener;
 
     private OnSearchBtnListener onSearchBtnListener;
+    private OnClearBtnListener onClearBtnListner;
 
     public SubjectHolder(Context context) {
         super(context);
@@ -65,6 +67,7 @@ public class SubjectHolder extends BaseWidgetHolder<List<List<MenuModel>>> {
         mLeftListView = (ListView) view.findViewById(R.id.listView1);
         mRightListView = (ListView) view.findViewById(R.id.listView2);
         mBtnSearch = (Button) view.findViewById(R.id.btnSearch);
+        mBtnClear = (Button) view.findViewById(R.id.btnClear);
 
         mLeftListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -116,8 +119,19 @@ public class SubjectHolder extends BaseWidgetHolder<List<List<MenuModel>>> {
                 onSearchBtnListener.OnSearchBtnListener();
             }
         });
+        mBtnClear.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onClearBtnListner.OnClearBtnListenerClick();
+            }
+        });
 
         return view;
+    }
+
+    public void notifyListChange(){
+        mLeftAdapter.notifyDataSetChanged();
+        mRightAdapter.notifyDataSetChanged();
     }
 
     private void dialog(final TextView displayView, MenuModel menuModel, final ImageView imageView){
@@ -339,5 +353,13 @@ public class SubjectHolder extends BaseWidgetHolder<List<List<MenuModel>>> {
     }
     public interface OnSearchBtnListener{
         void OnSearchBtnListener();
+    }
+
+    public void setOnClearBtnLIstener(OnClearBtnListener onClearBtnListner){
+        this.onClearBtnListner =onClearBtnListner;
+    }
+
+    public interface OnClearBtnListener{
+        void OnClearBtnListenerClick();
     }
 }
