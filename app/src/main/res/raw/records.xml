@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<IntelRecord xmlns="http://www.smartconservationsoftware.org/xml/1.0/org.wcs.smart.i2.record">
+    <title>H_20171125_01_Harimau meeting</title>
+    <status>NEW</status>
+    <source>
+        <name>hotline</name>
+        <uuid>f4d872130ecc4a05831e651a18d3fb57</uuid>
+    </source>
+    <primary_date>2017-11-30+11:00</primary_date>
+    <attributes type="SINGLE_ATTRIBUTE">
+        <record_attribute>
+            <name>typeofinformation</name>
+            <uuid>97c137d15753432087b560fb23cd8540</uuid>
+        </record_attribute>
+        <string_value>Potential info on Harimau meeting in Kampong Merchong</string_value>
+    </attributes>
+    <attributes type="SINGLE_ATTRIBUTE">
+        <record_attribute>
+            <name>phonenumber1</name>
+            <uuid>db4383b05543428fb3b246ce66f64844</uuid>
+        </record_attribute>
+        <string_value>5834231323</string_value>
+    </attributes>
+    <attributes type="SINGLE_ATTRIBUTE">
+        <record_attribute>
+            <name>date</name>
+            <uuid>d4dd031f45c34b449a51afc1732f996e</uuid>
+        </record_attribute>
+        <string_value>2017-11-25</string_value>
+    </attributes>
+    <attributes type="SINGLE_ENTITY">
+        <record_attribute>
+            <name>projectstaff</name>
+            <uuid>af5c562ddec74f4a9b3c3a358c0b7b02</uuid>
+        </record_attribute>
+        <list_value>
+            <name>Lee K</name>
+            <uuid>e94888fb1487481b86c095837e1ae4e7</uuid>
+        </list_value>
+    </attributes>
+    <entities keyid="buildingaddress">
+        <name>Warehouse_Kampong Merchong</name>
+        <uuid>eeb30b24c5d0425b8d27045b8f3edf6e</uuid>
+    </entities>
+    <entities keyid="vehicle">
+        <name>Car_MattBlack</name>
+        <uuid>f8826c3f0aba4f729c87f610ccf1916b</uuid>
+    </entities>
+    <entities keyid="organisation">
+        <name>Harimau Gang</name>
+        <uuid>b70502a6bf234409a669f5f55fc1d029</uuid>
+    </entities>
+    <entities keyid="person">
+        <name>MUZNA_Nawwaara_MP_03367</name>
+        <uuid>4a164b2ac0ba4e5a9234cd8c9fe652c5</uuid>
+    </entities>
+    <entities keyid="person">
+        <name>MUZNA_Sameeha_MP_03368</name>
+        <uuid>6f366be142e340fabbe923095841d515</uuid>
+    </entities>
+    <entities keyid="person">
+        <name>MAHURA_Putih_Bin_MP</name>
+        <uuid>6c1acc427c7e4aa28822f5bc762d8073</uuid>
+    </entities>
+    <attachments>
+        <filename>20171125 1935 Hotline Lee #21.docx</filename>
+    </attachments>
+    <locations>
+        <id>H_20171125_01_Harimau meeting</id>
+        <datetime>2017-11-25 00:00:00.000</datetime>
+        <comment>Potential info on Harimau meeting in Kampong Merchong [i.e. the entity’s Information Reported value]</comment>
+        <geometry>00800000014059DB66D373AFFB4008184C271FFF7A7FF8000000000000</geometry>
+        <entities keyid="buildingaddress">
+            <name>Warehouse_Kampong Merchong</name>
+            <uuid>eeb30b24c5d0425b8d27045b8f3edf6e</uuid>
+        </entities>
+        <entities keyid="vehicle">
+            <name>Car_MattBlack</name>
+            <uuid>f8826c3f0aba4f729c87f610ccf1916b</uuid>
+        </entities>
+        <entities keyid="organisation">
+            <name>Harimau Gang</name>
+            <uuid>b70502a6bf234409a669f5f55fc1d029</uuid>
+        </entities>
+        <entities keyid="person">
+            <name>MUZNA_Nawwaara_MP_03367</name>
+            <uuid>4a164b2ac0ba4e5a9234cd8c9fe652c5</uuid>
+        </entities>
+        <entities keyid="person">
+            <name>MUZNA_Sameeha_MP_03368</name>
+            <uuid>6f366be142e340fabbe923095841d515</uuid>
+        </entities>
+        <entities keyid="person">
+            <name>MAHURA_Putih_Bin_MP</name>
+            <uuid>6c1acc427c7e4aa28822f5bc762d8073</uuid>
+        </entities>
+    </locations>
+</IntelRecord>

@@ -58,15 +58,15 @@ public class SortHolder extends BaseWidgetHolder<List<String>>{
 
         mComprehensiveView = view.findViewById(R.id.re_sort1);
         mHighEvaluateView = view.findViewById(R.id.re_sort2);
-        mLowPriceView = view.findViewById(R.id.re_sort4);
-        mHighPriceView = view.findViewById(R.id.re_sort5);
-        mDistanceView = view.findViewById(R.id.re_sort6);
+//        mLowPriceView = view.findViewById(R.id.re_sort4);
+//        mHighPriceView = view.findViewById(R.id.re_sort5);
+//        mDistanceView = view.findViewById(R.id.re_sort6);
 
         mComprehensiveImage = (ImageView) view.findViewById(R.id.img_sort1);
         mHighEvaluateImage = (ImageView) view.findViewById(R.id.img_sort2);
-        mLowPriceImage = (ImageView) view.findViewById(R.id.img_sort4);
-        mHighPriceImage = (ImageView) view.findViewById(R.id.img_sort5);
-        mDistanceImage = (ImageView) view.findViewById(R.id.img_sort6);
+//        mLowPriceImage = (ImageView) view.findViewById(R.id.img_sort4);
+//        mHighPriceImage = (ImageView) view.findViewById(R.id.img_sort5);
+//        mDistanceImage = (ImageView) view.findViewById(R.id.img_sort6);
 
         //综合排序
         mComprehensiveView.setOnClickListener(new View.OnClickListener() {
@@ -85,27 +85,27 @@ public class SortHolder extends BaseWidgetHolder<List<String>>{
         });
 
         //价格最低
-        mLowPriceView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                retSortInfo(SORT_BY_PRICELOW, mLowPriceImage);
-            }
-        });
-
-        //价格最高
-        mHighPriceView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                retSortInfo(SORT_BY_PRICEHIGH, mHighPriceImage);
-            }
-        });
-        //离我最近
-        mDistanceView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                retSortInfo(SORT_BY_DISTANCE, mDistanceImage);
-            }
-        });
+//        mLowPriceView.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                retSortInfo(SORT_BY_PRICELOW, mLowPriceImage);
+//            }
+//        });
+//
+//        //价格最高
+//        mHighPriceView.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                retSortInfo(SORT_BY_PRICEHIGH, mHighPriceImage);
+//            }
+//        });
+//        //离我最近
+//        mDistanceView.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                retSortInfo(SORT_BY_DISTANCE, mDistanceImage);
+//            }
+//        });
 
         return view;
     }

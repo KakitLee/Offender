@@ -266,27 +266,39 @@ public class SelectMenuView extends LinearLayout{
     }
 
     private void handleClickSubjectView(){
+        if(mTabRecorder == TAB_SUBJECT){
+            dismissPopupWindow();
+        }
+        else {
+            mMainContentLayout.removeAllViews();
+            mMainContentLayout.addView(mSubjectHolder.getRootView(), ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
 
-        mMainContentLayout.removeAllViews();
-        mMainContentLayout.addView(mSubjectHolder.getRootView(), ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-
-        popUpWindow(TAB_SUBJECT);
+            popUpWindow(TAB_SUBJECT);
+        }
     }
 
     private void handleClickSortView(){
+        if(mTabRecorder == TAB_SORT){
+            dismissPopupWindow();
+        }
+        else {
+            mMainContentLayout.removeAllViews();
+            mMainContentLayout.addView(mSortHolder.getRootView(), ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+            popUpWindow(TAB_SORT);
+        }
 
-        mMainContentLayout.removeAllViews();
-        mMainContentLayout.addView(mSortHolder.getRootView(), ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-
-        popUpWindow(TAB_SORT);
     }
 
     private void handleClickSelectView(){
+        if(mTabRecorder == TAB_SELECT) {
+            dismissPopupWindow();
+        }
+        else {
+            mMainContentLayout.removeAllViews();
+            mMainContentLayout.addView(mSelectHolder.getRootView(), ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+            popUpWindow(TAB_SELECT);
+        }
 
-        mMainContentLayout.removeAllViews();
-        mMainContentLayout.addView(mSelectHolder.getRootView(), ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-
-        popUpWindow(TAB_SELECT);
     }
 
     private void popUpWindow(int tab){
@@ -362,6 +374,7 @@ public class SelectMenuView extends LinearLayout{
 
         mSelectText.setTextColor(getResources().getColor(R.color.text_color_gey));
         mSelectArrowImage.setImageResource(R.mipmap.ic_down);
+        mTabRecorder = -1;
     }
 
     private String getSortString(String info){

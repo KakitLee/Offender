@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<data xmlns="http://www.example.org/Intelligence">
+    <entities entityTypeKey="person">
+        <id>SANG HEILI</id>
+        <attributes attributeKey="urn" type="TEXT" stringValue="SANG HEILI"/>
+        <records title="I_20170814_SANG HEILI" recordSourceKey="interview" recordKey="c86671cad2124ea8a936be6758ace233"/>
+    </entities>
+    <entities entityTypeKey="person">
+        <id>MAHURA_Putih_Bin_MP</id>
+        <scratchpad>Copy BilatAssociate#3_MP_03369’s attributes across to Bilat_Successor_MP George 26 Feb 2018&#xD;
+            Recall the newspaper article on Bilat’s arrest (M_20171006_TheStar_BilatArrest) – its picture shows two Harimau gang members who remain at large.  One of them – Putih bin Mahura – appears to fit the description of Bilat’s successor; the cat tattoo on the left arm is a powerful potential corroborator.  George 26 Feb 2018</scratchpad>
+        <attributes attributeKey="urn" type="TEXT" stringValue="MAHURA_Putih_Bin_MP"/>
+        <attributes attributeKey="haircolour" type="TEXT" stringValue="Short, spiky dark hair"/>
+        <attributes attributeKey="facialhair" type="TEXT" stringValue="Cat tattoo on left arm"/>
+        <attributes attributeKey="habitualdress" type="TEXT" stringValue="Sleeveless tshirt, gold chain"/>
+        <attributes attributeKey="familyname" type="TEXT" stringValue="MAHURA"/>
+        <attributes attributeKey="firstname" type="TEXT" stringValue="Putih"/>
+        <attributes attributeKey="middlename" type="TEXT" stringValue="Bin"/>
+        <attachments filename="PbM.jpg" isPrimary="true"/>
+        <records title="H_20171125_01_Harimau meeting" recordSourceKey="hotline" recordKey="c320c968e77a4e50b51bccc395b36c4d"/>
+        <locations id="H_20171125_01_Harimau meeting" recordKey="c320c968e77a4e50b51bccc395b36c4d"/>
+    </entities>
+    <entities entityTypeKey="person">
+        <id>MUZNA_Nawwaara_MP_03367</id>
+        <scratchpad>The “Muzna brothers” are in fact Nawwaara and Sameeha George 26 Feb 2018</scratchpad>
+        <attributes attributeKey="urn" type="TEXT" stringValue="MUZNA_Nawwaara_MP_03367"/>
+        <attributes attributeKey="gender" type="TEXT" stringValue="Male"/>
+        <attributes attributeKey="height1" type="TEXT" stringValue="Average"/>
+        <attributes attributeKey="haircolour" type="TEXT" stringValue="Dark"/>
+        <attributes attributeKey="habitualdress" type="TEXT" stringValue="Fashionably dressed - jeans, sneakers / trainers, BLUE windbreaker jacket"/>
+        <attributes attributeKey="firstname" type="TEXT" stringValue="Nawwaara"/>
+        <attributes attributeKey="familyname" type="TEXT" stringValue="Muzna"/>
+        <records title="H_20170823_02_Poaching/facilitation" recordSourceKey="hotline" recordKey="6aeb67c5fba945d08e3085ea4ff41606"/>
+        <records title="H_20171125_01_Harimau meeting" recordSourceKey="hotline" recordKey="c320c968e77a4e50b51bccc395b36c4d"/>
+        <records title="I_20170814_SANG HEILI" recordSourceKey="interview" recordKey="c86671cad2124ea8a936be6758ace233"/>
+        <records title="I_20171120_SANG HEILI" recordSourceKey="interview" recordKey="f6b3390e59774ffbb156988912dc6999"/>
+        <locations id="H_20171125_01_Harimau meeting" recordKey="c320c968e77a4e50b51bccc395b36c4d"/>
+    </entities>
+    <entities entityTypeKey="person">
+        <id>BILAT_Ayu_Bin_MP/0045</id>
+        <scratchpad>'20170814 SANG HEILI interview #13.doc' states that two men visit Bilat around the full moon of most months.  Couldl they be poachers for him - visiting either before going into Muadzam Park to discuss the trip, or afterwards to give him animal parts?  RT, 17 Aug 18</scratchpad>
+        <attributes attributeKey="urn" type="TEXT" stringValue="BILAT_Ayu_Bin_MP/0045"/>
+        <attributes attributeKey="familyname" type="TEXT" stringValue="Bilat"/>
+        <attributes attributeKey="firstname" type="TEXT" stringValue="Ayu"/>
+        <attributes attributeKey="middlename" type="TEXT" stringValue="Bin"/>
+        <attributes attributeKey="gender" type="TEXT" stringValue="Male"/>
+        <attributes attributeKey="haircolour" type="TEXT" stringValue="Dark"/>
+        <attributes attributeKey="marksscarstatoos" type="TEXT" stringValue="Chest tattoo, details unclear"/>
+        <attributes attributeKey="age1" type="NUMERIC" doubleValue="38.0"/>
+        <attributes attributeKey="phonenumber1" type="TEXT" stringValue="5604647343"/>
+        <attributes attributeKey="drugsalcohol" type="TEXT" stringValue="Drinks frequently; favourite drink is beer"/>
+        <attributes attributeKey="height1" type="TEXT" stringValue="5'6&quot;"/>
+        <attributes attributeKey="currentaddress" type="TEXT" stringValue="Lorong Tenagh C, Muadzam Shah"/>
+        <attributes attributeKey="otheroccupantsataddress" type="TEXT" stringValue="One other male flatmate, no further details"/>
+        <attributes attributeKey="vehicledetails" type="TEXT" stringValue="Matt black VW Golf"/>
+        <attributes attributeKey="alias" type="TEXT" stringValue="the Joker"/>
+        <attachments filename="Bilat.jpg" isPrimary="true"/>
+        <records title="M_20171006_TheStar_BilatArrest" recordSourceKey="media" recordKey="13143b3843b5458bb02154e8780b3bb2"/>
+        <records title="H_20170823_02_Poaching/facilitation" recordSourceKey="hotline" recordKey="6aeb67c5fba945d08e3085ea4ff41606"/>
+        <records title="I_20170814_SANG HEILI" recordSourceKey="interview" recordKey="c86671cad2124ea8a936be6758ace233"/>
+        <records title="I_20171120_SANG HEILI" recordSourceKey="interview" recordKey="f6b3390e59774ffbb156988912dc6999"/>
+    </entities>
+    <entities entityTypeKey="person">
+        <id>MUZNA_Sameeha_MP_03368</id>
+        <scratchpad>The “Muzna brothers” are in fact Nawwaara and Sameeha George 26 Feb 2018</scratchpad>
+        <attributes attributeKey="urn" type="TEXT" stringValue="MUZNA_Sameeha_MP_03368"/>
+        <attributes attributeKey="gender" type="TEXT" stringValue="Male"/>
+        <attributes attributeKey="height1" type="TEXT" stringValue="Average"/>
+        <attributes attributeKey="haircolour" type="TEXT" stringValue="Dark"/>
+        <attributes attributeKey="habitualdress" type="TEXT" stringValue="Fashionably dressed - jeans, sneakers / trainers, windbreaker jacket"/>
+        <attributes attributeKey="firstname" type="TEXT" stringValue="Sameeha"/>
+        <attributes attributeKey="familyname" type="TEXT" stringValue="Muzna"/>
+        <records title="H_20170823_02_Poaching/facilitation" recordSourceKey="hotline" recordKey="6aeb67c5fba945d08e3085ea4ff41606"/>
+        <records title="H_20171125_01_Harimau meeting" recordSourceKey="hotline" recordKey="c320c968e77a4e50b51bccc395b36c4d"/>
+        <records title="I_20170814_SANG HEILI" recordSourceKey="interview" recordKey="c86671cad2124ea8a936be6758ace233"/>
+        <records title="I_20171120_SANG HEILI" recordSourceKey="interview" recordKey="f6b3390e59774ffbb156988912dc6999"/>
+        <locations id="H_20171125_01_Harimau meeting" recordKey="c320c968e77a4e50b51bccc395b36c4d"/>
+    </entities>
+    <entities entityTypeKey="person">
+        <id>TAQIYYA_bin_Nabeeha_MP/00387</id>
+        <scratchpad>Taqiyya was encountered in the east of the park in Sept 17, possibly hunting / spear fishing.  Would be good to find out more about him. AD, Oct 17</scratchpad>
+        <attributes attributeKey="urn" type="TEXT" stringValue="TAQIYYA_bin_Nabeeha_MP/00387"/>
+        <attributes attributeKey="familyname" type="TEXT" stringValue="Taqiyya"/>
+        <attributes attributeKey="firstname" type="TEXT" stringValue="Nabeeha"/>
+        <attributes attributeKey="middlename" type="TEXT" stringValue="bin"/>
+        <attributes attributeKey="gender" type="TEXT" stringValue="Male"/>
+        <attributes attributeKey="age1" type="NUMERIC" doubleValue="35.0"/>
+        <attributes attributeKey="nationalidnumber" type="TEXT" stringValue="IR648239"/>
+        <attributes attributeKey="fathersnames" type="TEXT" stringValue="Chahaya Taqiyya"/>
+        <attributes attributeKey="weapons" type="TEXT" stringValue="Potentially carries rifle / spear"/>
+        <attributes attributeKey="height1" type="TEXT" stringValue="5'8&quot;"/>
+        <attributes attributeKey="build" type="TEXT" stringValue="Skinny"/>
+        <attributes attributeKey="haircolour" type="TEXT" stringValue="Black, thick &amp; curly"/>
+        <attributes attributeKey="habitualdress" type="TEXT" stringValue="T-shirt, shorts, sandals"/>
+        <attributes attributeKey="currentaddress" type="TEXT" stringValue="Kampung Permatang Durian"/>
+        <attachments filename="20170923 Patrol Alpha #0087 image 1.jpg" isPrimary="true"/>
+        <records title="MP_20170923_03_Foraging" recordSourceKey="patrol" recordKey="e6bfb903f363435cba4a3dd6611c46e2"/>
+        <locations id="Intercept #01" recordKey="e6bfb903f363435cba4a3dd6611c46e2"/>
+    </entities>
+    <entities entityTypeKey="person">
+        <id>TQAIYYA_bin_Nabeeha_MP/00387</id>
+        <scratchpad></scratchpad>
+        <attributes attributeKey="familyname" type="TEXT" stringValue="Taqiyya"/>
+        <attributes attributeKey="firstname" type="TEXT" stringValue="Nabeeha"/>
+        <attributes attributeKey="urn" type="TEXT" stringValue="TQAIYYA_bin_Nabeeha_MP/00387"/>
+        <attributes attributeKey="middlename" type="TEXT" stringValue="bin"/>
+        <attributes attributeKey="gender" type="TEXT" stringValue="Male"/>
+        <attributes attributeKey="age1" type="NUMERIC" doubleValue="35.0"/>
+    </entities>
+</data>
