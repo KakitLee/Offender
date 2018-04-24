@@ -50,5 +50,6 @@ dependencies {
     implementation 'org.apache.commons:commons-io:1.3.2'
     implementation 'de.hdodenhof:circleimageview:1.2.1'
     implementation 'com.google.android.gms:play-services-maps:15.0.0'
+    implementation 'lib.kashif:folderpicker:2.2'
 
 }
