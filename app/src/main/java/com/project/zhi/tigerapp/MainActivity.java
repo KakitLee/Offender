@@ -19,6 +19,7 @@ import com.project.zhi.tigerapp.Adapter.PeopleAdapter;
 import com.project.zhi.tigerapp.Entities.Entities;
 import com.project.zhi.tigerapp.Services.DataFilteringService;
 import com.project.zhi.tigerapp.Services.DataSourceServices;
+import com.project.zhi.tigerapp.Services.NavigationService;
 import com.project.zhi.tigerapp.complexmenu.MenuModel;
 import com.project.zhi.tigerapp.complexmenu.SelectMenuView;
 import com.project.zhi.tigerapp.complexmenu.holder.SubjectHolder;
@@ -50,14 +51,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     DataFilteringService dataFilteringService;
     @Bean
     DataSourceServices dataSourceServices;
+    @Bean
+    NavigationService navigationService;
+
 
     @ViewById(R.id.menu)
     SelectMenuView selectMenuView;
 
     private SubjectHolder.OnSearchBtnListener onSearchBtnListener;
-    Context context= this;
+    Context context = this;
+
     @AfterViews
-    void bindAdapter(){
+    void bindAdapter() {
 //        setTheme(R.style.AppDarkTheme);
 
         setSupportActionBar(Toolbar);
@@ -86,19 +91,20 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         selectMenuView.setOnFilteringBtnListener(new SelectMenuView.OnFilteringBtnListener() {
             @Override
             public void OnFiltering(ArrayList<MenuModel> nameMenus, ArrayList<MenuModel> mainDemoMenu, ArrayList<MenuModel> otherDemoMenu) {
-                var newList = dataFilteringService.update(dataSourceServices.getPeopleSource(context).getEntitiesList(),nameMenus,mainDemoMenu,otherDemoMenu);
+                var newList = dataFilteringService.update(dataSourceServices.getPeopleSource(context).getEntitiesList(), nameMenus, mainDemoMenu, otherDemoMenu);
                 adapter.setDataList(newList);
                 adapter.notifyDataSetChanged();
             }
         });
 
     }
+
     @ItemClick(R.id.gridview)
-    void gridViewItemClicked(Entities entity){
+    void gridViewItemClicked(Entities entity) {
         Gson gson = new Gson();
         String objStr = gson.toJson(entity);
         Intent intent = new Intent(this, ProfileActivity_.class);
-        intent.putExtra("Profile",objStr);
+        intent.putExtra("Profile", objStr);
         startActivity(intent);
     }
 
@@ -112,16 +118,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        int id = item.getItemId();
 
-        if (id == R.id.nav_search) {
-            // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
-            Intent intent = new Intent(this, UploadActivity.class);
-            startActivity(intent);
-        }
+        startActivity(navigationService.getActivity(this, item));
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
-        return true;    }
+        return true;
+    }
 }
