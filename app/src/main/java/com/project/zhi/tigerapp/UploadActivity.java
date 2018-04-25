@@ -23,11 +23,13 @@ import android.view.MenuItem;
 import android.widget.TextView;
 
 import com.project.zhi.tigerapp.Services.NavigationService;
+import com.project.zhi.tigerapp.Services.UserPrefs_;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.ViewById;
+import org.androidannotations.annotations.sharedpreferences.Pref;
 
 import lib.folderpicker.FolderPicker;
 
@@ -48,6 +50,9 @@ public class UploadActivity extends AppCompatActivity
 
     @ViewById(R.id.tv_file)
     TextView tv_filePath;
+
+    @Pref
+    UserPrefs_ userPrefs;
 
     @AfterViews
     void bindAdapter() {
@@ -220,9 +225,13 @@ public class UploadActivity extends AppCompatActivity
         if (requestCode == FOLDER_PICKER_CODE && resultCode == Activity.RESULT_OK) {
             String folderLocation = intent.getExtras().getString("data");
             tv_folderPath.setText(folderLocation);
+            userPrefs.isFolder().put(true);
+            userPrefs.folder().put(folderLocation);
         } else if (requestCode == FILE_PICKER_CODE && resultCode == Activity.RESULT_OK) {
             String folderLocation = intent.getExtras().getString("data");
             tv_filePath.setText(folderLocation);
+            userPrefs.isFile().put(true);
+            userPrefs.file().put(folderLocation);
         }
     }
 }

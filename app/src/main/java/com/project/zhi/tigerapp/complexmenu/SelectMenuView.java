@@ -26,6 +26,7 @@ import com.project.zhi.tigerapp.complexmenu.holder.SubjectHolder;
 
 import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.EBean;
+import org.androidannotations.api.sharedpreferences.StringPrefField;
 
 import java.util.ArrayList;
 import java.util.List;

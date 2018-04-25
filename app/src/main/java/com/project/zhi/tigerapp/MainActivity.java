@@ -20,6 +20,7 @@ import com.project.zhi.tigerapp.Entities.Entities;
 import com.project.zhi.tigerapp.Services.DataFilteringService;
 import com.project.zhi.tigerapp.Services.DataSourceServices;
 import com.project.zhi.tigerapp.Services.NavigationService;
+import com.project.zhi.tigerapp.Services.UserPrefs_;
 import com.project.zhi.tigerapp.complexmenu.MenuModel;
 import com.project.zhi.tigerapp.complexmenu.SelectMenuView;
 import com.project.zhi.tigerapp.complexmenu.holder.SubjectHolder;
@@ -29,6 +30,7 @@ import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.ItemClick;
 import org.androidannotations.annotations.ViewById;
+import org.androidannotations.annotations.sharedpreferences.Pref;
 
 import java.util.ArrayList;
 
@@ -44,6 +46,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @ViewById(R.id.toolbar)
     Toolbar Toolbar;
+
+    @Pref
+    UserPrefs_ userPrefs;
 
     @Bean
     PeopleAdapter adapter;

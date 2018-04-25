@@ -11,6 +11,7 @@ import android.widget.BaseAdapter;
 import com.project.zhi.tigerapp.Entities.Entities;
 import com.project.zhi.tigerapp.R;
 import com.project.zhi.tigerapp.Services.DataSourceServices;
+import com.project.zhi.tigerapp.Services.UserPrefs_;
 import com.project.zhi.tigerapp.ViewGroup.PersonItemView;
 import com.project.zhi.tigerapp.ViewGroup.PersonItemView_;
 import com.project.zhi.tigerapp.complexmenu.MenuModel;
@@ -19,6 +20,7 @@ import org.androidannotations.annotations.AfterInject;
 import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.EBean;
 import org.androidannotations.annotations.RootContext;
+import org.androidannotations.annotations.sharedpreferences.Pref;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,6 +32,7 @@ import java.util.List;
 public class PeopleAdapter extends BaseAdapter {
     @RootContext
     Context context;
+
     @Bean
     DataSourceServices dataSourceServices;
 
@@ -39,6 +42,9 @@ public class PeopleAdapter extends BaseAdapter {
     @AfterInject
     void initAdapter() {
         entities = dataSourceServices.getPeopleSource(context).getEntitiesList();
+        if(entities == null){
+            entities = new ArrayList<Entities>();
+        }
         screenHeight = ((Activity) context).getWindowManager()
                 .getDefaultDisplay().getHeight();
     }

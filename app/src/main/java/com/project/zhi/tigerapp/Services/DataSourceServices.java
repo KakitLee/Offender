@@ -1,6 +1,8 @@
 package com.project.zhi.tigerapp.Services;
 
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 
 import com.project.zhi.tigerapp.Entities.Attributes;
 import com.project.zhi.tigerapp.Entities.Data;
@@ -8,6 +10,7 @@ import com.project.zhi.tigerapp.Entities.Entities;
 import com.project.zhi.tigerapp.R;
 
 import org.androidannotations.annotations.EBean;
+import org.androidannotations.annotations.sharedpreferences.Pref;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.simpleframework.xml.Serializer;
@@ -27,24 +30,38 @@ import lombok.experimental.var;
 interface  IDataSourceServices{
     Data getPeopleSource(Context context);
 }
+
 @EBean
 public class DataSourceServices implements IDataSourceServices {
 
     @Override
     public Data getPeopleSource(Context context) {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         Serializer serializer = new Persister();
-        InputStream input = context.getResources().openRawResource(R.raw.entities);
         Data data = null;
+
         try {
-            data = serializer.read(Data.class, input);
+            String filePath = prefs.getString("file", "");
+            if(filePath != null && !filePath.isEmpty()){
+                File source = new File(filePath);
+                data = serializer.read(Data.class, source);
+            }
+            else {
+                InputStream input = context.getResources().openRawResource(R.raw.entities);
+                data = serializer.read(Data.class, input);
+            }
             data = setImagePath(data);
         } catch (Exception e) {
+            SharedPreferences.Editor editor = prefs.edit();
+            editor.putString("file", "");
+            editor.putBoolean("isFile", false);
+            editor.commit();
             //Likely to the issue with the data parser.
-        }
-        finally {
+
+        } finally {
             return data;
         }
-    }
+    }{}
 
     public ArrayList<String> getUniqueKey(Data data){
         ArrayList<String> attributesList = new ArrayList<String>();
