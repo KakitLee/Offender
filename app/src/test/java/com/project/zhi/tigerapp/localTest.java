@@ -109,6 +109,13 @@ public class localTest {
     }
 
     @Test
+    public void FolderPath(){
+        File file = new File("/storage/emulated/0/Download/test.xml");
+
+        assertEquals("\\storage\\emulated\\0\\Download", file.getParent());
+    }
+
+    @Test
     public void FilterServiceUniqueKeyRemoveTest(){
         DataSourceServices dataSourceServices = new DataSourceServices();
         MenuService menuService= new MenuService();
