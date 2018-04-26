@@ -60,7 +60,7 @@
                 android:id="@+id/comprehensive_sorting"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:text="Sort"
+                android:text="Search"
                 android:layout_centerVertical="true"
                 android:layout_gravity="center"
                 android:gravity="center_horizontal|center_vertical"

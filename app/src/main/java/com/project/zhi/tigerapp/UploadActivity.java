@@ -75,8 +75,6 @@ public class UploadActivity extends AppCompatActivity
     @Bean
     DataSourceServices dataSourceServices;
 
-    ProgressBar progressBar;
-
     AlertDialog dialog;
 
     @AfterViews
@@ -255,7 +253,7 @@ public class UploadActivity extends AppCompatActivity
             userPrefs.folder().put(folderLocation);
         } else if (requestCode == FILE_PICKER_CODE && resultCode == Activity.RESULT_OK) {
             String folderLocation = intent.getExtras().getString("data");
-            setProgressDialog();
+            dialog = Utils.setProgressDialog(this);
             if(dataSourceServices.isValidDataSource(folderLocation)){
                 tv_filePath.setText(folderLocation);
                 userPrefs.isFile().put(true);
@@ -301,45 +299,45 @@ public class UploadActivity extends AppCompatActivity
     }
 
 
-    public void setProgressDialog(){
-
-        int llPadding = 30;
-        LinearLayout ll = new LinearLayout(this);
-        ll.setOrientation(LinearLayout.HORIZONTAL);
-        ll.setPadding(llPadding,llPadding,llPadding,llPadding);
-        ll.setGravity(Gravity.CENTER);
-        LinearLayout.LayoutParams llParam = new LinearLayout.LayoutParams(110, 110);
-        llParam.gravity = Gravity.CENTER;
-
-        ProgressBar progressBar = new ProgressBar(this);
-        progressBar.setIndeterminate(true);
-        progressBar.setPadding(0,0,llPadding,0);
-        progressBar.setLayoutParams(llParam);
-
-        llParam = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        llParam.gravity = Gravity.CENTER;
-        TextView tvText = new TextView(this);
-        tvText.setText("Loading ...");
-        tvText.setTextColor(Color.parseColor("#000000"));
-        tvText.setTextSize(20);
-        tvText.setLayoutParams(llParam);
-
-        ll.addView(progressBar);
-        ll.addView(tvText);
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setCancelable(false);
-        builder.setView(ll);
-
-        dialog = builder.create();
-        dialog.show();
-        Window window = dialog.getWindow();
-        if(window != null){
-            WindowManager.LayoutParams layoutParams = new WindowManager.LayoutParams();
-            layoutParams.copyFrom(dialog.getWindow().getAttributes());
-            layoutParams.width = 756;
-            layoutParams.height = LinearLayout.LayoutParams.WRAP_CONTENT;
-            dialog.getWindow().setAttributes(layoutParams);
-        }
-    }
+//    public void setProgressDialog(){
+//
+//        int llPadding = 30;
+//        LinearLayout ll = new LinearLayout(this);
+//        ll.setOrientation(LinearLayout.HORIZONTAL);
+//        ll.setPadding(llPadding,llPadding,llPadding,llPadding);
+//        ll.setGravity(Gravity.CENTER);
+//        LinearLayout.LayoutParams llParam = new LinearLayout.LayoutParams(110, 110);
+//        llParam.gravity = Gravity.CENTER;
+//
+//        ProgressBar progressBar = new ProgressBar(this);
+//        progressBar.setIndeterminate(true);
+//        progressBar.setPadding(0,0,llPadding,0);
+//        progressBar.setLayoutParams(llParam);
+//
+//        llParam = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+//        llParam.gravity = Gravity.CENTER;
+//        TextView tvText = new TextView(this);
+//        tvText.setText("Loading ...");
+//        tvText.setTextColor(Color.parseColor("#000000"));
+//        tvText.setTextSize(20);
+//        tvText.setLayoutParams(llParam);
+//
+//        ll.addView(progressBar);
+//        ll.addView(tvText);
+//
+//        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+//        builder.setCancelable(false);
+//        builder.setView(ll);
+//
+//        dialog = builder.create();
+//        dialog.show();
+//        Window window = dialog.getWindow();
+//        if(window != null){
+//            WindowManager.LayoutParams layoutParams = new WindowManager.LayoutParams();
+//            layoutParams.copyFrom(dialog.getWindow().getAttributes());
+//            layoutParams.width = 756;
+//            layoutParams.height = LinearLayout.LayoutParams.WRAP_CONTENT;
+//            dialog.getWindow().setAttributes(layoutParams);
+//        }
+//    }
 }

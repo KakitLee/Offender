@@ -1,13 +1,27 @@
 package com.project.zhi.tigerapp.complexmenu.holder;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.text.InputType;
 import android.view.View;
+import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.SearchView;
+import android.widget.TextView;
 
 
 import com.project.zhi.tigerapp.R;
+import com.project.zhi.tigerapp.Utils.Utils;
+
+import org.w3c.dom.Text;
 
 import java.util.List;
+
+import static android.content.Context.INPUT_METHOD_SERVICE;
 
 /**
  *
@@ -38,6 +52,11 @@ public class SortHolder extends BaseWidgetHolder<List<String>>{
     /** 离我最近 */
     private View mDistanceView;
 
+    private SearchView mSearchView;
+
+    private Button btnGeneralSearch;
+    private Button btnGeneralClear;
+
     private ImageView mRecordImageView;
     private ImageView mComprehensiveImage;
     private ImageView mHighEvaluateImage;
@@ -46,6 +65,9 @@ public class SortHolder extends BaseWidgetHolder<List<String>>{
     private ImageView mDistanceImage;
 
     private OnSortInfoSelectedListener mOnSortInfoSelectedListener;
+    private OnGeneralSearchBtnListener onGeneralSearchBtnListener;
+    private OnGeneralClearBtnListener onGeneralClearBtnListener;
+
 
     public SortHolder(Context context) {
         super(context);
@@ -57,55 +79,32 @@ public class SortHolder extends BaseWidgetHolder<List<String>>{
         View view = View.inflate(mContext, R.layout.layout_holder_sort, null);
 
         mComprehensiveView = view.findViewById(R.id.re_sort1);
-//        mHighEvaluateView = view.findViewById(R.id.re_sort2);
-//        mLowPriceView = view.findViewById(R.id.re_sort4);
-//        mHighPriceView = view.findViewById(R.id.re_sort5);
-//        mDistanceView = view.findViewById(R.id.re_sort6);
+        mSearchView = view.findViewById(R.id.search_view_search);
+        btnGeneralSearch = view.findViewById(R.id.btn_search_Search);
+        btnGeneralClear = view.findViewById(R.id.btn_search_Clear);
 
-        mComprehensiveImage = (ImageView) view.findViewById(R.id.img_sort1);
-//        mHighEvaluateImage = (ImageView) view.findViewById(R.id.img_sort2);
-//        mLowPriceImage = (ImageView) view.findViewById(R.id.img_sort4);
-//        mHighPriceImage = (ImageView) view.findViewById(R.id.img_sort5);
-//        mDistanceImage = (ImageView) view.findViewById(R.id.img_sort6);
-
-        //综合排序
-        mComprehensiveView.setOnClickListener(new View.OnClickListener() {
+        mSearchView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                retSortInfo(SORT_BY_NORULE, mComprehensiveImage);
+                onGeneralSearchBtnListener.OnGeneralSearchBtnListener(mSearchView.getQuery().toString());
             }
         });
 
-        //评价最高
-//        mHighEvaluateView.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                retSortInfo(SORT_BY_EVALUATION, mHighEvaluateImage);
-//            }
-//        });
-
-        //价格最低
-//        mLowPriceView.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                retSortInfo(SORT_BY_PRICELOW, mLowPriceImage);
-//            }
-//        });
-//
-//        //价格最高
-//        mHighPriceView.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                retSortInfo(SORT_BY_PRICEHIGH, mHighPriceImage);
-//            }
-//        });
-//        //离我最近
-//        mDistanceView.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                retSortInfo(SORT_BY_DISTANCE, mDistanceImage);
-//            }
-//        });
+        btnGeneralSearch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                InputMethodManager imm = (InputMethodManager)mContext.getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(btnGeneralSearch.getWindowToken(), 0);
+                onGeneralSearchBtnListener.OnGeneralSearchBtnListener(mSearchView.getQuery().toString());
+            }
+        });
+        btnGeneralClear.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mSearchView.setQuery("",false);
+                mSearchView.clearFocus();
+            }
+        });
 
         return view;
     }
@@ -139,5 +138,61 @@ public class SortHolder extends BaseWidgetHolder<List<String>>{
 
     public interface OnSortInfoSelectedListener{
         void onSortInfoSelected(String info);
+    }
+
+
+
+    private void dialogSearch(final TextView displayView){
+        final String[] m_Text = {""};
+        AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+        builder.setTitle(Utils.displayKeyAsTitle("Search"));
+
+        final EditText input = new EditText(mContext);
+
+        input.setInputType(InputType.TYPE_CLASS_TEXT );
+        builder.setView(input);
+
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                String value = input.getText().toString();
+                displayView.setText(value);
+                if(value != null && !value.isEmpty()) {
+                    displayView.setVisibility(View.VISIBLE);
+                }
+                else{
+                    displayView.setVisibility(View.GONE);
+                }
+            }
+        });
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                String value = input.getText().toString();
+                displayView.setText(value);
+                if(value != null && !value.isEmpty()) {
+                    displayView.setVisibility(View.VISIBLE);
+                }
+                else{
+                    displayView.setVisibility(View.GONE);
+                }
+                dialog.cancel();
+            }
+        });
+
+        builder.show();
+    }
+    public void setOnGeneralSearchBtnListner(SortHolder.OnGeneralSearchBtnListener onSearchBtnListener){
+        this.onGeneralSearchBtnListener = onSearchBtnListener;
+    }
+    public interface OnGeneralSearchBtnListener{
+        void OnGeneralSearchBtnListener(String query);
+    }
+
+    public void setOnGeneralClearBtnListner(SortHolder.OnGeneralClearBtnListener onGeneralClearBtnListener){
+        this.onGeneralClearBtnListener = onGeneralClearBtnListener;
+    }
+    public interface OnGeneralClearBtnListener{
+        void OnGeneralClearBtnListener();
     }
 }

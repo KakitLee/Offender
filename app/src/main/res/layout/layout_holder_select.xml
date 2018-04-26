@@ -48,6 +48,7 @@
                     android:textSize="@dimen/text_size_28_px"
                     android:textColor="@color/text_color_gey"
                     android:text="Longitude"/>
+
                 <!--<TextView-->
                     <!--android:id="@+id/tv_jsxb"-->
                     <!--android:layout_width="wrap_content"-->

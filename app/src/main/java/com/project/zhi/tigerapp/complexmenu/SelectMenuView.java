@@ -89,6 +89,8 @@ public class SelectMenuView extends LinearLayout{
 
     private OnFilteringBtnListener onFilteringListener;
 
+    private OnSearchingBtnListener onSearchingBtnListener;
+
     MenuService menuService = new MenuService();
 
     DataSourceServices dataSourceServices = new DataSourceServices();
@@ -182,6 +184,13 @@ public class SelectMenuView extends LinearLayout{
                 //Toast.makeText(UIUtils.getContext(), info, Toast.LENGTH_SHORT).show();
             }
         });
+        mSortHolder.setOnGeneralSearchBtnListner(new SortHolder.OnGeneralSearchBtnListener() {
+            @Override
+            public void OnGeneralSearchBtnListener(String query) {
+                dismissPopupWindow();
+                onSearchingBtnListener.OnSearching(query);
+            }
+        });
 
         //筛选
         mSelectHolder = new SelectHolder(mContext);
@@ -273,6 +282,7 @@ public class SelectMenuView extends LinearLayout{
         else {
             mMainContentLayout.removeAllViews();
             mMainContentLayout.addView(mSubjectHolder.getRootView(), ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+            mMainContentLayout.getLayoutParams().height =  mContext.getResources().getDimensionPixelSize(R.dimen.px_720);
 
             popUpWindow(TAB_SUBJECT);
         }
@@ -285,6 +295,7 @@ public class SelectMenuView extends LinearLayout{
         else {
             mMainContentLayout.removeAllViews();
             mMainContentLayout.addView(mSortHolder.getRootView(), ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+            mMainContentLayout.getLayoutParams().height =  mContext.getResources().getDimensionPixelSize(R.dimen.px_350);
             popUpWindow(TAB_SORT);
         }
 
@@ -409,5 +420,12 @@ public class SelectMenuView extends LinearLayout{
     }
     public interface OnFilteringBtnListener{
         void OnFiltering(ArrayList<MenuModel> nameMenus, ArrayList<MenuModel> mainDemoMenu, ArrayList<MenuModel> otherDemoMenu);
+    }
+
+    public void setOnSearchingBtnListener(OnSearchingBtnListener onSearchingBtnListener){
+        this.onSearchingBtnListener = onSearchingBtnListener;
+    }
+    public interface OnSearchingBtnListener{
+        void OnSearching(String query);
     }
 }

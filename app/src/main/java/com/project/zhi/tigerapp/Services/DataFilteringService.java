@@ -34,6 +34,19 @@ public class DataFilteringService {
         }
         return firstName + (middleName.isEmpty() ? "" : " " + middleName) + (lastName.isEmpty() ? "" : " " + lastName);
     }
+
+    public ArrayList<Entities> search(ArrayList<Entities> entities, String query){
+        ArrayList<Entities> filteredEntities = new ArrayList<>();
+        for (Entities entity: entities){
+            if(isSatisySingleQuery(query,entity.getList())){
+                filteredEntities.add(entity);
+            }
+        }
+        return filteredEntities;
+    }
+
+
+
     public ArrayList<Entities> update(ArrayList<Entities> entities, ArrayList<MenuModel> nameMenu, ArrayList<MenuModel> mainDemoMenu, ArrayList<MenuModel> otherDemoMenu) {
         ArrayList<Entities> filteredEntities = new ArrayList<>();
         val noneEmptyNameMenu = nonEmptyCriteria(nameMenu);
@@ -76,6 +89,25 @@ public class DataFilteringService {
         }
         return true;
     }
+
+    public boolean isSatisySingleQuery(String query, ArrayList<Attributes> attributes){
+        for(var i =0; i< attributes.size(); i++){
+            var attribute= attributes.get(i);
+            var key = attribute.getAttributeKey();
+            var value = "";
+            if(attribute.getType().equalsIgnoreCase("TEXT")){
+                value = attribute.getStringValue();
+            }
+            else{
+                value = attribute.getDoubleValue().toString();
+            }
+            if(value.toLowerCase().contains(query.toLowerCase())){
+                return true;
+            }
+        }
+        return false;
+    }
+
 
     public boolean isSatisySignleCriteria(MenuModel criteria, ArrayList<Attributes> attributes){
         for(var i =0; i< attributes.size(); i++){

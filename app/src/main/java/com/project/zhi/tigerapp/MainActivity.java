@@ -8,10 +8,12 @@ import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.GridView;
 
 import com.google.gson.Gson;
@@ -21,6 +23,7 @@ import com.project.zhi.tigerapp.Services.DataFilteringService;
 import com.project.zhi.tigerapp.Services.DataSourceServices;
 import com.project.zhi.tigerapp.Services.NavigationService;
 import com.project.zhi.tigerapp.Services.UserPrefs_;
+import com.project.zhi.tigerapp.Utils.Utils;
 import com.project.zhi.tigerapp.complexmenu.MenuModel;
 import com.project.zhi.tigerapp.complexmenu.SelectMenuView;
 import com.project.zhi.tigerapp.complexmenu.holder.SubjectHolder;
@@ -29,6 +32,7 @@ import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.ItemClick;
+import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
 import org.androidannotations.annotations.sharedpreferences.Pref;
 
@@ -59,6 +63,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Bean
     NavigationService navigationService;
 
+    android.app.AlertDialog dialog;
+
 
     @ViewById(R.id.menu)
     SelectMenuView selectMenuView;
@@ -87,12 +93,34 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         selectMenuView.setOnFilteringBtnListener(new SelectMenuView.OnFilteringBtnListener() {
             @Override
             public void OnFiltering(ArrayList<MenuModel> nameMenus, ArrayList<MenuModel> mainDemoMenu, ArrayList<MenuModel> otherDemoMenu) {
+                onLoading();
                 var newList = dataFilteringService.update(dataSourceServices.getPeopleSource(context).getEntitiesList(), nameMenus, mainDemoMenu, otherDemoMenu);
                 adapter.setDataList(newList);
                 adapter.notifyDataSetChanged();
+                onDismiss();
             }
         });
 
+        selectMenuView.setOnSearchingBtnListener(new SelectMenuView.OnSearchingBtnListener() {
+            @Override
+            public void OnSearching(String query) {
+                onLoading();
+                var newList = dataFilteringService.search(dataSourceServices.getPeopleSource(context).getEntitiesList(),query);
+                adapter.setDataList(newList);
+                adapter.notifyDataSetChanged();
+                onDismiss();
+            }
+        });
+
+    }
+
+    @UiThread
+    void onLoading(){
+        dialog = Utils.setProgressDialog(this);
+    }
+    @UiThread
+    void onDismiss(){
+        dialog.dismiss();
     }
 
     @ItemClick(R.id.gridview)
