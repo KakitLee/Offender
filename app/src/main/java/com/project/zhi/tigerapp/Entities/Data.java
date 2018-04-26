@@ -7,7 +7,7 @@ import org.simpleframework.xml.Root;
 import java.util.ArrayList;
 import java.util.List;
 
-@Root
+@Root(strict = false)
 @Namespace(reference="http://www.example.org/Intelligence")
 @lombok.Data
 public class Data {

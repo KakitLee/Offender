@@ -3,6 +3,7 @@ package com.project.zhi.tigerapp.Entities;
 import org.simpleframework.xml.Attribute;
 import org.simpleframework.xml.Element;
 import org.simpleframework.xml.ElementList;
+import org.simpleframework.xml.Root;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,6 +11,7 @@ import java.util.List;
 import lombok.Data;
 
 @Data
+@Root(strict = false)
 public class Entities {
     @Element
     protected String id;
