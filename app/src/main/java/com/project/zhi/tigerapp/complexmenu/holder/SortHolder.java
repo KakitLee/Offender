@@ -30,7 +30,7 @@ public class SortHolder extends BaseWidgetHolder<List<String>>{
     /** 综合排序 */
     private View mComprehensiveView;
     /** 评价最高 */
-    private View mHighEvaluateView;
+//    private View mHighEvaluateView;
     /** 价格最低 */
     private View mLowPriceView;
     /** 价格最高 */
@@ -57,13 +57,13 @@ public class SortHolder extends BaseWidgetHolder<List<String>>{
         View view = View.inflate(mContext, R.layout.layout_holder_sort, null);
 
         mComprehensiveView = view.findViewById(R.id.re_sort1);
-        mHighEvaluateView = view.findViewById(R.id.re_sort2);
+//        mHighEvaluateView = view.findViewById(R.id.re_sort2);
 //        mLowPriceView = view.findViewById(R.id.re_sort4);
 //        mHighPriceView = view.findViewById(R.id.re_sort5);
 //        mDistanceView = view.findViewById(R.id.re_sort6);
 
         mComprehensiveImage = (ImageView) view.findViewById(R.id.img_sort1);
-        mHighEvaluateImage = (ImageView) view.findViewById(R.id.img_sort2);
+//        mHighEvaluateImage = (ImageView) view.findViewById(R.id.img_sort2);
 //        mLowPriceImage = (ImageView) view.findViewById(R.id.img_sort4);
 //        mHighPriceImage = (ImageView) view.findViewById(R.id.img_sort5);
 //        mDistanceImage = (ImageView) view.findViewById(R.id.img_sort6);
@@ -77,12 +77,12 @@ public class SortHolder extends BaseWidgetHolder<List<String>>{
         });
 
         //评价最高
-        mHighEvaluateView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                retSortInfo(SORT_BY_EVALUATION, mHighEvaluateImage);
-            }
-        });
+//        mHighEvaluateView.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                retSortInfo(SORT_BY_EVALUATION, mHighEvaluateImage);
+//            }
+//        });
 
         //价格最低
 //        mLowPriceView.setOnClickListener(new View.OnClickListener() {

@@ -34,6 +34,27 @@ interface  IDataSourceServices{
 @EBean
 public class DataSourceServices implements IDataSourceServices {
 
+    public boolean isValidDataSource(String filePath){
+        if(filePath == null || filePath.isEmpty()){
+            return false;
+        }
+        boolean isValid = false;
+        Serializer serializer = new Persister();
+        Data data = null;
+        File source = new File(filePath);
+        try {
+            data = serializer.read(Data.class, source);
+            if(data!=null){
+                isValid = true;
+            }
+        } catch (Exception e) {
+            isValid = false;
+        }
+        finally {
+            return isValid;
+        }
+    }
+
     @Override
     public Data getPeopleSource(Context context) {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
@@ -49,8 +70,8 @@ public class DataSourceServices implements IDataSourceServices {
             else {
                 InputStream input = context.getResources().openRawResource(R.raw.entities);
                 data = serializer.read(Data.class, input);
+                data = setImagePath(data);
             }
-            data = setImagePath(data);
         } catch (Exception e) {
             SharedPreferences.Editor editor = prefs.edit();
             editor.putString("file", "");

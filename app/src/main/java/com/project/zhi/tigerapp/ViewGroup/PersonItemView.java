@@ -10,12 +10,14 @@ import com.project.zhi.tigerapp.Entities.Attributes;
 import com.project.zhi.tigerapp.Entities.Entities;
 import com.project.zhi.tigerapp.R;
 import com.project.zhi.tigerapp.Services.DataFilteringService;
+import com.project.zhi.tigerapp.Services.UserPrefs_;
 import com.project.zhi.tigerapp.Utils.Utils;
 
 import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.EBean;
 import org.androidannotations.annotations.EViewGroup;
 import org.androidannotations.annotations.ViewById;
+import org.androidannotations.annotations.sharedpreferences.Pref;
 
 import java.io.InputStream;
 import java.util.Arrays;
@@ -35,6 +37,8 @@ public class PersonItemView extends LinearLayout {
     ImageView imgPersonAvatar;
     @Bean
     DataFilteringService dataFilteringService;
+    @Pref
+    UserPrefs_ userPrefs;
 
     public PersonItemView(Context context) {
         super(context);
@@ -42,6 +46,11 @@ public class PersonItemView extends LinearLayout {
 
     public void bind(Entities entities) {
         tvPersonName.setText(dataFilteringService.getPersonName(entities));
-        imgPersonAvatar.setImageResource(Utils.getImageId(entities,getContext()));
+        if(userPrefs.isFolder().get() && userPrefs.folder().get() != null && !userPrefs.folder().get().isEmpty() && Utils.getImageExternal(entities,userPrefs.folder().get()) != null){
+            imgPersonAvatar.setImageBitmap(Utils.getImageExternal(entities,userPrefs.folder().get()));
+        }
+        else {
+            imgPersonAvatar.setImageResource(Utils.getImageId(entities, getContext()));
+        }
     }
 }
