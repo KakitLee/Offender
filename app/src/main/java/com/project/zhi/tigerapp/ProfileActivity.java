@@ -23,6 +23,7 @@ import com.project.zhi.tigerapp.Entities.Entities;
 import com.project.zhi.tigerapp.Services.DataFilteringService;
 import com.project.zhi.tigerapp.Services.DataSortService;
 import com.project.zhi.tigerapp.Services.DataSourceServices;
+import com.project.zhi.tigerapp.Services.UserPrefs_;
 import com.project.zhi.tigerapp.Utils.Utils;
 import com.project.zhi.tigerapp.complexmenu.MenuModel;
 import com.project.zhi.tigerapp.complexmenu.SelectMenuView;
@@ -31,6 +32,7 @@ import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.ViewById;
+import org.androidannotations.annotations.sharedpreferences.Pref;
 
 import java.util.ArrayList;
 
@@ -61,6 +63,9 @@ public class ProfileActivity extends AppCompatActivity {
 
     Entities entity;
 
+    @Pref
+    UserPrefs_ userPrefs;
+
     @AfterViews
     void bindAdapter() {
         Intent i = getIntent();
@@ -69,7 +74,12 @@ public class ProfileActivity extends AppCompatActivity {
         Entities entity = gS.fromJson(target, Entities.class);
         ArrayList<Attributes> attributes = entity.getList();
         attributes = dataSortService.sortAttributesGeneral(attributes);
-        imageView.setImageResource(Utils.getImageId(entity,this));
+        if(userPrefs.isFolder().get() & userPrefs.folder().get() != null && !userPrefs.folder().get().isEmpty()){
+            imageView.setImageBitmap(Utils.getImageExternal(entity, userPrefs.folder().get()));
+        }
+        else {
+            imageView.setImageResource(Utils.getImageId(entity, this));
+        }
         adapter = new ProfileAdapter(this, attributes);
         listView.setAdapter(adapter);
 //        setTheme(R.style.AppDarkTheme);

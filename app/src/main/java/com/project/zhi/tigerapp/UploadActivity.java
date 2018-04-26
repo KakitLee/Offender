@@ -46,6 +46,8 @@ import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
 import org.androidannotations.annotations.sharedpreferences.Pref;
 
+import java.io.File;
+
 import lib.folderpicker.FolderPicker;
 
 @EActivity(R.layout.activity_upload)
@@ -82,8 +84,7 @@ public class UploadActivity extends AppCompatActivity
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -236,7 +237,11 @@ public class UploadActivity extends AppCompatActivity
         //Optional
 
         intent.putExtra("title", "Select file to upload");
-        intent.putExtra("location", Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).getAbsolutePath());
+        if(userPrefs.file().get() != null && !userPrefs.file().get().isEmpty()){
+            File file = new File(userPrefs.file().get());
+            intent.putExtra("location", file.getParent());
+        }
+
         intent.putExtra("pickFiles", true);
 
         //Optional
@@ -298,46 +303,4 @@ public class UploadActivity extends AppCompatActivity
         }).show();
     }
 
-
-//    public void setProgressDialog(){
-//
-//        int llPadding = 30;
-//        LinearLayout ll = new LinearLayout(this);
-//        ll.setOrientation(LinearLayout.HORIZONTAL);
-//        ll.setPadding(llPadding,llPadding,llPadding,llPadding);
-//        ll.setGravity(Gravity.CENTER);
-//        LinearLayout.LayoutParams llParam = new LinearLayout.LayoutParams(110, 110);
-//        llParam.gravity = Gravity.CENTER;
-//
-//        ProgressBar progressBar = new ProgressBar(this);
-//        progressBar.setIndeterminate(true);
-//        progressBar.setPadding(0,0,llPadding,0);
-//        progressBar.setLayoutParams(llParam);
-//
-//        llParam = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-//        llParam.gravity = Gravity.CENTER;
-//        TextView tvText = new TextView(this);
-//        tvText.setText("Loading ...");
-//        tvText.setTextColor(Color.parseColor("#000000"));
-//        tvText.setTextSize(20);
-//        tvText.setLayoutParams(llParam);
-//
-//        ll.addView(progressBar);
-//        ll.addView(tvText);
-//
-//        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-//        builder.setCancelable(false);
-//        builder.setView(ll);
-//
-//        dialog = builder.create();
-//        dialog.show();
-//        Window window = dialog.getWindow();
-//        if(window != null){
-//            WindowManager.LayoutParams layoutParams = new WindowManager.LayoutParams();
-//            layoutParams.copyFrom(dialog.getWindow().getAttributes());
-//            layoutParams.width = 756;
-//            layoutParams.height = LinearLayout.LayoutParams.WRAP_CONTENT;
-//            dialog.getWindow().setAttributes(layoutParams);
-//        }
-//    }
 }
