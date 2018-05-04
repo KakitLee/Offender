@@ -5,7 +5,11 @@ import android.content.Intent;
 import android.view.MenuItem;
 
 import com.project.zhi.tigerapp.MainActivity_;
+import com.project.zhi.tigerapp.PhotoActivity;
+import com.project.zhi.tigerapp.PhotoActivity_;
 import com.project.zhi.tigerapp.R;
+import com.project.zhi.tigerapp.SoundActivity;
+import com.project.zhi.tigerapp.SoundActivity_;
 import com.project.zhi.tigerapp.UploadActivity_;
 
 import org.androidannotations.annotations.EBean;
@@ -19,6 +23,10 @@ public class NavigationService {
             return new Intent(activity, MainActivity_.class);
         } else if (id == R.id.nav_gallery) {
             return new Intent(activity, UploadActivity_.class);
+        }else if(id == R.id.nav_sound){
+            return new Intent(activity, SoundActivity_.class);
+        }else if(id == R.id.nav_photo){
+            return new Intent(activity, PhotoActivity_.class);
         }
         return new Intent(activity, activity.getClass());
     }

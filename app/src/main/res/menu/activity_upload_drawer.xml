@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:showIn="navigation_view">
 
@@ -12,6 +13,15 @@
             android:id="@+id/nav_gallery"
             android:icon="@drawable/ic_menu_gallery"
             android:title="Upload" />
+        <item
+            android:id="@+id/nav_sound"
+            android:icon="@drawable/sound"
+            android:title="Sound"/>
+        <item
+            android:id="@+id/nav_photo"
+            android:icon="@drawable/photo"
+            android:title="Photo" />
+
     </group>
 
 </menu>

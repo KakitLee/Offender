@@ -52,6 +52,16 @@
                 <!--<category android:name="android.intent.category.LAUNCHER" />-->
             <!--</intent-filter>-->
         </activity>
+        <activity
+            android:name=".SoundActivity_"
+            android:label="@string/SoundActivity"
+            android:theme="@style/AppTheme">
+        </activity>
+        <activity
+            android:name=".PhotoActivity_"
+            android:label="@string/PhotoActivity"
+            android:theme="@style/AppTheme">
+        </activity>
     </application>
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
