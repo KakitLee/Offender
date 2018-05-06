@@ -41,7 +41,9 @@ import com.project.zhi.tigerapp.Utils.Utils;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Bean;
+import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EActivity;
+import org.androidannotations.annotations.ItemClick;
 import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
 import org.androidannotations.annotations.sharedpreferences.Pref;
@@ -128,10 +130,6 @@ public class UploadActivity extends AppCompatActivity
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
         return super.onOptionsItemSelected(item);
     }
 
@@ -275,7 +273,8 @@ public class UploadActivity extends AppCompatActivity
         }
     }
 
-    protected void onComfirm(View v){
+    @Click(R.id.btn_confirm)
+    void onComfirm(){
         userPrefs.isFile().put(true);
         userPrefs.file().put(tv_filePath.getText().toString());
         startActivity(new Intent(this, MainActivity_.class));
