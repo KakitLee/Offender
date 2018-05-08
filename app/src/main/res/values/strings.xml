@@ -20,4 +20,5 @@
     <string name="comfirm_upload">Comfirm upload</string>
     <string name="SoundActivity">Sound</string>
     <string name="PhotoActivity">Photo</string>
+    <string name="syn_text">Please enter an url</string>
 </resources>
