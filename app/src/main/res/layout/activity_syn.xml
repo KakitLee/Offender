@@ -40,7 +40,9 @@
             android:padding="20dp"
             android:layout_marginTop="25dp"
             android:layout_centerInParent="true"
-        android:text="@string/syn_text"/>
+            android:onClick="getFile"
+        android:text="@string/syn_text"
+            tools:ignore="OnClick" />
         <!--android:onClick="pickFile"-->
 
     </RelativeLayout>
