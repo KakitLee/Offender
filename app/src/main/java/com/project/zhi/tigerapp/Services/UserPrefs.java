@@ -17,25 +17,18 @@ import org.androidannotations.annotations.sharedpreferences.SharedPref;
         @DefaultBoolean(false)
         boolean isFolder();
 
+        @DefaultBoolean(false)
+        boolean isUrl();
+
+        @DefaultBoolean(false)
+        boolean isValidDataSource();
+
+        String urlAddres();
+
         String file();
         String folder();
 
-        String country();
-        String dateOfBirth();
         String gender();
-        String heightInCm();
-        String weightInKg();
-        String participantNumber();
-        String appActivationDate();
-        String appDeactivationDate();
-        String participant();
-        String appData();
-
-        @DefaultString("08:00")
-        String morningNotification();
-
-        @DefaultString("22:00")
-        String eveningNotification();
 
         String appId();
 
