@@ -21,6 +21,10 @@
             android:id="@+id/nav_photo"
             android:icon="@drawable/photo"
             android:title="Photo" />
+        <item
+            android:id="@+id/nav_syn"
+            android:icon="@drawable/syn"
+            android:title="Synchronize"/>
 
     </group>
 
