@@ -72,9 +72,8 @@ public class NotificationFragment extends PreferenceFragment {
         if(!URLUtil.isHttpUrl(newUrl) && !URLUtil.isHttpsUrl(newUrl)){
             onError();
         }
-        userPrefs.urlAddres().put(newUrl);
-        urlAddress.setSummary(userPrefs.urlAddres().get());
-        retrieveResource();
+
+        retrieveResource(newUrl);
     }
 
     @UiThread
@@ -125,7 +124,7 @@ public class NotificationFragment extends PreferenceFragment {
     }
 
     @Background
-    void retrieveResource(){
+    void retrieveResource(String newUrl){
         try {
             onLoading();
             Request request = new Request.Builder().url(userPrefs.urlAddres().get()).build();
@@ -144,6 +143,8 @@ public class NotificationFragment extends PreferenceFragment {
                 IOUtils.closeQuietly(inputStream);
                 IOUtils.closeQuietly(outStream);
                 if(dataSourceServices.isValidDataSource(targetFile.getAbsolutePath())) {
+                    userPrefs.urlAddres().put(newUrl);
+                    urlAddress.setSummary(userPrefs.urlAddres().get());
                     onFinishLoading();
                     onValid();
                 }
@@ -155,6 +156,7 @@ public class NotificationFragment extends PreferenceFragment {
             }
             else{
                 onFinishLoading();
+                onError();
                 throw new IOException("Unexpected code " + response);
             }
         }

@@ -8,11 +8,13 @@ import com.project.zhi.tigerapp.MainActivity_;
 import com.project.zhi.tigerapp.PhotoActivity;
 import com.project.zhi.tigerapp.PhotoActivity_;
 import com.project.zhi.tigerapp.R;
+import com.project.zhi.tigerapp.SettingsActivity;
 import com.project.zhi.tigerapp.SoundActivity;
 import com.project.zhi.tigerapp.SoundActivity_;
 import com.project.zhi.tigerapp.SynActivity;
 import com.project.zhi.tigerapp.SynActivity_;
 import com.project.zhi.tigerapp.UploadActivity_;
+import com.project.zhi.tigerapp.SettingsActivity_;
 
 import org.androidannotations.annotations.EBean;
 
@@ -30,7 +32,7 @@ public class NavigationService {
         }else if(id == R.id.nav_photo){
             return new Intent(activity, PhotoActivity_.class);
         }else if (id == R.id.nav_syn){
-            return new Intent(activity, SynActivity_.class);
+            return new Intent(activity, SettingsActivity_.class);
         }
         return new Intent(activity, activity.getClass());
     }
