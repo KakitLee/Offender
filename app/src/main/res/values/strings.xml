@@ -20,6 +20,7 @@
     <string name="comfirm_upload">Comfirm upload</string>
     <string name="SoundActivity">Sound</string>
     <string name="PhotoActivity">Photo</string>
+    <string name="LoginActivity">Login</string>
     <string name="title_activity_settings">Settings</string>
 
     <!-- Strings related to Settings -->
