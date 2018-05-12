@@ -6,14 +6,9 @@ import android.view.MenuItem;
 
 import com.project.zhi.tigerapp.LoginActivity_;
 import com.project.zhi.tigerapp.MainActivity_;
-import com.project.zhi.tigerapp.PhotoActivity;
 import com.project.zhi.tigerapp.PhotoActivity_;
 import com.project.zhi.tigerapp.R;
-import com.project.zhi.tigerapp.SettingsActivity;
-import com.project.zhi.tigerapp.SoundActivity;
 import com.project.zhi.tigerapp.SoundActivity_;
-import com.project.zhi.tigerapp.SynActivity;
-import com.project.zhi.tigerapp.SynActivity_;
 import com.project.zhi.tigerapp.UploadActivity_;
 import com.project.zhi.tigerapp.SettingsActivity_;
 import com.project.zhi.tigerapp.LoginActivity_;

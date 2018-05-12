@@ -16,11 +16,11 @@
         <activity
             android:name=".MainActivity_"
             android:label="@string/title_activity_filter">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+            <!--<intent-filter>-->
+                <!--<action android:name="android.intent.action.MAIN" />-->
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+                <!--<category android:name="android.intent.category.LAUNCHER" />-->
+            <!--</intent-filter>-->
         </activity>
         <activity
             android:name=".DemoActivity"
@@ -69,7 +69,7 @@
         <activity
             android:name=".PhotoActivity_"
             android:label="@string/PhotoActivity"
-            android:theme="@style/AppTheme"></activity>
+            android:theme="@style/AppTheme" />
         <activity
             android:name=".SettingsActivity_"
             android:label="@string/title_activity_settings">
@@ -78,7 +78,13 @@
         <activity
             android:name=".LoginActivity_"
             android:label="@string/LoginActivity"
-            android:theme="@style/AppTheme"></activity>
+            android:theme="@style/AppTheme">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>
