@@ -67,6 +67,16 @@ public class NotificationFragment extends PreferenceFragment {
         urlAddress.setSummary(userPrefs.urlAddres().get());
     }
 
+    @PreferenceChange(R.string.pref_url_switch)
+    void urlChange(Boolean isUrl){
+
+        //is URL
+        userPrefs.isUrl().put(isUrl);
+        //is Using URL
+        userPrefs.isUsingUrl().put(isUrl);
+
+    }
+
     @PreferenceChange(R.string.pref_url_details)
     void urlChange(String newUrl){
         if(!URLUtil.isHttpUrl(newUrl) && !URLUtil.isHttpsUrl(newUrl)){
@@ -118,11 +128,6 @@ public class NotificationFragment extends PreferenceFragment {
         }).show();
     }
 
-    @PreferenceChange(R.string.pref_url_switch)
-    void switchChange(boolean newSwitch){
-        userPrefs.isUrl().put(newSwitch);
-    }
-
     @Background
     void retrieveResource(String newUrl){
         try {
@@ -132,6 +137,7 @@ public class NotificationFragment extends PreferenceFragment {
             response = client.newCall(request).execute();
             if (response.isSuccessful()) {
                 InputStream inputStream = response.body().byteStream();
+                // save the file at here!!!!!!!!!!!!!!!!!!!
                 File targetFile = new File(this.getActivity().getFilesDir() + "/", "source.xml");
                 OutputStream outStream = new FileOutputStream(targetFile);
 
