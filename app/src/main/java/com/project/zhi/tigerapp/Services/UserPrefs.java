@@ -35,6 +35,8 @@ import org.androidannotations.annotations.sharedpreferences.SharedPref;
 
         String appId();
 
+        String host();
+        String username();
         String token();
 
     }

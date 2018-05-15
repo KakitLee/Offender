@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.preference.EditTextPreference;
+import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.SwitchPreference;
 import android.support.v4.app.ActivityCompat;
@@ -27,6 +28,7 @@ import org.androidannotations.annotations.EFragment;
 import org.androidannotations.annotations.PreferenceByKey;
 import org.androidannotations.annotations.PreferenceChange;
 import org.androidannotations.annotations.PreferenceScreen;
+import org.androidannotations.annotations.PreferenceClick;
 import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.sharedpreferences.Pref;
 
@@ -38,6 +40,7 @@ import java.io.OutputStream;
 import java.nio.file.StandardCopyOption;
 import java.util.Calendar;
 
+import okhttp3.Credentials;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -86,6 +89,25 @@ public class NotificationFragment extends PreferenceFragment {
         retrieveResource(newUrl);
     }
 
+    @PreferenceClick(R.string.synButton)
+    void buttonClick(){
+        String url = userPrefs.urlAddres().get();
+
+        if(!URLUtil.isHttpUrl(url) && !URLUtil.isHttpsUrl(url)){
+            onError();
+        }
+
+        retrieveResource(url);
+    }
+
+//    Preference button = findPreference(getString(R.string.synButton));
+//    button.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener(){
+//        @Override
+//        public boolean onPreferenceClick(Preference preference){
+//            return true;
+//        }
+//    });
+
     @UiThread
     void onLoading(){
         dialog = Utils.setProgressDialog(this.getActivity());
@@ -132,9 +154,15 @@ public class NotificationFragment extends PreferenceFragment {
     void retrieveResource(String newUrl){
         try {
             onLoading();
-            Request request = new Request.Builder().url(userPrefs.urlAddres().get()).build();
+            String url = userPrefs.urlAddres().get()+"/upload";
+            System.out.println(url);
+            Request request = new Request.Builder()
+                    .url(url)
+                    .header("Authorization", "Bearer"+ userPrefs.token().get())
+                    .build();
             Response response = null;
             response = client.newCall(request).execute();
+            System.out.println(response);
             if (response.isSuccessful()) {
                 InputStream inputStream = response.body().byteStream();
                 // save the file at here!!!!!!!!!!!!!!!!!!!

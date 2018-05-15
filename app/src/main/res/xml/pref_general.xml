@@ -1,5 +1,4 @@
-   <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
     <SwitchPreference
         android:defaultValue="true"
         android:key="pref_url_switch"
@@ -17,5 +16,22 @@
         android:selectAllOnFocus="true"
         android:singleLine="true"
         android:title="@string/pref_title_url" />
+    <Preference android:title="Synchronize"
+        android:key="@string/synButton"
+        android:summary="Click here to synchronize from service"/>
+
+    <!--<Button-->
+    <!--android:id="@+id/btn_syn"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_centerHorizontal="true"-->
+    <!--android:layout_centerVertical="true"-->
+    <!--android:padding="20dp"-->
+    <!--android:layout_marginTop="25dp"-->
+    <!--android:layout_centerInParent="true"-->
+    <!--android:text="Synchronize" />-->
+    <!--tools:ignore="OnClick"-->
+    <!--android:onClick="Synchronize"-->
+
 
 </PreferenceScreen>

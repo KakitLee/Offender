@@ -1,5 +1,9 @@
 package com.project.zhi.tigerapp;
 
+import org.androidannotations.annotations.UiThread;
+import org.json.JSONObject;
+
+import android.content.DialogInterface;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -14,12 +18,16 @@ import android.widget.Toast;
 import android.view.View;
 
 import com.project.zhi.tigerapp.Services.NavigationService;
+import com.project.zhi.tigerapp.Services.UserPrefs_;
+import com.project.zhi.tigerapp.Utils.Utils;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Background;
 import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.EActivity;
+import org.androidannotations.annotations.sharedpreferences.Pref;
 import org.apache.commons.collections4.Get;
+import org.json.JSONObject;
 
 import java.io.IOException;
 
@@ -38,6 +46,9 @@ public class LoginActivity extends AppCompatActivity implements NavigationView.O
     @Bean
     NavigationService navigationService;
 
+    @Pref
+    UserPrefs_ userPrefs;
+
     @AfterViews
     void setup(){
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -54,16 +65,20 @@ public class LoginActivity extends AppCompatActivity implements NavigationView.O
         navigationView.setNavigationItemSelectedListener(this);
     }
 
-    public void getToken(View v){
-        EditText username = (EditText) findViewById(R.id.username);
-        EditText password = (EditText) findViewById(R.id.password);
-        Toast.makeText(LoginActivity.this,username.getText().toString()+password.getText().toString(),Toast.LENGTH_SHORT).show();
+    public void login(View v){
+        EditText host_text = (EditText) findViewById(R.id.url);
+        EditText username_text = (EditText) findViewById(R.id.username);
+        EditText password_text = (EditText) findViewById(R.id.password);
 
-//        String s = "Hello world.";
-        String url = "http://10.0.2.2:8080/oauth/token";
-        MyThread t = new MyThread(url,"my-trusted-client","secret","password",username.getText().toString(),password.getText().toString());
-        t.start();
+//        userPrefs.urlAddres().put(host_text.getText().toString());
+        userPrefs.urlAddres().put("http://10.0.2.2:8080");
+        userPrefs.username().put(username_text.getText().toString());
+        String password = password_text.getText().toString();
+        String url = userPrefs.urlAddres().get()+"/oauth/token";
+        System.out.println(url);
 
+        getToken(url,"my-trusted-client","secret","password",userPrefs.username().get(),password);
+        System.out.println(userPrefs.token().get());
     }
 
     @Override
@@ -75,53 +90,33 @@ public class LoginActivity extends AppCompatActivity implements NavigationView.O
         return true;    }
 
     @Background
-    void login(){
+    void getToken(String url,String authorizationUsername,String authorizationPassword,String grant_type,String username,String password){
+        postRequest request = new postRequest();
 
-    }
+        try{
+            String response = request.post(url, authorizationUsername,authorizationPassword,grant_type,username,password);
+            JSONObject response_json = new JSONObject(response);
+            userPrefs.token().put(response_json.get("access_token").toString());
 
-    public class MyThread extends Thread {
-        private String url;
-        private String authorizationUsername;
-        private String authorizationPassword;
-        private String grant_type;
-        private String username;
-        private String password;
-        public MyThread(String url,String authorizationUsername,String authorizationPassword,String grant_type,String username,String password) {
-            this.url = url;
-            this.authorizationUsername = authorizationUsername;
-            this.authorizationPassword = authorizationPassword;
-            this.grant_type = grant_type;
-            this.username = username;
-            this.password = password;
-        }
-        public void run() {
-            GetToken example = new GetToken();
-            String json = example.bowlingJson(grant_type,username,password);
-            try{
-                String response = example.post(url, authorizationUsername,authorizationPassword,json);
-                System.out.println(response);
-            }catch (Exception e){
-                e.printStackTrace();
-            }
-
+        }catch (Exception e){
+            onInValid();
+            e.printStackTrace();
         }
     }
 
-    public class GetToken{
-//        public final MediaType JSON
-//                = MediaType.parse("application/json; charset=utf-8");
+    public class postRequest{
 
         OkHttpClient client = new OkHttpClient();
 
-        String post(String url,String username,String password, String json) throws IOException {
+        String post(String url,String authorizationUsername,String authorizationPassword, String grant_type,String username, String password) throws IOException {
             MediaType CONTENT_TYPE = MediaType.parse("application/x-www-form-urlencoded");
 
             RequestBody requestBody = new FormBody.Builder()
-                    .add("grant_type", "password")
-                    .add("username", "test")
-                    .add("password", "test")
+                    .add("grant_type", grant_type)
+                    .add("username", username)
+                    .add("password", password)
                     .build();
-            String credential = Credentials.basic(username, password);
+            String credential = Credentials.basic(authorizationUsername, authorizationPassword);
 
             final Request request = new Request.Builder()
                     .header("Authorization", credential)
@@ -129,51 +124,21 @@ public class LoginActivity extends AppCompatActivity implements NavigationView.O
                     .post(requestBody)
                     .build();
 
-
             try (Response response = client.newCall(request).execute()) {
+//                System.out.println(response.body().string());
                 return response.body().string();
             }
         }
-
-        String bowlingJson(String grant_type,String username,String password) {
-            return "{"
-                    +"'grant_type':"+grant_type+","
-                    + "'username':"+username+","
-                    + "'password':"+password
-                    +"}";
-        }
     }
 
-
-
-
-
-//    Runnable runnable = new Runnable() {
-//        @Override
-//        public void run() {
-//            GetToken example = new GetToken();
-//
-//            try{
-//                String response = example.run("http://10.0.2.2:8080/upload");
-//                System.out.println(response);
-//            }catch (Exception e){
-////                Toast.makeText(LoginActivity.this,"Exception in get response!!!!!!!!",Toast.LENGTH_SHORT).show();
-//                e.printStackTrace();
-//            }
-//        }
-//    };
-//
-//    public class GetToken{
-//        OkHttpClient client = new OkHttpClient();
-//
-//        String run(String url) throws IOException {
-//            Request request = new Request.Builder()
-//                    .url(url)
-//                    .build();
-//
-//            try (Response response = client.newCall(request).execute()) {
-//                return response.body().string();
-//            }
-//        }
-//    }
+    @UiThread
+    protected void onInValid(){
+        Utils.setAlertDialog("Warning", "Login Failed", this).setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+//                btn_comfirm.setEnabled(false);
+                dialog.dismiss();
+            }
+        }).show();
+    }
 }
