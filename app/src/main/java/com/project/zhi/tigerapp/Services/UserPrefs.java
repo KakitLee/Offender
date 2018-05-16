@@ -27,6 +27,7 @@ import org.androidannotations.annotations.sharedpreferences.SharedPref;
         boolean isUsingUrl();
 
         String urlAddres();
+        String urlImagePath();
 
         String file();
         String folder();

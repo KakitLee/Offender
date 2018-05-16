@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
+import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.preference.EditTextPreference;
 import android.preference.Preference;
@@ -33,12 +34,15 @@ import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.sharedpreferences.Pref;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.StandardCopyOption;
 import java.util.Calendar;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
 import okhttp3.Credentials;
 import okhttp3.OkHttpClient;
@@ -101,6 +105,7 @@ public class NotificationFragment extends PreferenceFragment {
         }
 
         retrieveResource();
+//        retrievePhoto();
     }
 
     @UiThread
@@ -125,8 +130,8 @@ public class NotificationFragment extends PreferenceFragment {
     }
 
     @UiThread
-    protected void onValid(){
-        Utils.setAlertDialog("Valid data source", "Valid data source", this.getActivity()).setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+    protected void onValid(String error){
+        Utils.setAlertDialog("Valid data source", "Valid data source in "+error, this.getActivity()).setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
@@ -135,8 +140,8 @@ public class NotificationFragment extends PreferenceFragment {
     }
 
     @UiThread
-    protected void onInValid(){
-        Utils.setAlertDialog("Warning", "Invalid data source", this.getActivity()).setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+    protected void onInValid(String error){
+        Utils.setAlertDialog("Warning", "Invalid data source in "+error, this.getActivity()).setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
 
@@ -175,12 +180,12 @@ public class NotificationFragment extends PreferenceFragment {
 //                    userPrefs.urlAddres().put(newUrl);
 //                    synButton.setSummary("Synchronized from service: "+userPrefs.urlAddres().get());
                     onFinishLoading();
-                    onValid();
+                    onValid("file updating");
                 }
                 else
                 {
                     onFinishLoading();
-                    onInValid();
+                    onInValid("file updating");
                 }
             }
             else{
@@ -193,4 +198,95 @@ public class NotificationFragment extends PreferenceFragment {
             onFinishLoading();
         }
     }
+
+    @Background
+    void retrievePhoto(){
+        try {
+            onLoading();
+            String url = userPrefs.urlAddres().get()+"/images/"+userPrefs.username().get();
+            System.out.println(url);
+            Request request = new Request.Builder()
+                    .url(url)
+                    .header("Authorization", "Bearer"+ userPrefs.token().get())
+                    .build();
+            Response response = null;
+            response = client.newCall(request).execute();
+            System.out.println(response);
+//            if (response.isSuccessful()) {
+                InputStream inputStream = response.body().byteStream();
+                // save the file at here!!!!!!!!!!!!!!!!!!!
+                File targetFile = new File(this.getActivity().getFilesDir() + "/images/", "images.zip");
+                OutputStream outStream = new FileOutputStream(targetFile);
+
+                byte[] buffer = new byte[8 * 1024];
+                int bytesRead;
+                while ((bytesRead = inputStream.read(buffer)) != -1) {
+                    outStream.write(buffer, 0, bytesRead);
+                }
+                IOUtils.closeQuietly(inputStream);
+                IOUtils.closeQuietly(outStream);
+//            }
+//            else{
+//                onFinishLoading();
+//                onError();
+//                throw new IOException("Unexpected code " + response);
+//            }
+        }
+        catch(Exception e){
+            onFinishLoading();
+        }
+        try{
+
+            unzip("images.zip",this.getActivity().getFilesDir() + "/images/");
+            onFinishLoading();
+        }catch (IOException e){
+            onFinishLoading();
+            onError();
+            System.out.print("ZIP IO EXCEPTION");
+            e.printStackTrace();
+        }
+    }
+
+    public static void unzip(String zipFile, String location) throws IOException {
+        try {
+            File f = new File(location);
+            if(!f.isDirectory()) {
+                f.mkdirs();
+            }
+            ZipInputStream zin = new ZipInputStream(new FileInputStream(location + zipFile));
+            try {
+                ZipEntry ze = null;
+                while ((ze = zin.getNextEntry()) != null) {
+                    String path = location + ze.getName();
+
+                    if (ze.isDirectory()) {
+                        File unzipFile = new File(path);
+                        if(!unzipFile.isDirectory()) {
+                            unzipFile.mkdirs();
+                        }
+                    }
+                    else {
+                        FileOutputStream fout = new FileOutputStream(path, false);
+                        try {
+                            for (int c = zin.read(); c != -1; c = zin.read()) {
+                                fout.write(c);
+                            }
+                            zin.closeEntry();
+                        }
+                        finally {
+                            fout.close();
+                        }
+                    }
+                }
+            }
+            finally {
+                zin.close();
+            }
+        }
+        catch (Exception e) {
+            System.out.println("ZIP ERROR");
+            e.printStackTrace();
+        }
+    }
+
 }

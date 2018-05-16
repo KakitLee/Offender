@@ -64,9 +64,9 @@ public class DataSourceServices implements IDataSourceServices {
         try {
 
             String filePath = prefs.getString("file", "");
-//            if(prefs.getBoolean("isUrl",false)){
-//                filePath = context.getFilesDir() + "/source.xml";
-//            }
+            if(prefs.getBoolean("isUrl",false)){
+                filePath = context.getFilesDir() + "/source.xml";
+            }
             if(filePath != null && !filePath.isEmpty()){
                 File source = new File(filePath);
                 data = serializer.read(Data.class, source);

@@ -46,7 +46,10 @@ public class PersonItemView extends LinearLayout {
 
     public void bind(Entities entities) {
         tvPersonName.setText(dataFilteringService.getPersonName(entities));
-        if(userPrefs.isFolder().get() && userPrefs.folder().get() != null && !userPrefs.folder().get().isEmpty() && Utils.getImageExternal(entities,userPrefs.folder().get()) != null){
+        if(userPrefs.isUrl().get()){
+            imgPersonAvatar.setImageBitmap(Utils.getImageExternal(entities,userPrefs.urlImagePath().get()));
+        }
+        else if(userPrefs.isFolder().get() && userPrefs.folder().get() != null && !userPrefs.folder().get().isEmpty() && Utils.getImageExternal(entities,userPrefs.folder().get()) != null){
             imgPersonAvatar.setImageBitmap(Utils.getImageExternal(entities,userPrefs.folder().get()));
         }
         else {
