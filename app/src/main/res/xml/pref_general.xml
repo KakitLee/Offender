@@ -7,15 +7,15 @@
 
     <!-- NOTE: EditTextPreference accepts EditText attributes. -->
     <!-- NOTE: EditTextPreference's summary should be set to its value by the activity code. -->
-    <EditTextPreference
-        android:capitalize="words"
-        android:defaultValue="@string/pref_url"
-        android:inputType="textCapWords"
-        android:key="pref_url_details"
-        android:maxLines="1"
-        android:selectAllOnFocus="true"
-        android:singleLine="true"
-        android:title="@string/pref_title_url" />
+    <!--<EditTextPreference-->
+        <!--android:capitalize="words"-->
+        <!--android:defaultValue="@string/pref_url"-->
+        <!--android:inputType="textCapWords"-->
+        <!--android:key="pref_url_details"-->
+        <!--android:maxLines="1"-->
+        <!--android:selectAllOnFocus="true"-->
+        <!--android:singleLine="true"-->
+        <!--android:title="@string/pref_title_url" />-->
     <Preference android:title="Synchronize"
         android:key="@string/synButton"
         android:summary="Click here to synchronize from service"/>

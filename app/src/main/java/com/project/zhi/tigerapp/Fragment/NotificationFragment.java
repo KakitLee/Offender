@@ -53,11 +53,14 @@ public class NotificationFragment extends PreferenceFragment {
     @Pref
     UserPrefs_ userPrefs;
 
-    @PreferenceByKey(R.string.pref_url_details)
-    EditTextPreference urlAddress;
+//    @PreferenceByKey(R.string.pref_url_details)
+//    EditTextPreference urlAddress;
 
     @PreferenceByKey(R.string.pref_url_switch)
     SwitchPreference urlSwitch;
+
+//    @PreferenceByKey(R.string.synButton)
+//    SwitchPreference synButton;
 
     @Bean
     DataSourceServices dataSourceServices;
@@ -67,7 +70,7 @@ public class NotificationFragment extends PreferenceFragment {
     @AfterPreferences
     void initPrefs() {
         urlSwitch.setChecked(userPrefs.isUrl().get());
-        urlAddress.setSummary(userPrefs.urlAddres().get());
+//        urlAddress.setSummary(userPrefs.urlAddres().get());
     }
 
     @PreferenceChange(R.string.pref_url_switch)
@@ -80,14 +83,14 @@ public class NotificationFragment extends PreferenceFragment {
 
     }
 
-    @PreferenceChange(R.string.pref_url_details)
-    void urlChange(String newUrl){
-        if(!URLUtil.isHttpUrl(newUrl) && !URLUtil.isHttpsUrl(newUrl)){
-            onError();
-        }
-
-        retrieveResource(newUrl);
-    }
+//    @PreferenceChange(R.string.pref_url_details)
+//    void urlChange(String newUrl){
+//        if(!URLUtil.isHttpUrl(newUrl) && !URLUtil.isHttpsUrl(newUrl)){
+//            onError();
+//        }
+//
+//        retrieveResource();
+//    }
 
     @PreferenceClick(R.string.synButton)
     void buttonClick(){
@@ -97,16 +100,8 @@ public class NotificationFragment extends PreferenceFragment {
             onError();
         }
 
-        retrieveResource(url);
+        retrieveResource();
     }
-
-//    Preference button = findPreference(getString(R.string.synButton));
-//    button.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener(){
-//        @Override
-//        public boolean onPreferenceClick(Preference preference){
-//            return true;
-//        }
-//    });
 
     @UiThread
     void onLoading(){
@@ -151,7 +146,7 @@ public class NotificationFragment extends PreferenceFragment {
     }
 
     @Background
-    void retrieveResource(String newUrl){
+    void retrieveResource(){
         try {
             onLoading();
             String url = userPrefs.urlAddres().get()+"/upload";
@@ -177,8 +172,8 @@ public class NotificationFragment extends PreferenceFragment {
                 IOUtils.closeQuietly(inputStream);
                 IOUtils.closeQuietly(outStream);
                 if(dataSourceServices.isValidDataSource(targetFile.getAbsolutePath())) {
-                    userPrefs.urlAddres().put(newUrl);
-                    urlAddress.setSummary(userPrefs.urlAddres().get());
+//                    userPrefs.urlAddres().put(newUrl);
+//                    synButton.setSummary("Synchronized from service: "+userPrefs.urlAddres().get());
                     onFinishLoading();
                     onValid();
                 }

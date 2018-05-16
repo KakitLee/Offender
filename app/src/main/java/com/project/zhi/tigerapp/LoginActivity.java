@@ -14,6 +14,7 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.view.View;
 
@@ -63,6 +64,16 @@ public class LoginActivity extends AppCompatActivity implements NavigationView.O
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+
+
+//        TextView state = (TextView) findViewById(R.id.state);
+        String username = userPrefs.username().get();
+        if (username!=null){
+//            state.setText("Logged as "+username);
+//            R.string.LoginActivity = "Logged as "+username;
+        }
+
     }
 
     public void login(View v){
@@ -97,6 +108,8 @@ public class LoginActivity extends AppCompatActivity implements NavigationView.O
             String response = request.post(url, authorizationUsername,authorizationPassword,grant_type,username,password);
             JSONObject response_json = new JSONObject(response);
             userPrefs.token().put(response_json.get("access_token").toString());
+//            TextView state = (TextView) findViewById(R.id.state);
+//            state.setText("Logged as "+username);
 
         }catch (Exception e){
             onInValid();
