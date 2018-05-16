@@ -51,13 +51,8 @@ public class ProfileAdapter extends ArrayAdapter<Attributes> {
 
         Attributes item = attributes.get(position);
         tvTitle.setText(Utils.displayKeyAsTitle(item.getAttributeKey()));
-        String value = "";
-        if(item.getType().equalsIgnoreCase("TEXT")){
-            value = item.getStringValue();
-        }
-        else{
-            value = item.getDoubleValue().toString();
-        }
+        String value = Utils.getAttributeValues(item);
+
         tvValue.setText(value);
 
         return convertView;

@@ -45,9 +45,9 @@ public class Utils {
         }
         else if(attribute.getType().equalsIgnoreCase(attributeType.BOOLEAN.name())){
             if(attribute.getDoubleValue() == 1.0){
-                return String.valueOf(true);
+                return "Yes";
             }
-            return String.valueOf(false);
+            return "No";
         }
         return null;
     }
