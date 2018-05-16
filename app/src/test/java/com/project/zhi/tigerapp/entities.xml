@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<data xmlns="http://www.example.org/Intelligence">
+    <entities entityTypeKey="person">
+        <id>TIGGA_Putli_BHU/0712/2018</id>
+        <scratchpad></scratchpad>
+        <attributes attributeKey="familyname" type="TEXT" stringValue="TIGGA"/>
+        <attributes attributeKey="vehicledetails" type="TEXT" stringValue="Walking"/>
+        <attributes attributeKey="relativeassociateoflivelihoodbeneficary" type="BOOLEAN" doubleValue="1.0"/>
+        <attributes attributeKey="urn" type="TEXT" stringValue="TIGGA_Putli_BHU/0712/2018"/>
+        <attributes attributeKey="buildcategory" type="LIST" listKey="thin"/>
+        <attributes attributeKey="height1" type="TEXT" stringValue="Short"/>
+        <attributes attributeKey="repeatoffender" type="BOOLEAN" doubleValue="0.0"/>
+        <attributes attributeKey="facialdescription" type="TEXT" stringValue="Oblong face, large ear, nose piercing, ear piercing,"/>
+        <attributes attributeKey="religion1" type="TEXT" stringValue="Hindu"/>
+        <attributes attributeKey="build" type="TEXT" stringValue="Thin"/>
+        <attributes attributeKey="relgioncategory" type="LIST" listKey="hindu"/>
+        <attributes attributeKey="ethnicity1" type="LIST" listKey="adivasi"/>
+        <attributes attributeKey="languagesspoken" type="TEXT" stringValue="Adivasi"/>
+        <attributes attributeKey="haircolour" type="TEXT" stringValue="Black long straight, tied-back"/>
+        <attributes attributeKey="nationality" type="TEXT" stringValue="Indian"/>
+        <attributes attributeKey="facialhair" type="TEXT" stringValue="None"/>
+        <attributes attributeKey="heightcategory" type="LIST" listKey="short"/>
+        <attributes attributeKey="firstname" type="TEXT" stringValue="Putli"/>
+        <attributes attributeKey="eyecolour" type="TEXT" stringValue="Brown"/>
+        <attributes attributeKey="occupation" type="TEXT" stringValue="Labour"/>
+        <attributes attributeKey="habitualdress" type="TEXT" stringValue="Sweater Orange, sador white, mekhla blue"/>
+        <attributes attributeKey="currentaddress" type="TEXT" stringValue="Vill- Daodhara, P.O- Kamardaisa, P.S- Simla, Dist-Baksa BTAD Assam"/>
+        <attributes attributeKey="eyecolourcategory" type="LIST" listKey="brown"/>
+        <attributes attributeKey="guardianname" type="TEXT" stringValue="Hiralal_TIGGA"/>
+        <attributes attributeKey="ethnicity" type="TEXT" stringValue="Adivasi"/>
+        <attributes attributeKey="gender1" type="LIST" listKey="female"/>
+        <attributes attributeKey="facialhaircategory" type="BOOLEAN" doubleValue="0.0"/>
+        <attributes attributeKey="age1" type="NUMERIC" doubleValue="46.0"/>
+        <attributes attributeKey="livelihoodbeneficiary" type="BOOLEAN" doubleValue="1.0"/>
+        <attributes attributeKey="agecategory" type="LIST" listKey="object1"/>
+        <attributes attributeKey="suspectedorknownpoacher" type="BOOLEAN" doubleValue="0.0"/>
+        <attachments filename="IMG_1691.JPG" isPrimary="false"/>
+        <attachments filename="IMG_1689.JPG" isPrimary="false"/>
+        <attachments filename="IMG_1688.JPG" isPrimary="false"/>
+        <attachments filename="IMG_1690.JPG" isPrimary="false"/>
+        <attachments filename="IMG_1683 - Copy.JPG" isPrimary="true"/>
+        <records title="MNP_20180127_01_FIREWOOD COLLECTION" recordSourceKey="patrol" recordKey="ea958f9e635f49cfb49dedd72dee559f"/>
+        <locations id="Location 1" recordKey="ea958f9e635f49cfb49dedd72dee559f"/>
+    </entities>
+
+</data>

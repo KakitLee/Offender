@@ -21,7 +21,7 @@ public class Entities {
     protected String scratchpad;
     @ElementList(inline=true)
     private ArrayList<Attributes> list;
-    @Element(required=false)
-    protected  Attachments attachments;
+    @ElementList(inline=true, required=false)
+    protected ArrayList<Attachments> attachments;
 }
 

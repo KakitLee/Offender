@@ -16,4 +16,6 @@ public class Attributes{
     protected String stringValue;
     @Attribute(required=false)
     protected Double doubleValue;
+    @Attribute(required=false)
+    protected String listKey;
 }

@@ -14,12 +14,16 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.google.common.base.CaseFormat;
+import com.project.zhi.tigerapp.Entities.Attachments;
+import com.project.zhi.tigerapp.Entities.Attributes;
 import com.project.zhi.tigerapp.Entities.Entities;
+import com.project.zhi.tigerapp.Enums.attributeType;
 import com.project.zhi.tigerapp.R;
 
 import org.apache.commons.text.WordUtils;
 
 import java.io.File;
+import java.util.ArrayList;
 
 public class Utils {
     public static String displayKeyValue(String key){
@@ -28,15 +32,48 @@ public class Utils {
     public static String displayKeyAsTitle(String key){
         return WordUtils.capitalize(key);
     }
+
+    public static String getAttributeValues(Attributes attribute){
+        if(attribute.getType().equalsIgnoreCase(attributeType.TEXT.name())){
+            return attribute.getStringValue();
+        }
+        else if(attribute.getType().equalsIgnoreCase(attributeType.LIST.name())){
+            return attribute.getListKey();
+        }
+        else if(attribute.getType().equalsIgnoreCase(attributeType.NUMERIC.name())){
+            return attribute.getDoubleValue().toString();
+        }
+        else if(attribute.getType().equalsIgnoreCase(attributeType.BOOLEAN.name())){
+            if(attribute.getDoubleValue() == 1.0){
+                return String.valueOf(true);
+            }
+            return String.valueOf(false);
+        }
+        return null;
+    }
+
+    public static Attachments getPrimaryAttachent(ArrayList<Attachments> attachments){
+        for (Attachments attachement: attachments
+                ) {
+            if(attachement.getIsPrimary()){
+                return attachement;
+            }
+        }
+        return attachments.get(0);
+    }
+    public static Boolean hasAttachments(Entities entity){
+        return entity.getAttachments() != null && entity.getAttachments().size() > 0;
+    }
     public static int getImageId(Entities entities, Context context){
-        if (entities.getAttachments() != null && entities.getAttachments().getFilename() != null && !entities.getAttachments().getFilename().isEmpty()) {
-            return context.getResources().getIdentifier(entities.getAttachments().getFilename(), "raw", context.getPackageName());
+        if (hasAttachments(entities)) {
+            return context.getResources().getIdentifier(getPrimaryAttachent(entities.getAttachments()).getFilename(), "raw", context.getPackageName());
         }
         return R.drawable.place_holder;
     }
     public static Bitmap getImageExternal(Entities entities, String imagePath){
-        if (entities.getAttachments() != null && entities.getAttachments().getFilename() != null && !entities.getAttachments().getFilename().isEmpty()) {
-            String fullImagePath = (imagePath + "/" + entities.getAttachments().getFilename());
+        if (hasAttachments(entities)) {
+
+            String fullImagePath = (imagePath + "/" + getPrimaryAttachent(entities.getAttachments()).getFilename());
             if(new File(fullImagePath).exists()){
                 return BitmapFactory.decodeFile(fullImagePath);
             }

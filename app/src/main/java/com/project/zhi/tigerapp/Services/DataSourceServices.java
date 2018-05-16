@@ -4,10 +4,12 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
+import com.project.zhi.tigerapp.Entities.Attachments;
 import com.project.zhi.tigerapp.Entities.Attributes;
 import com.project.zhi.tigerapp.Entities.Data;
 import com.project.zhi.tigerapp.Entities.Entities;
 import com.project.zhi.tigerapp.R;
+import com.project.zhi.tigerapp.Utils.Utils;
 
 import org.androidannotations.annotations.EBean;
 import org.androidannotations.annotations.sharedpreferences.Pref;
@@ -104,8 +106,9 @@ public class DataSourceServices implements IDataSourceServices {
     public Data setImagePath(Data data){
         for (Entities entity: data.getEntitiesList()
              ) {
-            if(entity.getAttachments() != null && entity.getAttachments().getFilename() != null && !entity.getAttachments().getFilename().isEmpty()){
-                entity.getAttachments().setFilename(setFileName(entity.getAttachments().getFilename()));
+            if(Utils.hasAttachments(entity)){
+                Attachments attachment = Utils.getPrimaryAttachent(entity.getAttachments());
+                attachment.setFilename(setFileName(attachment.getFilename()));
             }
         }
         return data;
