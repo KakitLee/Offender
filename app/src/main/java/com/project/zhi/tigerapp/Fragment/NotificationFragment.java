@@ -33,6 +33,8 @@ import org.androidannotations.annotations.PreferenceClick;
 import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.sharedpreferences.Pref;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -105,7 +107,7 @@ public class NotificationFragment extends PreferenceFragment {
         }
 
         retrieveResource();
-//        retrievePhoto();
+        retrievePhoto();
     }
 
     @UiThread
@@ -212,7 +214,7 @@ public class NotificationFragment extends PreferenceFragment {
             Response response = null;
             response = client.newCall(request).execute();
             System.out.println(response);
-//            if (response.isSuccessful()) {
+            if (response.isSuccessful()) {
                 InputStream inputStream = response.body().byteStream();
                 // save the file at here!!!!!!!!!!!!!!!!!!!
                 File targetFile = new File(this.getActivity().getFilesDir() + "/images/", "images.zip");
@@ -225,55 +227,79 @@ public class NotificationFragment extends PreferenceFragment {
                 }
                 IOUtils.closeQuietly(inputStream);
                 IOUtils.closeQuietly(outStream);
-//            }
-//            else{
-//                onFinishLoading();
+                onFinishLoading();
+                onValid("photo updating");
+            }
+            else{
+                onFinishLoading();
+                onInValid("photo updating");
 //                onError();
-//                throw new IOException("Unexpected code " + response);
-//            }
+                throw new IOException("Unexpected code " + response);
+            }
         }
         catch(Exception e){
             onFinishLoading();
+            onError();
         }
         try{
 
             unzip("images.zip",this.getActivity().getFilesDir() + "/images/");
-            onFinishLoading();
+            onValid("photo unzip");
+//            onFinishLoading();
         }catch (IOException e){
-            onFinishLoading();
-            onError();
+            onInValid("photo unzip");
+//            onFinishLoading();
+//            onError();
             System.out.print("ZIP IO EXCEPTION");
             e.printStackTrace();
         }
     }
 
     public static void unzip(String zipFile, String location) throws IOException {
+        int size;
+        int BUFFER_SIZE = 8192;
+        byte[] buffer = new byte[BUFFER_SIZE];
+
         try {
+            if ( !location.endsWith(File.separator) ) {
+                location += File.separator;
+            }
             File f = new File(location);
             if(!f.isDirectory()) {
                 f.mkdirs();
             }
-            ZipInputStream zin = new ZipInputStream(new FileInputStream(location + zipFile));
+            ZipInputStream zin = new ZipInputStream(new BufferedInputStream(new FileInputStream(location + zipFile), BUFFER_SIZE));
             try {
                 ZipEntry ze = null;
                 while ((ze = zin.getNextEntry()) != null) {
                     String path = location + ze.getName();
+                    File unzipFile = new File(path);
 
                     if (ze.isDirectory()) {
-                        File unzipFile = new File(path);
                         if(!unzipFile.isDirectory()) {
                             unzipFile.mkdirs();
                         }
-                    }
-                    else {
-                        FileOutputStream fout = new FileOutputStream(path, false);
-                        try {
-                            for (int c = zin.read(); c != -1; c = zin.read()) {
-                                fout.write(c);
+                    } else {
+                        // check for and create parent directories if they don't exist
+                        File parentDir = unzipFile.getParentFile();
+                        if ( null != parentDir ) {
+                            if ( !parentDir.isDirectory() ) {
+                                parentDir.mkdirs();
                             }
+                        }
+
+                        // unzip the file
+                        FileOutputStream out = new FileOutputStream(unzipFile, false);
+                        BufferedOutputStream fout = new BufferedOutputStream(out, BUFFER_SIZE);
+                        try {
+                            while ( (size = zin.read(buffer, 0, BUFFER_SIZE)) != -1 ) {
+                                fout.write(buffer, 0, size);
+                            }
+
                             zin.closeEntry();
                         }
                         finally {
+                            fout.flush();
                             fout.close();
                         }
                     }
@@ -288,5 +314,4 @@ public class NotificationFragment extends PreferenceFragment {
             e.printStackTrace();
         }
     }
-
 }

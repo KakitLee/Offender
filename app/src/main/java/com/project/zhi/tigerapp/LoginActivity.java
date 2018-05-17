@@ -108,6 +108,7 @@ public class LoginActivity extends AppCompatActivity implements NavigationView.O
             String response = request.post(url, authorizationUsername,authorizationPassword,grant_type,username,password);
             JSONObject response_json = new JSONObject(response);
             userPrefs.token().put(response_json.get("access_token").toString());
+            onValid(username);
 //            TextView state = (TextView) findViewById(R.id.state);
 //            state.setText("Logged as "+username);
 
@@ -150,6 +151,16 @@ public class LoginActivity extends AppCompatActivity implements NavigationView.O
             @Override
             public void onClick(DialogInterface dialog, int which) {
 //                btn_comfirm.setEnabled(false);
+                dialog.dismiss();
+            }
+        }).show();
+    }
+
+    @UiThread
+    protected void onValid(String username){
+        Utils.setAlertDialog("Login Success", "You have logged as "+username, this).setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
             }
         }).show();
