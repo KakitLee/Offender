@@ -106,7 +106,7 @@ public class NotificationFragment extends PreferenceFragment {
             onError();
         }
 
-//        retrieveResource();
+        retrieveResource();
         retrievePhoto();
     }
 
@@ -214,7 +214,7 @@ public class NotificationFragment extends PreferenceFragment {
             Response response = null;
             response = client.newCall(request).execute();
             System.out.println(response);
-//            if (response.isSuccessful()) {
+            if (response.isSuccessful()) {
                 InputStream inputStream = response.body().byteStream();
                 // save the file at here!!!!!!!!!!!!!!!!!!!
                 File targetFile = new File(this.getActivity().getFilesDir() + "/images/", "images.zip");
@@ -227,23 +227,29 @@ public class NotificationFragment extends PreferenceFragment {
                 }
                 IOUtils.closeQuietly(inputStream);
                 IOUtils.closeQuietly(outStream);
-//            }
-//            else{
-//                onFinishLoading();
+                onFinishLoading();
+                onValid("photo updating");
+            }
+            else{
+                onFinishLoading();
+                onInValid("photo updating");
 //                onError();
-//                throw new IOException("Unexpected code " + response);
-//            }
+                throw new IOException("Unexpected code " + response);
+            }
         }
         catch(Exception e){
             onFinishLoading();
+            onError();
         }
         try{
 
             unzip("images.zip",this.getActivity().getFilesDir() + "/images/");
-            onFinishLoading();
+            onValid("photo unzip");
+//            onFinishLoading();
         }catch (IOException e){
-            onFinishLoading();
-            onError();
+            onInValid("photo unzip");
+//            onFinishLoading();
+//            onError();
             System.out.print("ZIP IO EXCEPTION");
             e.printStackTrace();
         }
