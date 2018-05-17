@@ -149,17 +149,22 @@ public class localTest {
         assertEquals("firstname",attributes.get(0).getAttributeKey());
 
     }
+
     @Test
-    public void ImagePathTest(){
+    public void ImagePathTest() {
         DataSourceServices dataSourceServices = new DataSourceServices();
-        MenuService menuService= new MenuService();
+        MenuService menuService = new MenuService();
         DataFilteringService dataFilteringService = new DataFilteringService();
         Data data = getData();
-        assertEquals("bilat",dataSourceServices.setFileName("Bilat.jpg"));
-        assertEquals("pbm",dataSourceServices.setFileName("PbM.jpg"));
-        assertEquals("patrol_alpha__0087_image_1",dataSourceServices.setFileName("20170923 Patrol Alpha #0087 image 1.jpg"));
-        assertEquals("bilat",dataSourceServices.setImagePath(data).getEntitiesList().get(2).getAttachments().getFilename());
-        assertEquals("pbm",dataSourceServices.setImagePath(data).getEntitiesList().get(4).getAttachments().getFilename());
-        assertEquals("patrol_alpha__0087_image_1",dataSourceServices.setImagePath(data).getEntitiesList().get(5).getAttachments().getFilename());
+        Entities entityFound = null;
+        for (Entities entity : data.getEntitiesList()
+                ) {
+            if (entity.getAttachments() != null && entity.getAttachments().getFilename().equalsIgnoreCase("bilat.jpg")) {
+                entityFound = entity;
+            }
+        }
+        assertEquals("Bilat.jpg",entityFound.getAttachments().getFilename());
+
     }
+
 }

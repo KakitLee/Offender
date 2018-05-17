@@ -3,7 +3,9 @@ package com.project.zhi.tigerapp.Services;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
+import android.util.Log;
 
+import com.project.zhi.tigerapp.Entities.Attachments;
 import com.project.zhi.tigerapp.Entities.Attributes;
 import com.project.zhi.tigerapp.Entities.Data;
 import com.project.zhi.tigerapp.Entities.Entities;
@@ -116,5 +118,16 @@ public class DataSourceServices implements IDataSourceServices {
         fileName = FilenameUtils.removeExtension(fileName);
         return  fileName;
     }
+    public Entities getEntityByImageName(String imageName, Context context){
+        Data data = this.getPeopleSource(context);
+        for (Entities entity: data.getEntitiesList()
+             ) {
+            if(entity.getAttachments() != null && entity.getAttachments().getFilename().equalsIgnoreCase(imageName)){
+                return entity;
+            }
+        }
+        return null;
+    }
 }
+
 
