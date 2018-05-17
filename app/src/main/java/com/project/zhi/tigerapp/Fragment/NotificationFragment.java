@@ -107,7 +107,6 @@ public class NotificationFragment extends PreferenceFragment {
         }
 
         retrieveResource();
-        retrievePhoto();
     }
 
     @UiThread
@@ -154,6 +153,13 @@ public class NotificationFragment extends PreferenceFragment {
 
     @Background
     void retrieveResource(){
+        getFile();
+        getPhoto();
+        unzipPhoto();
+
+    }
+
+    void getFile(){
         try {
             onLoading();
             String url = userPrefs.urlAddres().get()+"/upload";
@@ -201,8 +207,7 @@ public class NotificationFragment extends PreferenceFragment {
         }
     }
 
-    @Background
-    void retrievePhoto(){
+    void getPhoto(){
         try {
             onLoading();
             String url = userPrefs.urlAddres().get()+"/images/"+userPrefs.username().get();
@@ -241,6 +246,9 @@ public class NotificationFragment extends PreferenceFragment {
             onFinishLoading();
             onError();
         }
+    }
+
+    void unzipPhoto(){
         try{
 
             unzip("images.zip",this.getActivity().getFilesDir() + "/images/");
