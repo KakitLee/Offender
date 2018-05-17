@@ -1,20 +1,19 @@
 package com.project.zhi.tigerapp.Services;
 
-import com.project.zhi.tigerapp.Entities.Data;
-import com.project.zhi.tigerapp.Entities.Entities;
+import com.project.zhi.tigerapp.Entities.Attributes;
+import com.project.zhi.tigerapp.Enums.AttributeType;
 import com.project.zhi.tigerapp.Utils.Utils;
 import com.project.zhi.tigerapp.complexmenu.MenuModel;
 import com.project.zhi.tigerapp.complexmenu.MenuTuple;
 
 import org.androidannotations.annotations.EBean;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.Iterator;
+import java.util.Locale;
 
 import lombok.experimental.var;
-import lombok.val;
 
 @EBean
 public class MenuService {
@@ -37,13 +36,25 @@ public class MenuService {
         return newListModel;
     }
 
-    public ArrayList<ArrayList<MenuModel>> getAllMenus(ArrayList<String> keys){
+//    public ArrayList<ArrayList<MenuModel>> getAllMenus(ArrayList<String> keys){
+//        ArrayList<ArrayList<MenuModel>> allMenuModels = new ArrayList<ArrayList<MenuModel>>();
+//        var nameMenuTuple = getNamesMenusWithRemove(keys);
+//        allMenuModels.add(nameMenuTuple.getMenuModels());
+//        var mainMenuTuple = getMainDemographicWithRemove(nameMenuTuple.getLeftKeys());
+//        allMenuModels.add(mainMenuTuple.getMenuModels());
+//        var otherMenu = getOtherDemographic(mainMenuTuple.getLeftKeys());
+//
+//        allMenuModels.add(otherMenu);
+//        return allMenuModels;
+//    }
+
+    public ArrayList<ArrayList<MenuModel>> getAllMenus(ArrayList<Attributes> keys){
         ArrayList<ArrayList<MenuModel>> allMenuModels = new ArrayList<ArrayList<MenuModel>>();
         var nameMenuTuple = getNamesMenusWithRemove(keys);
         allMenuModels.add(nameMenuTuple.getMenuModels());
-        var mainMenuTuple = getMainDemographicWithRemove(nameMenuTuple.getLeftKeys());
+        var mainMenuTuple = getMainDemographicWithRemove(nameMenuTuple.getLeftAttributes());
         allMenuModels.add(mainMenuTuple.getMenuModels());
-        var otherMenu = getOtherDemographic(mainMenuTuple.getLeftKeys());
+        var otherMenu = getOtherDemographic(mainMenuTuple.getLeftAttributes());
 
         allMenuModels.add(otherMenu);
         return allMenuModels;
@@ -67,87 +78,64 @@ public class MenuService {
         return newListModel;
     }
 
-    public MenuTuple getNamesMenusWithRemove (ArrayList<String> keys){
+    public MenuTuple getNamesMenusWithRemove (ArrayList<Attributes> keys){
 
         ArrayList<MenuModel> newListModel = new ArrayList<>();
-        for (Iterator<String> iterator = keys.iterator(); iterator.hasNext(); ) {
-            String key = iterator.next();
-            switch (key){
-                case "firstname":
-                case "middlename":
-                case "familyname":
-                case "nationalidnumber":
+        ArrayList<String> keyStr = new ArrayList<String>();
+
+        for (Iterator<Attributes> iterator = keys.iterator(); iterator.hasNext(); ) {
+            Attributes attribute =iterator.next();
+            String key = attribute.getAttributeKey();
+            keyStr.add(key);
+            if(key.toLowerCase().contains("name") || key.toLowerCase().contains("nationalid")){
                     MenuModel newModel= new MenuModel();
                     newModel.setAttributeKey(key);
                     newModel.setAttributeDisplayText(Utils.displayKeyValue(key));
+                    newModel.setAttributeType(AttributeType.valueOf(attribute.getType().toUpperCase(Locale.ENGLISH)));
                     newListModel.add(newModel);
                     iterator.remove();
             }
         }
         MenuTuple menuTuple = new MenuTuple();
         menuTuple.setMenuModels(newListModel);
-        menuTuple.setLeftKeys(keys);
+        menuTuple.setLeftAttributes(keys);
         return menuTuple;
     }
 
-    public ArrayList<MenuModel> getMainDemographic (ArrayList<String> keys){
-        ArrayList<MenuModel> newListModel = new ArrayList<>();
+    public MenuTuple getMainDemographicWithRemove (ArrayList<Attributes> keys){
 
-        for (String key: keys
-                ) {
-            switch (key){
-                case "gender":
-                case "height1":
-                case "currentaddress":
-                case "otheroccupantsataddress":
-                case "phonenumber1":
-                case "age1":
+        ArrayList<MenuModel> newListModel = new ArrayList<>();
+        for (Iterator<Attributes> iterator = keys.iterator(); iterator.hasNext(); ) {
+            Attributes attribute =iterator.next();
+            String key = attribute.getAttributeKey();
+            if(key.toLowerCase().contains("gender") || key.toLowerCase().contains("height") || key.toLowerCase().contains("address") || key.toLowerCase().contains("phone") || key.toLowerCase().contains("age")){
                     MenuModel newModel= new MenuModel();
                     newModel.setAttributeKey(key);
                     newModel.setAttributeDisplayText(Utils.displayKeyValue(key));
-                    newListModel.add(newModel);
-                    break;
-            }
-        }
-
-        return newListModel;
-    }
-    public MenuTuple getMainDemographicWithRemove (ArrayList<String> keys){
-
-        ArrayList<MenuModel> newListModel = new ArrayList<>();
-        for (Iterator<String> iterator = keys.iterator(); iterator.hasNext(); ) {
-            String key = iterator.next();
-            switch (key){
-                case "gender":
-                case "height1":
-                case "currentaddress":
-                case "otheroccupantsataddress":
-                case "phonenumber1":
-                case "age1":
-                    MenuModel newModel= new MenuModel();
-                    newModel.setAttributeKey(key);
-                    newModel.setAttributeDisplayText(Utils.displayKeyValue(key));
+                    newModel.setAttributeType(AttributeType.valueOf(attribute.getType().toUpperCase(Locale.ENGLISH)));
                     newListModel.add(newModel);
                     iterator.remove();
             }
         }
+        Collections.sort(newListModel, Utils.getComparatorMenuModelAlphabetically());
         MenuTuple menuTuple = new MenuTuple();
         menuTuple.setMenuModels(newListModel);
-        menuTuple.setLeftKeys(keys);
+        menuTuple.setLeftAttributes(keys);
         return menuTuple;
     }
 
 
-    public ArrayList<MenuModel> getOtherDemographic (ArrayList<String> keys){
+    public ArrayList<MenuModel> getOtherDemographic (ArrayList<Attributes> keys){
         ArrayList<MenuModel> newListModel = new ArrayList<>();
         for (var otherDemo: keys
              ) {
             MenuModel newModel= new MenuModel();
-            newModel.setAttributeKey(otherDemo);
-            newModel.setAttributeDisplayText(Utils.displayKeyValue(otherDemo));
+            newModel.setAttributeKey(otherDemo.getAttributeKey());
+            newModel.setAttributeDisplayText(Utils.displayKeyValue(otherDemo.getAttributeKey()));
+            newModel.setAttributeType(AttributeType.valueOf(otherDemo.getType().toUpperCase(Locale.ENGLISH)));
             newListModel.add(newModel);
         }
-
+        Collections.sort(newListModel, Utils.getComparatorMenuModelAlphabetically());
         return newListModel;
     }
 

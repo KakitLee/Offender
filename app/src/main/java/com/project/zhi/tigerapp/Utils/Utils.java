@@ -13,17 +13,18 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.google.common.base.CaseFormat;
 import com.project.zhi.tigerapp.Entities.Attachments;
 import com.project.zhi.tigerapp.Entities.Attributes;
 import com.project.zhi.tigerapp.Entities.Entities;
-import com.project.zhi.tigerapp.Enums.attributeType;
+import com.project.zhi.tigerapp.Enums.AttributeType;
 import com.project.zhi.tigerapp.R;
+import com.project.zhi.tigerapp.complexmenu.MenuModel;
 
 import org.apache.commons.text.WordUtils;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Comparator;
 
 public class Utils {
     public static String displayKeyValue(String key){
@@ -33,17 +34,27 @@ public class Utils {
         return WordUtils.capitalize(key);
     }
 
+    public static Comparator<MenuModel> getComparatorMenuModelAlphabetically(){
+        Comparator<MenuModel> comparator = new Comparator<MenuModel>() {
+            @Override
+            public int compare(MenuModel o1, MenuModel o2) {
+                return o1.getAttributeKey().compareTo(o2.getAttributeKey());
+            }
+        };
+        return comparator;
+    }
+
     public static String getAttributeValues(Attributes attribute){
-        if(attribute.getType().equalsIgnoreCase(attributeType.TEXT.name())){
+        if(attribute.getType().equalsIgnoreCase(AttributeType.TEXT.name())){
             return attribute.getStringValue();
         }
-        else if(attribute.getType().equalsIgnoreCase(attributeType.LIST.name())){
+        else if(attribute.getType().equalsIgnoreCase(AttributeType.LIST.name())){
             return attribute.getListKey();
         }
-        else if(attribute.getType().equalsIgnoreCase(attributeType.NUMERIC.name())){
+        else if(attribute.getType().equalsIgnoreCase(AttributeType.NUMERIC.name())){
             return attribute.getDoubleValue().toString();
         }
-        else if(attribute.getType().equalsIgnoreCase(attributeType.BOOLEAN.name())){
+        else if(attribute.getType().equalsIgnoreCase(AttributeType.BOOLEAN.name())){
             if(attribute.getDoubleValue() == 1.0){
                 return "Yes";
             }

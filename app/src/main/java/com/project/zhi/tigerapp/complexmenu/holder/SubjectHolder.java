@@ -19,6 +19,8 @@ import com.project.zhi.tigerapp.R;
 import com.project.zhi.tigerapp.Utils.Utils;
 import com.project.zhi.tigerapp.complexmenu.MenuModel;
 
+import org.florescu.android.rangeseekbar.RangeSeekBar;
+
 import java.util.List;
 
 /**
@@ -143,7 +145,14 @@ public class SubjectHolder extends BaseWidgetHolder<List<List<MenuModel>>> {
         input.setText(menuModel.getValue());
 
         input.setInputType(InputType.TYPE_CLASS_TEXT );
-        builder.setView(input);
+//        builder.setView(input);
+
+        RangeSeekBar<Integer> rangeSeekBar = new RangeSeekBar<Integer>(mContext);
+        rangeSeekBar.setRangeValues(15, 90);
+        rangeSeekBar.setSelectedMinValue(20);
+        rangeSeekBar.setSelectedMaxValue(88);
+        rangeSeekBar.setTextAboveThumbsColorResource(R.color.black);
+        builder.setView(rangeSeekBar);
 
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override

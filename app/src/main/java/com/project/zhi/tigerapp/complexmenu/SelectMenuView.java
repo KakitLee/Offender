@@ -16,6 +16,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 
+import com.project.zhi.tigerapp.Entities.Attributes;
 import com.project.zhi.tigerapp.Entities.Data;
 import com.project.zhi.tigerapp.R;
 import com.project.zhi.tigerapp.Services.DataSourceServices;
@@ -113,7 +114,9 @@ public class SelectMenuView extends LinearLayout{
 
     private void init(){
         Data data = dataSourceServices.getPeopleSource(this.mContext);
-        ArrayList<String> keys = dataSourceServices.getUniqueKey(data);
+        //ArrayList<String> keys = dataSourceServices.getUniqueKey(data);
+        ArrayList<Attributes> keys = dataSourceServices.getUniqueKeyAttributes(data);
+
         ArrayList<ArrayList<MenuModel>> allMenus = menuService.getAllMenus(keys);
         mGroupList = new ArrayList<MenuModel>();
         mGroupList = menuService.getMainMenus();
