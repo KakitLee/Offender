@@ -222,7 +222,9 @@ public class NotificationFragment extends PreferenceFragment {
             if (response.isSuccessful()) {
                 InputStream inputStream = response.body().byteStream();
                 // save the file at here!!!!!!!!!!!!!!!!!!!
-                File targetFile = new File(this.getActivity().getFilesDir() + "/images/", "images.zip");
+                String imagePath = this.getActivity().getFilesDir() + "/images/";
+                File targetFile = new File(imagePath, "images.zip");
+                userPrefs.urlImagePath().put(imagePath);
                 OutputStream outStream = new FileOutputStream(targetFile);
 
                 byte[] buffer = new byte[8 * 1024];
