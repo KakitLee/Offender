@@ -2,6 +2,7 @@ package com.project.zhi.tigerapp.Services;
 
 import com.project.zhi.tigerapp.Entities.Attributes;
 import com.project.zhi.tigerapp.Entities.Entities;
+import com.project.zhi.tigerapp.Enums.AttributeType;
 import com.project.zhi.tigerapp.complexmenu.MenuModel;
 
 import org.androidannotations.annotations.EBean;
@@ -54,7 +55,7 @@ public class DataFilteringService {
         ArrayList<MenuModel> noneEmptyOtherDemoMenu = nonEmptyCriteria(otherDemoMenu);
         for (Entities entity : entities
                 ) {
-            if(isSatisfyAllCriteriaFromAListOfCriteria(noneEmptyNameMenu, entity.getList(), true) && isSatisfyAllCriteriaFromAListOfCriteria(noneEmptyMainDemoMenu, entity.getList(),false) && isSatisfyAllCriteriaFromAListOfCriteria(noneEmptyOtherDemoMenu, entity.getList(),true)){
+            if(isSatisfyAllCriteriaFromAListOfCriteria(noneEmptyNameMenu, entity.getList(), true) && isSatisfyAllCriteriaFromAListOfCriteria(noneEmptyMainDemoMenu, entity.getList(),true) && isSatisfyAllCriteriaFromAListOfCriteria(noneEmptyOtherDemoMenu, entity.getList(),true)){
                 filteredEntities.add(entity);
             }
         }
@@ -132,11 +133,13 @@ public class DataFilteringService {
             var attribute= attributes.get(i);
             var key = attribute.getAttributeKey();
             var value = "";
-            if(attribute.getType().equalsIgnoreCase("TEXT")){
-                value = attribute.getStringValue();
+            if(attribute.getType().equalsIgnoreCase(AttributeType.NUMERIC.name())){
+                if(criteria.getAttributeKey().equalsIgnoreCase(key) && attribute.getDoubleValue() >= criteria.getMinValue() && attribute.getDoubleValue() <= criteria.getMaxValue() ){
+                    return true;
+                }
             }
             else{
-                value = attribute.getDoubleValue().toString();
+                value = attribute.getStringValue();
             }
             if(criteria.getAttributeKey().equalsIgnoreCase(key) && value.toLowerCase().contains(criteria.getValue().toLowerCase())){
                 return true;

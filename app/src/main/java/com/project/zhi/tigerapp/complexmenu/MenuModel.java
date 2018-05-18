@@ -9,5 +9,7 @@ public class MenuModel {
     private String attributeKey;
     private String attributeDisplayText;
     private AttributeType attributeType;
+    private Double minValue;
+    private Double maxValue;
     private String value;
 }

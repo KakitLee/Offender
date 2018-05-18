@@ -15,6 +15,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 
+import com.project.zhi.tigerapp.Enums.AttributeType;
 import com.project.zhi.tigerapp.R;
 import com.project.zhi.tigerapp.Utils.Utils;
 import com.project.zhi.tigerapp.complexmenu.MenuModel;
@@ -140,24 +141,35 @@ public class SubjectHolder extends BaseWidgetHolder<List<List<MenuModel>>> {
         final String[] m_Text = {""};
         AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
         builder.setTitle(Utils.displayKeyAsTitle(menuModel.getAttributeKey()));
-
         final EditText input = new EditText(mContext);
-        input.setText(menuModel.getValue());
-
-        input.setInputType(InputType.TYPE_CLASS_TEXT );
-//        builder.setView(input);
-
         RangeSeekBar<Integer> rangeSeekBar = new RangeSeekBar<Integer>(mContext);
-        rangeSeekBar.setRangeValues(15, 90);
-        rangeSeekBar.setSelectedMinValue(20);
-        rangeSeekBar.setSelectedMaxValue(88);
-        rangeSeekBar.setTextAboveThumbsColorResource(R.color.black);
-        builder.setView(rangeSeekBar);
+        if(menuModel.getAttributeType() != AttributeType.NUMERIC) {
+            input.setText(menuModel.getValue());
+            input.setInputType(InputType.TYPE_CLASS_TEXT);
+            builder.setView(input);
+        }
+        else {
+            rangeSeekBar.setRangeValues(0, 100);
+            Integer minValue = menuModel.getMinValue() != null ? menuModel.getMinValue().intValue() : 0;
+            Integer maxValue = menuModel.getMaxValue() != null ? menuModel.getMaxValue().intValue() : 88;
+            rangeSeekBar.setSelectedMinValue(minValue);
+            rangeSeekBar.setSelectedMaxValue(maxValue);
+            rangeSeekBar.setTextAboveThumbsColorResource(R.color.black);
 
+            builder.setView(rangeSeekBar);
+        }
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                String value = input.getText().toString();
+                String value = "";
+                if(menuModel.getAttributeType() != AttributeType.NUMERIC){
+                    input.getText().toString();
+                }
+                else{
+                value = rangeSeekBar.getSelectedMinValue().toString() + " to " + rangeSeekBar.getSelectedMaxValue().toString();
+                menuModel.setMinValue(rangeSeekBar.getSelectedMinValue().doubleValue());
+                menuModel.setMaxValue(rangeSeekBar.getSelectedMaxValue().doubleValue());
+                }
                 menuModel.setValue(value);
                 displayView.setText(value);
                 if(value != null && !value.isEmpty()) {
