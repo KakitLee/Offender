@@ -3,6 +3,7 @@ package com.project.zhi.tigerapp.Services;
 import com.project.zhi.tigerapp.Entities.Attributes;
 import com.project.zhi.tigerapp.Entities.Entities;
 import com.project.zhi.tigerapp.Enums.AttributeType;
+import com.project.zhi.tigerapp.Utils.Utils;
 import com.project.zhi.tigerapp.complexmenu.MenuModel;
 
 import org.androidannotations.annotations.EBean;
@@ -45,8 +46,6 @@ public class DataFilteringService {
         }
         return filteredEntities;
     }
-
-
 
     public ArrayList<Entities> update(ArrayList<Entities> entities, ArrayList<MenuModel> nameMenu, ArrayList<MenuModel> mainDemoMenu, ArrayList<MenuModel> otherDemoMenu) {
         ArrayList<Entities> filteredEntities = new ArrayList<>();
@@ -135,6 +134,11 @@ public class DataFilteringService {
             var value = "";
             if(attribute.getType().equalsIgnoreCase(AttributeType.NUMERIC.name())){
                 if(criteria.getAttributeKey().equalsIgnoreCase(key) && attribute.getDoubleValue() >= criteria.getMinValue() && attribute.getDoubleValue() <= criteria.getMaxValue() ){
+                    return true;
+                }
+            }
+            else if(attribute.getType().equalsIgnoreCase(AttributeType.BOOLEAN.name())){
+                if(criteria.getAttributeKey().equalsIgnoreCase(key) && Utils.getAttributeValues(attribute).equalsIgnoreCase(criteria.getValue())){
                     return true;
                 }
             }
