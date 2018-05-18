@@ -74,7 +74,10 @@ public class ProfileActivity extends AppCompatActivity {
         Entities entity = gS.fromJson(target, Entities.class);
         ArrayList<Attributes> attributes = entity.getList();
         attributes = dataSortService.sortAttributesGeneral(attributes);
-        if(userPrefs.isFolder().get() & userPrefs.folder().get() != null && !userPrefs.folder().get().isEmpty()){
+        if(userPrefs.isUrl().get()) {
+            imageView.setImageBitmap(Utils.getImageExternal(entity,userPrefs.urlImagePath().get()));
+        }
+        else if(userPrefs.isFolder().get() & userPrefs.folder().get() != null && !userPrefs.folder().get().isEmpty()){
             imageView.setImageBitmap(Utils.getImageExternal(entity, userPrefs.folder().get()));
         }
         else {

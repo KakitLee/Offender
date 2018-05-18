@@ -83,6 +83,7 @@ public class LoginActivity extends AppCompatActivity implements NavigationView.O
 
 //        userPrefs.urlAddres().put(host_text.getText().toString());
         userPrefs.urlAddres().put("http://10.0.2.2:8080");
+//        userPrefs.urlAddres().put("http://10.13.51.118:8080");
         userPrefs.username().put(username_text.getText().toString());
         String password = password_text.getText().toString();
         String url = userPrefs.urlAddres().get()+"/oauth/token";

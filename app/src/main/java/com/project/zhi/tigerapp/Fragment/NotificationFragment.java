@@ -153,13 +153,17 @@ public class NotificationFragment extends PreferenceFragment {
 
     @Background
     void retrieveResource(){
-        getFile();
-        getPhoto();
-        unzipPhoto();
+        Boolean isGetFile = getFile();
+//        getPhoto();
+//        unzipPhoto();
+        if (isGetFile){
+            onValid("file updating");
+        }
+
 
     }
 
-    void getFile(){
+    Boolean getFile(){
         try {
             onLoading();
             String url = userPrefs.urlAddres().get()+"/upload";
@@ -188,12 +192,14 @@ public class NotificationFragment extends PreferenceFragment {
 //                    userPrefs.urlAddres().put(newUrl);
 //                    synButton.setSummary("Synchronized from service: "+userPrefs.urlAddres().get());
                     onFinishLoading();
-                    onValid("file updating");
+//                    onValid("file updating");
+                    return true;
                 }
                 else
                 {
                     onFinishLoading();
                     onInValid("file updating");
+                    return false;
                 }
             }
             else{
@@ -204,6 +210,7 @@ public class NotificationFragment extends PreferenceFragment {
         }
         catch(Exception e){
             onFinishLoading();
+            return false;
         }
     }
 
