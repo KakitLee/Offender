@@ -10,6 +10,7 @@ import android.graphics.Matrix;
 import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Bundle;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
@@ -170,7 +171,7 @@ public class PhotoActivity extends AppCompatActivity {
 
         }
 
-
+        ArrayList<String> pass = new ArrayList<String>();
 
         ArrayList<MatchedPerson> scores = new ArrayList<MatchedPerson>();
         path = userPrefs.folder().get();
@@ -220,10 +221,11 @@ public class PhotoActivity extends AppCompatActivity {
                 float score = 0;
                 score = compare(b1, b2);
                 if(score==-2){
-                    Log.d("Photo", "No face detected");
+                    Log.d("Photo", "No face detected in the taken photo");
                 }
-                if(score > 30){
+                if(score > 0.2){
                     scores.add(new MatchedPerson(score,entity));
+                    pass.add(entity.getId());
                 }
 
 
@@ -233,6 +235,10 @@ public class PhotoActivity extends AppCompatActivity {
         Collections.sort(scores);
         TextView text = this.findViewById(R.id.textView2);
         text.setText(scores.toString() );
+
+        Intent result = new Intent(this,MainActivity_.class);
+        result.putStringArrayListExtra("pass",pass);
+        startActivity(result);
 
 
 }

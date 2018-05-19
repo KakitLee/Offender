@@ -20,7 +20,9 @@
     <string name="comfirm_upload">Comfirm upload</string>
     <string name="SoundActivity">Sound</string>
     <string name="PhotoActivity">Photo</string>
+    <string name="LoginActivity">Login</string>
     <string name="title_activity_settings">Settings</string>
+    <string name="synButton">synButton</string>
 
     <!-- Strings related to Settings -->
 
@@ -92,6 +94,7 @@
     <string name="pref_title_ringtone">Ringtone</string>
     <string name="pref_ringtone_silent">Silent</string>
     <string name="syn_text">Please enter an url</string>
+    <string name="btn_login">Login</string>
 
     <string name="pref_title_vibrate">Vibrate</string>
     <string name="pref_description_using_url">Enabled to use use the internet resource for data source</string>

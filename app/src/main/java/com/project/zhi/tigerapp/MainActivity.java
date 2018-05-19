@@ -12,6 +12,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.GridView;
@@ -19,6 +20,7 @@ import android.widget.GridView;
 import com.google.gson.Gson;
 import com.project.zhi.tigerapp.Adapter.PeopleAdapter;
 import com.project.zhi.tigerapp.Entities.Entities;
+import com.project.zhi.tigerapp.FaceUtils.MatchedPerson;
 import com.project.zhi.tigerapp.Services.DataFilteringService;
 import com.project.zhi.tigerapp.Services.DataSourceServices;
 import com.project.zhi.tigerapp.Services.NavigationService;
@@ -112,6 +114,36 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
         });
 
+        if(getIntent().getStringArrayListExtra("pass")!=null) {
+            onLoading();
+//            ArrayList<MatchedPerson> people = new ArrayList<MatchedPerson>();
+//            ArrayList<Entities> list = new ArrayList<Entities>();
+//            Bundle bundle = getIntent().getExtras();
+//            if(bundle!=null) {
+//                people = (ArrayList<MatchedPerson>) bundle.getSerializable("Entites");
+//                if (people != null) {
+//                    for (MatchedPerson person : people) {
+//                        list.add(person.getEntity());
+//                    }
+//                    adapter.setDataList(list);
+//                    adapter.notifyDataSetChanged();
+//                    onDismiss();
+//                }
+//            }
+            ArrayList<Entities> list = new ArrayList<Entities>();
+            ArrayList<String> ids = getIntent().getStringArrayListExtra("pass");
+            DataSourceServices service = new DataSourceServices();
+            for(String currId : ids){
+                Entities currEntity = service.getEntityById(currId, this);
+                list.add(currEntity);
+                Log.d("photo ",currId);
+            }
+            adapter.setDataList(list);
+            adapter.notifyDataSetChanged();
+            onDismiss();
+
+
+        }
     }
 
     @UiThread

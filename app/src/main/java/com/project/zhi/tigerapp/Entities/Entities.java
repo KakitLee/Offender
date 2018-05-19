@@ -5,6 +5,7 @@ import org.simpleframework.xml.Element;
 import org.simpleframework.xml.ElementList;
 import org.simpleframework.xml.Root;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,7 +13,7 @@ import lombok.Data;
 
 @Data
 @Root(strict = false)
-public class Entities {
+public class Entities implements Serializable{
     @Element
     protected String id;
     @Attribute
@@ -21,7 +22,7 @@ public class Entities {
     protected String scratchpad;
     @ElementList(inline=true)
     private ArrayList<Attributes> list;
-    @Element(required=false)
-    protected  Attachments attachments;
+    @ElementList(inline=true, required=false)
+    protected ArrayList<Attachments> attachments;
 }
 

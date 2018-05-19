@@ -18,7 +18,14 @@ import org.simpleframework.xml.core.Persister;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.regex.Pattern;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 import lombok.experimental.var;
 import lombok.val;
@@ -67,10 +74,44 @@ public class localTest {
         }
     }
 
+    public static <T> Predicate<T> distinctByKey(Function<? super T, Object> keyExtractor)
+    {
+        Map<Object, Boolean> map = new ConcurrentHashMap<>();
+        return t -> map.putIfAbsent(keyExtractor.apply(t), Boolean.TRUE) == null;
+    }
+
+    @Test
+    public void DataSourceUniqueTypeTest(){
+        DataSourceServices dataSourceServices = new DataSourceServices();
+        Data data = getData();
+
+        List<Attributes> attributes = new ArrayList<Attributes>();
+
+        for (Entities entity: data.getEntitiesList()
+                ) {
+            attributes.addAll(entity.getList().stream().filter(distinctByKey(x -> x.getType())).collect(Collectors.toList()));
+        }
+        attributes = attributes.stream().filter(distinctByKey(x->x.getType())).collect(Collectors.toList());
+        assertEquals(4,attributes.size());
+
+    }
+
+    @Test
+    public void testDataValue(){
+        Data data = getData();
+        String value = Utils.getAttributeValues(data.getEntitiesList().get(0).getList().get(0));
+        assertEquals("TIGGA",value);
+        value = Utils.getAttributeValues(data.getEntitiesList().get(0).getList().get(4));
+        assertEquals("thin",value);
+        value = Utils.getAttributeValues(data.getEntitiesList().get(0).getList().get(2));
+        assertEquals("true",value);
+    }
+
     @Test
     public void DataSourceServiceTest(){
         DataSourceServices dataSourceServices = new DataSourceServices();
-        assertEquals(6,getData().getEntitiesList().size());
+
+        assertEquals(50,getData().getEntitiesList().size());
     }
     @Test
     public void DataFilterPersonNameTest(){
@@ -156,15 +197,12 @@ public class localTest {
         MenuService menuService = new MenuService();
         DataFilteringService dataFilteringService = new DataFilteringService();
         Data data = getData();
-        Entities entityFound = null;
-        for (Entities entity : data.getEntitiesList()
-                ) {
-            if (entity.getAttachments() != null && entity.getAttachments().getFilename().equalsIgnoreCase("bilat.jpg")) {
-                entityFound = entity;
-            }
-        }
-        assertEquals("Bilat.jpg",entityFound.getAttachments().getFilename());
-
+        assertEquals("bilat",dataSourceServices.setFileName("Bilat.jpg"));
+        assertEquals("pbm",dataSourceServices.setFileName("PbM.jpg"));
+        assertEquals("patrol_alpha__0087_image_1",dataSourceServices.setFileName("20170923 Patrol Alpha #0087 image 1.jpg"));
+//        assertEquals("bilat",dataSourceServices.setImagePath(data).getEntitiesList().get(2).getAttachments().getFilename());
+//        assertEquals("pbm",dataSourceServices.setImagePath(data).getEntitiesList().get(4).getAttachments().getFilename());
+//        assertEquals("patrol_alpha__0087_image_1",dataSourceServices.setImagePath(data).getEntitiesList().get(5).getAttachments().getFilename());
     }
 
 }

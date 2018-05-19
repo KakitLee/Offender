@@ -23,7 +23,11 @@ import org.androidannotations.annotations.sharedpreferences.SharedPref;
         @DefaultBoolean(false)
         boolean isValidDataSource();
 
+        @DefaultBoolean(false)
+        boolean isUsingUrl();
+
         String urlAddres();
+        String urlImagePath();
 
         String file();
         String folder();
@@ -31,5 +35,9 @@ import org.androidannotations.annotations.sharedpreferences.SharedPref;
         String gender();
 
         String appId();
+
+        String host();
+        String username();
+        String token();
 
     }

@@ -2,7 +2,9 @@ package com.project.zhi.tigerapp.FaceUtils;
 
 import com.project.zhi.tigerapp.Entities.Entities;
 
-public class MatchedPerson implements Comparable<MatchedPerson>{
+import java.io.Serializable;
+
+public class MatchedPerson implements Comparable<MatchedPerson>, Serializable {
     private float score;
     private Entities entity;
 
