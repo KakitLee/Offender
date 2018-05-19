@@ -191,16 +191,12 @@ public class NotificationFragment extends PreferenceFragment {
                 IOUtils.closeQuietly(inputStream);
                 IOUtils.closeQuietly(outStream);
                 if(dataSourceServices.isValidDataSource(targetFile.getAbsolutePath())) {
-//                    userPrefs.urlAddres().put(newUrl);
-//                    synButton.setSummary("Synchronized from service: "+userPrefs.urlAddres().get());
                     onFinishLoading();
-//                    onValid("file updating");
                     return true;
                 }
                 else
                 {
                     onFinishLoading();
-                    onInValid("file updating");
                     return false;
                 }
             }
