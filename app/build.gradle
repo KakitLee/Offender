@@ -67,5 +67,8 @@ dependencies {
     implementation 'lib.kashif:folderpicker:2.2'
     implementation 'com.android.support:multidex:1.0.3'
     implementation 'com.squareup.okhttp3:okhttp:3.10.0'
+
     implementation 'com.guo.android_extend:android-extend:1.0.1'
+
+    implementation 'org.florescu.android.rangeseekbar:rangeseekbar-library:0.3.0'
 }

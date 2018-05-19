@@ -27,6 +27,7 @@ import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 import lombok.experimental.var;
 
@@ -104,6 +105,23 @@ public class DataSourceServices implements IDataSourceServices {
         }
         return attributesList;
     }
+
+    public ArrayList<Attributes> getUniqueKeyAttributes(Data data){
+        ArrayList<Attributes> attributesList = new ArrayList<Attributes>();
+        ArrayList<String> uniqueKeys = new ArrayList<String>();
+        for (Entities entity: data.getEntitiesList()
+                ) {
+            for (Attributes attributes: entity.getList()
+                    ) {
+                if(!uniqueKeys.contains(attributes.getAttributeKey())){
+                    uniqueKeys.add(attributes.getAttributeKey());
+                    attributesList.add(attributes);
+                }
+            }
+        }
+        return attributesList;
+    }
+
     public Data setImagePath(Data data){
         for (Entities entity: data.getEntitiesList()
              ) {

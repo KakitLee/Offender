@@ -3,7 +3,9 @@ package com.project.zhi.tigerapp.complexmenu.holder;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.os.Build;
 import android.text.InputType;
+import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -12,12 +14,16 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.Switch;
 import android.widget.TextView;
 
 
+import com.project.zhi.tigerapp.Enums.AttributeType;
 import com.project.zhi.tigerapp.R;
 import com.project.zhi.tigerapp.Utils.Utils;
 import com.project.zhi.tigerapp.complexmenu.MenuModel;
+
+import org.florescu.android.rangeseekbar.RangeSeekBar;
 
 import java.util.List;
 
@@ -138,17 +144,48 @@ public class SubjectHolder extends BaseWidgetHolder<List<List<MenuModel>>> {
         final String[] m_Text = {""};
         AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
         builder.setTitle(Utils.displayKeyAsTitle(menuModel.getAttributeKey()));
-
         final EditText input = new EditText(mContext);
-        input.setText(menuModel.getValue());
+        RangeSeekBar<Integer> rangeSeekBar = new RangeSeekBar<Integer>(mContext);
+        Switch toggleSwitch = new Switch(mContext);
 
-        input.setInputType(InputType.TYPE_CLASS_TEXT );
-        builder.setView(input);
+
+        if(menuModel.getAttributeType() == AttributeType.BOOLEAN){
+            toggleSwitch.setText(("Is " + menuModel.getAttributeDisplayText() + " ?"));
+            toggleSwitch.setGravity(Gravity.RIGHT);
+            toggleSwitch.setChecked(menuModel.getValue() != null && menuModel.getValue().equalsIgnoreCase("Yes") ? true : false);
+            builder.setView(toggleSwitch);
+        }
+        else if(menuModel.getAttributeType() != AttributeType.NUMERIC){
+            input.setText(menuModel.getValue());
+            input.setInputType(InputType.TYPE_CLASS_TEXT);
+            builder.setView(input);
+        }
+        else{
+            rangeSeekBar.setRangeValues(0, 100);
+            Integer minValue = menuModel.getMinValue() != null ? menuModel.getMinValue().intValue() : 0;
+            Integer maxValue = menuModel.getMaxValue() != null ? menuModel.getMaxValue().intValue() : 88;
+            rangeSeekBar.setSelectedMinValue(minValue);
+            rangeSeekBar.setSelectedMaxValue(maxValue);
+            rangeSeekBar.setTextAboveThumbsColorResource(R.color.black);
+
+            builder.setView(rangeSeekBar);
+        }
 
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                String value = input.getText().toString();
+                String value = "";
+                if(menuModel.getAttributeType() == AttributeType.BOOLEAN){
+                    value = toggleSwitch.isChecked() ? "Yes" : "No";
+                }
+                else if(menuModel.getAttributeType() != AttributeType.NUMERIC){
+                    value = input.getText().toString();
+                }
+                else{
+                value = rangeSeekBar.getSelectedMinValue().toString() + " to " + rangeSeekBar.getSelectedMaxValue().toString();
+                menuModel.setMinValue(rangeSeekBar.getSelectedMinValue().doubleValue());
+                menuModel.setMaxValue(rangeSeekBar.getSelectedMaxValue().doubleValue());
+                }
                 menuModel.setValue(value);
                 displayView.setText(value);
                 if(value != null && !value.isEmpty()) {
@@ -161,20 +198,21 @@ public class SubjectHolder extends BaseWidgetHolder<List<List<MenuModel>>> {
                 }
             }
         });
+        builder.setNeutralButton("Clear", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                menuModel.setValue("");
+                menuModel.setMaxValue(null);
+                menuModel.setMaxValue(null);
+                displayView.setText("");
+                displayView.setVisibility(View.GONE);
+                imageView.setVisibility(View.INVISIBLE);
+                dialog.cancel();
+            }
+        });
         builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                String value = input.getText().toString();
-                menuModel.setValue(value);
-                displayView.setText(value);
-                if(value != null && !value.isEmpty()) {
-                    displayView.setVisibility(View.VISIBLE);
-                    imageView.setVisibility(View.VISIBLE);
-                }
-                else{
-                    displayView.setVisibility(View.GONE);
-                    imageView.setVisibility(View.INVISIBLE);
-                }
                 dialog.cancel();
             }
         });

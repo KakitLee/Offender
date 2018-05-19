@@ -89,15 +89,6 @@ public class NotificationFragment extends PreferenceFragment {
 
     }
 
-//    @PreferenceChange(R.string.pref_url_details)
-//    void urlChange(String newUrl){
-//        if(!URLUtil.isHttpUrl(newUrl) && !URLUtil.isHttpsUrl(newUrl)){
-//            onError();
-//        }
-//
-//        retrieveResource();
-//    }
-
     @PreferenceClick(R.string.synButton)
     void buttonClick(){
         String url = userPrefs.urlAddres().get();
@@ -121,7 +112,7 @@ public class NotificationFragment extends PreferenceFragment {
 
     @UiThread
     void onError(){
-        Utils.setAlertDialog("Error", "Error!", this.getActivity()).setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+        Utils.setAlertDialog("Warning", "'Using Internet URL' need to be switch on before Internet synchronize", this.getActivity()).setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
 
@@ -153,13 +144,27 @@ public class NotificationFragment extends PreferenceFragment {
 
     @Background
     void retrieveResource(){
-        getFile();
-        getPhoto();
-        unzipPhoto();
+        Boolean isGetFile = getFile();
+        Boolean isGetPhoto = getPhoto();
+        Boolean isUnzip = unzipPhoto();
+        if (isGetFile && isGetPhoto && isUnzip){
+            onValid("file updating");
+        }else {
+            if (!isGetFile){
+                onInValid("file updating");
+            }
+            if (!isGetFile){
+                onInValid("photo updating");
+            }
+            if (!isUnzip){
+                onInValid("photo unzip");
+            }
+        }
+
 
     }
 
-    void getFile(){
+    Boolean getFile(){
         try {
             onLoading();
             String url = userPrefs.urlAddres().get()+"/upload";
@@ -188,26 +193,28 @@ public class NotificationFragment extends PreferenceFragment {
 //                    userPrefs.urlAddres().put(newUrl);
 //                    synButton.setSummary("Synchronized from service: "+userPrefs.urlAddres().get());
                     onFinishLoading();
-                    onValid("file updating");
+//                    onValid("file updating");
+                    return true;
                 }
                 else
                 {
                     onFinishLoading();
                     onInValid("file updating");
+                    return false;
                 }
             }
             else{
                 onFinishLoading();
-                onError();
                 throw new IOException("Unexpected code " + response);
             }
         }
         catch(Exception e){
             onFinishLoading();
+            return false;
         }
     }
 
-    void getPhoto(){
+    Boolean getPhoto(){
         try {
             onLoading();
             String url = userPrefs.urlAddres().get()+"/images/"+userPrefs.username().get();
@@ -222,7 +229,9 @@ public class NotificationFragment extends PreferenceFragment {
             if (response.isSuccessful()) {
                 InputStream inputStream = response.body().byteStream();
                 // save the file at here!!!!!!!!!!!!!!!!!!!
-                File targetFile = new File(this.getActivity().getFilesDir() + "/images/", "images.zip");
+                String imagePath = this.getActivity().getFilesDir() + "/images/";
+                File targetFile = new File(imagePath, "images.zip");
+                userPrefs.urlImagePath().put(imagePath);
                 OutputStream outStream = new FileOutputStream(targetFile);
 
                 byte[] buffer = new byte[8 * 1024];
@@ -233,33 +242,28 @@ public class NotificationFragment extends PreferenceFragment {
                 IOUtils.closeQuietly(inputStream);
                 IOUtils.closeQuietly(outStream);
                 onFinishLoading();
-                onValid("photo updating");
+                return true;
             }
             else{
                 onFinishLoading();
-                onInValid("photo updating");
-//                onError();
                 throw new IOException("Unexpected code " + response);
             }
         }
         catch(Exception e){
             onFinishLoading();
-            onError();
+            return false;
         }
     }
 
-    void unzipPhoto(){
+    Boolean unzipPhoto(){
         try{
-
+            onLoading();
             unzip("images.zip",this.getActivity().getFilesDir() + "/images/");
-            onValid("photo unzip");
-//            onFinishLoading();
+            onFinishLoading();
+            return true;
         }catch (IOException e){
-            onInValid("photo unzip");
-//            onFinishLoading();
-//            onError();
-            System.out.print("ZIP IO EXCEPTION");
-            e.printStackTrace();
+            onFinishLoading();
+            return false;
         }
     }
 

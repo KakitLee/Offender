@@ -28,7 +28,7 @@
         <item
             android:id="@+id/nav_syn"
             android:icon="@drawable/syn"
-            android:title="Synchronize"/>
+            android:title="Setting"/>
 
     </group>
 
