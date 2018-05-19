@@ -62,5 +62,6 @@
     <color name="phone_code">#aaaaaa</color>
     <!--LuYang-->
 
+    <color name="tab_strip">#B42929</color>
     <color name="card_bg">#EBEBEB</color>
 </resources>
