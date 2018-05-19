@@ -151,6 +151,7 @@ public class localTest {
 
         assertEquals(50,getData().getEntitiesList().size());
     }
+
     @Test
     public void DataFilterPersonNameTest(){
         DataFilteringService dataFilteringService = new DataFilteringService();

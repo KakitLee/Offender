@@ -112,6 +112,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
         });
 
+        if(getIntent().getStringExtra("voice") != null && !getIntent().getStringExtra("voice").isEmpty()){
+            onLoading();
+            adapter.setDataList(dataSourceServices.getEntityById(this, getIntent().getStringExtra("voice")));
+            adapter.notifyDataSetChanged();
+            onDismiss();
+        }
+
     }
 
     @UiThread

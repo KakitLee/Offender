@@ -20,6 +20,8 @@ import android.widget.Chronometer;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.project.zhi.tigerapp.MainActivity_;
+import com.project.zhi.tigerapp.ProfileActivity_;
 import com.qingyangli.offender.AudioDispatcher;
 import com.qingyangli.offender.GaussianMixture;
 import com.qingyangli.offender.Matrix;
@@ -492,6 +494,28 @@ public class RecordFragment extends Fragment {
                 mLikelihoodValuePrompt.setText(String.valueOf(max));
                 mMatchedNameValuePrompt.setText(matchedModelName);
                 Log.i(TAG,"likelihood is:"+ String.valueOf(modelLikelihood[index]));
+                String id = "";
+                boolean isMatched = true;
+                if(matchedModelName.toLowerCase().equalsIgnoreCase("george")){
+                    id = "ZHENG_George_BHU/0712/2018";
+                }
+                else if(matchedModelName.toLowerCase().equalsIgnoreCase("shenyi")){
+                    id = "YI_Eason_BHU/0712/2018";
+                }
+                else if(matchedModelName.toLowerCase().equalsIgnoreCase("qingyangli")){
+                    id = "LI_qingyang_BHU/0712/2018";
+                }
+                else if (matchedModelName.toLowerCase().equalsIgnoreCase("shunshunduan")){
+                    id = "DUAN_shunshun_BHU/0712/2018";
+                }
+                else{
+                    isMatched = false;
+                }
+                if(isMatched) {
+                    Intent newIntend = new Intent(this.getActivity(), MainActivity_.class);
+                    newIntend.putExtra("voice", id);
+                    startActivity(newIntend);
+                }
             } catch (IOException e) {
                 e.printStackTrace();
             }

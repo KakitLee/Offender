@@ -58,6 +58,18 @@ public class DataSourceServices implements IDataSourceServices {
         }
     }
 
+    public ArrayList<Entities> getEntityById(Context context, String id){
+        for (Entities entity: getPeopleSource(context).getEntitiesList()
+             ) {
+            if(entity.getId().equalsIgnoreCase(id)){
+                ArrayList<Entities> matchedEntity = new ArrayList<Entities>();
+                matchedEntity.add(entity);
+                return matchedEntity;
+            }
+        }
+        return null;
+    }
+
     @Override
     public Data getPeopleSource(Context context) {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
