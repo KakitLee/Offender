@@ -3,7 +3,6 @@ package com.project.zhi.tigerapp.Services;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
-import android.util.Log;
 
 import com.project.zhi.tigerapp.Entities.Attachments;
 import com.project.zhi.tigerapp.Entities.Attributes;
@@ -57,6 +56,18 @@ public class DataSourceServices implements IDataSourceServices {
         finally {
             return isValid;
         }
+    }
+
+    public ArrayList<Entities> getEntityById(Context context, String id){
+        for (Entities entity: getPeopleSource(context).getEntitiesList()
+             ) {
+            if(entity.getId().equalsIgnoreCase(id)){
+                ArrayList<Entities> matchedEntity = new ArrayList<Entities>();
+                matchedEntity.add(entity);
+                return matchedEntity;
+            }
+        }
+        return null;
     }
 
     @Override
@@ -142,29 +153,18 @@ public class DataSourceServices implements IDataSourceServices {
         fileName = FilenameUtils.removeExtension(fileName);
         return  fileName;
     }
-    public Entities getEntityByImageName(String imageName, Context context, Data data){
-        //111
-        //long startTime = System.nanoTime();
-
-        //111
-        //22
-
-        //Log.d("getEntity 1",Double.toString((double)(System.nanoTime() - startTime)/1000000000));
+    public Entities getEntityByImageName(String imageName, Context context){
+        Data data = this.getPeopleSource(context);
         for (Entities entity: data.getEntitiesList()
              ) {
             if (entity.getAttachments() != null){
                 for(Attachments attachment:entity.getAttachments()) {
                     if (attachment.getFilename().equalsIgnoreCase(imageName)) {
-                        //Log.d("getEntity 2",Double.toString((double)(System.nanoTime() - startTime)/1000000000));
                         return entity;
                     }
                 }
             }
         }
-        //22
-        //Log.d("getEntity 3",imageName);
-        //Log.d("getEntity 3",Double.toString((double)(System.nanoTime() - startTime)/1000000000));
-
         return null;
     }
 
@@ -183,5 +183,4 @@ public class DataSourceServices implements IDataSourceServices {
         return null;
     }
 }
-
 

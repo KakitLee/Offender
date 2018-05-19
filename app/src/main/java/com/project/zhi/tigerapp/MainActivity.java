@@ -12,7 +12,6 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.GridView;
@@ -114,7 +113,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
         });
 
-        if(getIntent().getStringArrayListExtra("pass")!=null) {
+        if(getIntent().getStringExtra("voice") != null && !getIntent().getStringExtra("voice").isEmpty()){
+            onLoading();
+            adapter.setDataList(dataSourceServices.getEntityById(this, getIntent().getStringExtra("voice")));
+            adapter.notifyDataSetChanged();
+            onDismiss();
+        }
+
+    }
+	if(getIntent().getStringArrayListExtra("pass")!=null) {
             onLoading();
 //            ArrayList<MatchedPerson> people = new ArrayList<MatchedPerson>();
 //            ArrayList<Entities> list = new ArrayList<Entities>();
@@ -144,7 +151,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
 
         }
-    }
 
     @UiThread
     void onLoading(){

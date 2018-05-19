@@ -151,6 +151,7 @@ public class localTest {
 
         assertEquals(50,getData().getEntitiesList().size());
     }
+
     @Test
     public void DataFilterPersonNameTest(){
         DataFilteringService dataFilteringService = new DataFilteringService();
@@ -228,11 +229,10 @@ public class localTest {
         assertEquals("firstname",attributes.get(0).getAttributeKey());
 
     }
-
     @Test
-    public void ImagePathTest() {
+    public void ImagePathTest(){
         DataSourceServices dataSourceServices = new DataSourceServices();
-        MenuService menuService = new MenuService();
+        MenuService menuService= new MenuService();
         DataFilteringService dataFilteringService = new DataFilteringService();
         Data data = getData();
         assertEquals("bilat",dataSourceServices.setFileName("Bilat.jpg"));
@@ -242,5 +242,4 @@ public class localTest {
 //        assertEquals("pbm",dataSourceServices.setImagePath(data).getEntitiesList().get(4).getAttachments().getFilename());
 //        assertEquals("patrol_alpha__0087_image_1",dataSourceServices.setImagePath(data).getEntitiesList().get(5).getAttachments().getFilename());
     }
-
 }
