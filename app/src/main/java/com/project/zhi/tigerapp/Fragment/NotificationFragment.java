@@ -41,6 +41,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.lang.reflect.Field;
 import java.nio.file.StandardCopyOption;
 import java.util.Calendar;
 import java.util.zip.ZipEntry;
@@ -230,6 +231,8 @@ public class NotificationFragment extends PreferenceFragment {
                 InputStream inputStream = response.body().byteStream();
                 // save the file at here!!!!!!!!!!!!!!!!!!!
                 String imagePath = this.getActivity().getFilesDir() + "/images/";
+                File imageFile = new File(this.getActivity().getFilesDir(),"images");
+                deleteFile(imageFile);
                 File targetFile = new File(imagePath, "images.zip");
                 userPrefs.urlImagePath().put(imagePath);
                 OutputStream outStream = new FileOutputStream(targetFile);
@@ -326,4 +329,27 @@ public class NotificationFragment extends PreferenceFragment {
             e.printStackTrace();
         }
     }
+
+    private void deleteFile(File file) {
+        if (file.isDirectory()) {
+            File[] files = file.listFiles();
+            for (int i = 0; i < files.length; i++) {
+                File f = files[i];
+                f.delete();
+            }
+        }
+    }
+
+//    void listFile(File file){
+//        System.out.println("======================");
+//        if (file.isDirectory()){
+//            File[] files = file.listFiles();
+//            for (int i = 0; i < files.length; i++) {
+//                File f = files[i];
+//                System.out.println(f.getName());
+//            }
+//        }
+//        System.out.println("======================");
+//    }
+
 }
