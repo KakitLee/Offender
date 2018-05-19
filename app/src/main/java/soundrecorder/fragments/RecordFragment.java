@@ -95,17 +95,19 @@ public class RecordFragment extends Fragment {
     final String storageRootPath= String.valueOf(Environment.getExternalStorageDirectory());
     final static String Thesis_Tarsos_CSV_PATH = "Thesis/Tarsos/CSV";
     final static String Thesis_Tarsos_Logs_PATH = "Thesis/Tarsos/Logs";
-    final File folder = new File(storageRootPath+"/Thesis/Tarsos/Covs");
+    final File folderPara = new File(storageRootPath+"/Thesis/Tarsos/Covs");
+    final File folderModel = new File(storageRootPath+"/Thesis/Tarsos/model");
 
     final static String csvFileName = "tarsos_mfcc.csv";
     //final String batteryFileName = "battery_data.txt";
     final static String trainedWeightsPath = "Thesis/Tarsos/Weights";
     final static String trainedMeansPath = "Thesis/Tarsos/Means";
     final static String trainedCovsPath = "Thesis/Tarsos/Covs";
+    final static String trainedModelPath="Thesis/Tarsos/model";
     //final static String trainedFileName = "fdnc0.txt";
     //final static String trainedFileName = "lqy_test_android_mfcc_model_001_big.txt";
     //final static String trainedFileName = "lqy_test_android_mfcc_model_002_big.txt";
-    final static String trainedFileName = "QingyangLi_andriod_MFCC_model.txt";
+    //final static String trainedFileName = "QingyangLi_andriod_MFCC_model.txt";
     final static int CompononetsNum = 32;
     final static int FeatureLength = 13;
     //********************************************************************************************
@@ -116,8 +118,10 @@ public class RecordFragment extends Fragment {
      private AudioRecord recorder = null;
      private Thread recordingThread = null;
      private boolean isRecording = false;
-    //String pcmFilePath=Environment.getExternalStorageDirectory() +"/QingyangLi.pcm";
-    //String mfccFilePath=Environment.getExternalStorageDirectory() +"/QingyangLi_andriod_MFCC.txt";
+    String pcmFilePath=Environment.getExternalStorageDirectory() +"/ShenYi.pcm";
+    String mfccFilePath=Environment.getExternalStorageDirectory() +"/ShenYi_andriod_MFCC.txt";
+    //String pcmFilePath=Environment.getExternalStorageDirectory() +"/ShunshunDuan.pcm";
+    //String mfccFilePath=Environment.getExternalStorageDirectory() +"/ShunshunDuan_andriod_MFCC.txt";
      //String pcmFilePath=Environment.getExternalStorageDirectory() +"/lqy_test_001_big.pcm";
     //String mfccFilePath=Environment.getExternalStorageDirectory() +"/lqy_test_android_mfcc_001_big.txt";
      //String pcmFilePath=Environment.getExternalStorageDirectory() +"/lqy_test_001_little.pcm";
@@ -126,8 +130,8 @@ public class RecordFragment extends Fragment {
     //String mfccFilePath=Environment.getExternalStorageDirectory() +"/current_lqy_test_android_mfcc_001_little.txt";
      //String pcmFilePath=Environment.getExternalStorageDirectory() +"/current_lqy_test_002_big.pcm";
      //String mfccFilePath=Environment.getExternalStorageDirectory() +"/current_lqy_test_android_mfcc_002_big.txt";
-    String pcmFilePath= Environment.getExternalStorageDirectory() +"/current.pcm";
-    String mfccFilePath= Environment.getExternalStorageDirectory() +"/current.txt";
+    //String pcmFilePath= Environment.getExternalStorageDirectory() +"/current.pcm";
+    //String mfccFilePath= Environment.getExternalStorageDirectory() +"/current.txt";
     String[] modelName;
     double[] modelLikelihood;
     int BufferElements2Rec = 1024; // want to play 2048 (2K) since 2 bytes we use only 1024
@@ -465,11 +469,18 @@ public class RecordFragment extends Fragment {
             */
 
             try {
-                modelNameInFolder(folder);
+                /*modelNameInFolder(folderPara);
                 modelLikelihood=new double[modelCount];
                 for(int i=0;i<modelCount;i++){
                     modelLikelihood[i]=audioFeatureClassify(mfccList,modelName[i]);
                 }
+                */
+                modelNameInFolder(folderModel);
+                modelLikelihood=new double[modelCount];
+                for(int i=0;i<modelCount;i++){
+                    modelLikelihood[i]=audioFeatureClassifyNew(mfccList,modelName[i]);
+                }
+
                 double max=-9999999;
                 int index=-1;
                 for (int i = 0; i < modelCount; i++)
@@ -630,9 +641,9 @@ public class RecordFragment extends Fragment {
     private void modelNameInFolder(final File folder) {
         modelCount=0;
         File[] files = folder.listFiles();
+        modelName= new String[files.length];
         for (int i = 0; i < files.length; i++)
         {
-            modelName= new String[files.length];
             modelName[modelCount]=new String(files[i].getName());
             modelCount++;
         }
@@ -649,6 +660,26 @@ public class RecordFragment extends Fragment {
         }
         */
     }
+ private double audioFeatureClassifyNew(ArrayList<float[]> mfccFeatureInput, String trainedFileName)throws IOException{
+     String traindModelStoragePath = Environment.getExternalStorageDirectory()
+             + File.separator + trainedModelPath + File.separator + trainedFileName;
+     GaussianMixture gmmModel = GaussianMixture.readGMM(traindModelStoragePath);
+     //mfcc feature for collected audio sample
+     PointList mfccFeature = new PointList(FeatureLength);
+     int pointListNum= mfccFeatureInput.size();
+     for (int i=0 ;i<pointListNum ; i++ ){
+         float[] tempFeature = mfccFeatureInput.get(i);
+         double[] tempFeatureTrans = new double[FeatureLength];
+         for (int j = 0; j < FeatureLength; j++) {
+             tempFeatureTrans[j] = (double)tempFeature[j];
+         }
+         mfccFeature.add(tempFeatureTrans);
+     }
+     double result=gmmModel.getLogLikelihood(mfccFeature);
+
+     return result;
+
+ }
 
 
 
@@ -714,6 +745,7 @@ public class RecordFragment extends Fragment {
         return result;
 
     }
+    /*
     private void simpleTest() throws IOException {
         double[] weights = new double[CompononetsNum];
         Matrix[] means = new Matrix[CompononetsNum];
@@ -759,5 +791,5 @@ public class RecordFragment extends Fragment {
         }
         //construct gmm model
         GaussianMixture gmmModel = new GaussianMixture(weights, means, covs);
-    }
+    }*/
 }
