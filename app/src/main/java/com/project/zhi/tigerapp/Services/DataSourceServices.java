@@ -142,18 +142,29 @@ public class DataSourceServices implements IDataSourceServices {
         fileName = FilenameUtils.removeExtension(fileName);
         return  fileName;
     }
-    public Entities getEntityByImageName(String imageName, Context context){
-        Data data = this.getPeopleSource(context);
+    public Entities getEntityByImageName(String imageName, Context context, Data data){
+        //111
+        //long startTime = System.nanoTime();
+
+        //111
+        //22
+
+        //Log.d("getEntity 1",Double.toString((double)(System.nanoTime() - startTime)/1000000000));
         for (Entities entity: data.getEntitiesList()
              ) {
             if (entity.getAttachments() != null){
                 for(Attachments attachment:entity.getAttachments()) {
                     if (attachment.getFilename().equalsIgnoreCase(imageName)) {
+                        //Log.d("getEntity 2",Double.toString((double)(System.nanoTime() - startTime)/1000000000));
                         return entity;
                     }
                 }
             }
         }
+        //22
+        //Log.d("getEntity 3",imageName);
+        //Log.d("getEntity 3",Double.toString((double)(System.nanoTime() - startTime)/1000000000));
+
         return null;
     }
 

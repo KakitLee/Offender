@@ -9,7 +9,7 @@ import lombok.Data;
 
 @Data
 @Root(strict = false)
-public class Attachments implements Serializable{
+public class Attachments{
     @Attribute
     protected String filename;
     @Attribute

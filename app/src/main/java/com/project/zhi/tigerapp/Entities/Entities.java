@@ -13,7 +13,7 @@ import lombok.Data;
 
 @Data
 @Root(strict = false)
-public class Entities implements Serializable{
+public class Entities{
     @Element
     protected String id;
     @Attribute

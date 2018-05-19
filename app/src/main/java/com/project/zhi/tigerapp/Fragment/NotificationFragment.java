@@ -43,6 +43,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.StandardCopyOption;
 import java.util.Calendar;
+import java.util.concurrent.TimeUnit;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -219,6 +220,12 @@ public class NotificationFragment extends PreferenceFragment {
             onLoading();
             String url = userPrefs.urlAddres().get()+"/images/"+userPrefs.username().get();
             System.out.println(url);
+            client = new OkHttpClient.Builder()
+                    .connectTimeout(10, TimeUnit.SECONDS)
+                    .writeTimeout(10, TimeUnit.SECONDS)
+                    .readTimeout(1000, TimeUnit.SECONDS)
+                    .build();
+
             Request request = new Request.Builder()
                     .url(url)
                     .header("Authorization", "Bearer"+ userPrefs.token().get())

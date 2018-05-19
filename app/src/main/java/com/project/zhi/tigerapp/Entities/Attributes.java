@@ -9,7 +9,7 @@ import lombok.Data;
 
 @Data
 @Root(strict = false)
-public class Attributes implements Serializable{
+public class Attributes{
     @Attribute
     protected String attributeKey;
     @Attribute

@@ -20,7 +20,7 @@ import android.widget.GridView;
 import com.google.gson.Gson;
 import com.project.zhi.tigerapp.Adapter.PeopleAdapter;
 import com.project.zhi.tigerapp.Entities.Entities;
-import com.project.zhi.tigerapp.FaceUtils.MatchedPerson;
+import com.project.zhi.tigerapp.FaceUtils.MatchedImage;
 import com.project.zhi.tigerapp.Services.DataFilteringService;
 import com.project.zhi.tigerapp.Services.DataSourceServices;
 import com.project.zhi.tigerapp.Services.NavigationService;
