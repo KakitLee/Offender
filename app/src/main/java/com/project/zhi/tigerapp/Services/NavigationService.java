@@ -1,8 +1,14 @@
 package com.project.zhi.tigerapp.Services;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.support.design.widget.NavigationView;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.view.MenuItem;
+import android.widget.Toolbar;
 
 import com.project.zhi.tigerapp.LoginActivity_;
 import com.project.zhi.tigerapp.MainActivity_;
@@ -15,6 +21,8 @@ import com.project.zhi.tigerapp.LoginActivity_;
 
 import org.androidannotations.annotations.EBean;
 
+import soundrecorder.activities.MainActivityVoice;
+
 @EBean
 public class NavigationService {
     public Intent getActivity(Context activity, MenuItem item){
@@ -25,7 +33,7 @@ public class NavigationService {
         } else if (id == R.id.nav_gallery) {
             return new Intent(activity, UploadActivity_.class);
         }else if(id == R.id.nav_sound){
-            return new Intent(activity, SoundActivity_.class);
+            return new Intent(activity, MainActivityVoice.class);
         }else if(id == R.id.nav_photo){
             return new Intent(activity, PhotoActivity_.class);
         }else if (id == R.id.nav_syn){
@@ -35,4 +43,5 @@ public class NavigationService {
         }
         return new Intent(activity, activity.getClass());
     }
+
 }

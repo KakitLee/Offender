@@ -147,29 +147,10 @@ public class RecordFragment extends Fragment {
     int modelCount=0;
     //*/
 
-    private void checkRecordPermission() {
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.RECORD_AUDIO)
-                    != PackageManager.PERMISSION_GRANTED) {
-
-                ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.RECORD_AUDIO},
-                        123);
-            }
-        }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                    != PackageManager.PERMISSION_GRANTED) {
-
-                ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
-                        123);
-            }
-        }
-    }
 
 
         private void startRecording() {
-        checkRecordPermission();
          recorder = new AudioRecord(MediaRecorder.AudioSource.MIC,
                  RECORDER_SAMPLERATE, RECORDER_CHANNELS,
                  RECORDER_AUDIO_ENCODING, BufferElements2Rec * BytesPerElement);
