@@ -98,7 +98,7 @@ public class DataFilteringService {
             if(attribute.getType().equalsIgnoreCase("TEXT")){
                 value = attribute.getStringValue();
             }
-            else{
+            else if (attribute.getDoubleValue()!=null){
                 value = attribute.getDoubleValue().toString();
             }
             if(value.toLowerCase().contains(query.toLowerCase())){
