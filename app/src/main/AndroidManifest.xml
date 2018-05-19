@@ -37,17 +37,17 @@
             <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
             <!-- </intent-filter> -->
         </activity>
-        <activity android:name="soundrecorder.activities.MainActivityVoice"
+        <activity android:name="com.qingyangli.offender.activities.MainActivityVoice"
             android:label="@string/app_name" >
         </activity>
         <activity
-            android:name="soundrecorder.activities.SettingsActivityVoice"
+            android:name="com.qingyangli.offender.activities.SettingsActivityVoice"
             android:screenOrientation="portrait"
             android:label="@string/action_settings"
-            android:parentActivityName="soundrecorder.activities.MainActivityVoice">
+            android:parentActivityName="com.qingyangli.offender.activities.MainActivityVoice">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="soundrecorder.activities.MainActivityVoice" />
+                android:value="com.qingyangli.offender.activities.MainActivityVoice" />
         </activity>
 
         <activity
