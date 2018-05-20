@@ -59,6 +59,7 @@ import com.project.zhi.tigerapp.Utils.Utils;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -313,7 +314,7 @@ public class PhotoActivity extends AppCompatActivity implements NavigationView.O
                 if (score == -1) {
                     Log.d("Photo", "No face detected in the photo file");
                 }
-                if (score > 0.40 && scores.contains(new MatchedImage(score, imageName))==false) {
+                if (score > 0.35) {
                     Log.d("Photo 2 ", String.valueOf(score));
                     scores.add(new MatchedImage(score, imageName));
                     //pass.add(entity.getId());
@@ -325,18 +326,23 @@ public class PhotoActivity extends AppCompatActivity implements NavigationView.O
 
             Log.d("Photo 001",String.valueOf(scores.size()));
             Data data1 = dataSourceServices.getPeopleSource(this);
-            Collections.sort(scores);
+
+
+            Collections.sort(scores,Utils.getComparator());
+
+            //scores = descendingOrder(scores);
+
             for (MatchedImage currImage : scores) {
                 String imageName = currImage.getImage();
                 Entities entity = dataSourceServices.getEntityByImageName(imageName, this, data1);
-                if (entity != null) {
+                if (entity != null && !pass.contains(entity.getId())) {
                     Log.d("photo 001", entity.getId()+" "+currImage.getScore());
                     pass.add(entity.getId());
                 }
             }
         }
 
-
+        Log.d("aaaaaaaaaaaa11", scores.toString());
         error1 = engine1.AFR_FSDK_UninitialEngine();
 //        Collections.sort(scores);
 //        TextView text = this.findViewById(R.id.textView2);
@@ -346,6 +352,36 @@ public class PhotoActivity extends AppCompatActivity implements NavigationView.O
         Intent result = new Intent(this,MainActivity_.class);
         result.putStringArrayListExtra("pass",pass);
         startActivity(result);
+    }
+
+
+    protected ArrayList<MatchedImage> descendingOrder(ArrayList<MatchedImage> result){
+        ArrayList<MatchedImage> tem = new ArrayList<MatchedImage>();
+        ArrayList<MatchedImage> ordered = new ArrayList<MatchedImage>();
+        tem = result;
+        int loop = 0;
+        if(ordered.size()>=10){
+            loop = 10;
+        }
+        else{
+            loop = ordered.size();
+        }
+        for(int i = 0; i < loop; i++) {
+
+            float maxScore = 0;
+            String maxImage = "";
+            int index = 0;
+            for (MatchedImage face : tem) {
+                if (face.getScore() > maxScore) {
+                    tem.remove(index);
+                    maxScore = face.getScore();
+                    maxImage = face.getImage();
+                }
+                index++;
+            }
+            ordered.add(new MatchedImage(maxScore,maxImage));
+        }
+        return ordered;
     }
 
     @Override
@@ -358,8 +394,13 @@ public class PhotoActivity extends AppCompatActivity implements NavigationView.O
 
 }
 
-    public boolean inArrayList(String id, ArrayList<String> list){
+    public boolean inArrayList(String id, ArrayList<MatchedImage> list){
+        for(MatchedImage image : list){
+            if(image.getImage().equalsIgnoreCase(id)){
+                return true;
+            }
 
+        }
         return false;
     }
 

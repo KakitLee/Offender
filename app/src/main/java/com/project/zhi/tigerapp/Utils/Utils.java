@@ -17,6 +17,7 @@ import com.project.zhi.tigerapp.Entities.Attachments;
 import com.project.zhi.tigerapp.Entities.Attributes;
 import com.project.zhi.tigerapp.Entities.Entities;
 import com.project.zhi.tigerapp.Enums.AttributeType;
+import com.project.zhi.tigerapp.FaceUtils.MatchedImage;
 import com.project.zhi.tigerapp.R;
 import com.project.zhi.tigerapp.complexmenu.MenuModel;
 
@@ -43,6 +44,16 @@ public class Utils {
         };
         return comparator;
     }
+    public static Comparator<MatchedImage> getComparator(){
+        Comparator<MatchedImage> comparator = new Comparator<MatchedImage>() {
+            @Override
+            public int compare(MatchedImage o1, MatchedImage o2) {
+                return Float.compare(o2.getScore(),o1.getScore());
+            }
+        };
+        return comparator;
+    }
+
 
     public static String getAttributeValues(Attributes attribute){
         if(attribute.getType().equalsIgnoreCase(AttributeType.TEXT.name())){

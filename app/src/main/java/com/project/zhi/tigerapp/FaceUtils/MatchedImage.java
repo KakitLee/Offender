@@ -1,5 +1,7 @@
 package com.project.zhi.tigerapp.FaceUtils;
 
+import android.support.annotation.NonNull;
+
 import com.project.zhi.tigerapp.Entities.Entities;
 
 import java.io.Serializable;
@@ -21,10 +23,16 @@ public class MatchedImage implements Comparable<MatchedImage> {
         return this.image;
     }
 
+    @Override
+    public int compareTo(MatchedImage o) {
+       if(this.score<o.getScore()){
+                return -1;
 
-    public int compareTo(MatchedImage comparePerson) {
-        float compareSocre=((MatchedImage)comparePerson).getScore();
-        return (int)(compareSocre - this.score);
+        }
+        else{
+            return 1;
+        }
+        //return (int)(compareSocre - this.score);
 
     }
 
@@ -32,5 +40,6 @@ public class MatchedImage implements Comparable<MatchedImage> {
     public String toString() {
         return "image=" + this.image + ", score=" + this.score;
     }
+
 
 }
