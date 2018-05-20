@@ -12,6 +12,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.GridView;
@@ -120,9 +121,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             onDismiss();
         }
 
-    }
-	if(getIntent().getStringArrayListExtra("pass")!=null) {
-            onLoading();
+
+	if(getIntent().getStringArrayListExtra("pass")!=null)
+    {
+        onLoading();
 //            ArrayList<MatchedPerson> people = new ArrayList<MatchedPerson>();
 //            ArrayList<Entities> list = new ArrayList<Entities>();
 //            Bundle bundle = getIntent().getExtras();
@@ -137,17 +139,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 //                    onDismiss();
 //                }
 //            }
-            ArrayList<Entities> list = new ArrayList<Entities>();
-            ArrayList<String> ids = getIntent().getStringArrayListExtra("pass");
-            DataSourceServices service = new DataSourceServices();
-            for(String currId : ids){
-                Entities currEntity = service.getEntityById(currId, this);
-                list.add(currEntity);
-                Log.d("photo ",currId);
-            }
-            adapter.setDataList(list);
-            adapter.notifyDataSetChanged();
-            onDismiss();
+        ArrayList<Entities> list = new ArrayList<Entities>();
+        ArrayList<String> ids = getIntent().getStringArrayListExtra("pass");
+        DataSourceServices service = new DataSourceServices();
+        for (String currId : ids) {
+            Entities currEntity = service.getEntityById(currId, this);
+            list.add(currEntity);
+            Log.d("photo ", currId);
+        }
+        adapter.setDataList(list);
+        adapter.notifyDataSetChanged();
+        onDismiss();
+    }
 
 
         }

@@ -265,6 +265,13 @@ public class NotificationFragment extends PreferenceFragment {
         try{
             onLoading();
             unzip("images.zip",this.getActivity().getFilesDir() + "/images/");
+
+//            File imageFile = new File(this.getActivity().getFilesDir(),"images");
+//            listFile(imageFile);
+//            imagesFilter(imageFile);
+//            listFile(imageFile);
+//            imageFile.delete();
+//            System.out.println(imageFile.exists());
             onFinishLoading();
             return true;
         }catch (IOException e){
@@ -343,16 +350,28 @@ public class NotificationFragment extends PreferenceFragment {
         }
     }
 
-//    void listFile(File file){
-//        System.out.println("======================");
-//        if (file.isDirectory()){
+    void listFile(File file){
+        System.out.println("======================");
+        if (file.isDirectory()){
+            File[] files = file.listFiles();
+            for (int i = 0; i < files.length; i++) {
+                File f = files[i];
+                System.out.println(f.getName());
+            }
+        }
+        System.out.println("======================");
+    }
+
+//    void imagesFilter(File file){
+//        if (file.isDirectory()) {
 //            File[] files = file.listFiles();
 //            for (int i = 0; i < files.length; i++) {
 //                File f = files[i];
-//                System.out.println(f.getName());
+//                if (f.getName() == ".DS_Store"){
+//                    f.delete();
+//                }
 //            }
 //        }
-//        System.out.println("======================");
 //    }
 
 }

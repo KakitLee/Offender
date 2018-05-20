@@ -24,8 +24,7 @@ public class MatchedImage implements Comparable<MatchedImage> {
 
     public int compareTo(MatchedImage comparePerson) {
         float compareSocre=((MatchedImage)comparePerson).getScore();
-        /* For Ascending order*/
-        return (int)(this.score-compareSocre);
+        return (int)(compareSocre - this.score);
 
     }
 

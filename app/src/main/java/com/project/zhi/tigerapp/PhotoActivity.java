@@ -2,6 +2,7 @@ package com.project.zhi.tigerapp;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
@@ -15,13 +16,19 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
+import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.arcsoft.facerecognition.AFR_FSDKError;
 import com.arcsoft.facedetection.AFD_FSDKEngine;
@@ -39,12 +46,16 @@ import com.project.zhi.tigerapp.FaceUtils.MatchedImage;
 import com.project.zhi.tigerapp.Services.DataSourceServices;
 
 import org.androidannotations.annotations.AfterViews;
+import org.androidannotations.annotations.Background;
 import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.EActivity;
+import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.sharedpreferences.Pref;
 
+import com.project.zhi.tigerapp.Services.NavigationService;
 import com.project.zhi.tigerapp.Services.UserPrefs;
 import com.project.zhi.tigerapp.Services.UserPrefs_;
+import com.project.zhi.tigerapp.Utils.Utils;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -52,49 +63,66 @@ import java.util.Collections;
 import java.util.List;
 
 @EActivity (R.layout.activity_photo)
-public class PhotoActivity extends AppCompatActivity {
+public class PhotoActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
 
     @Pref
     UserPrefs_ userPrefs;
 
     private static final int REQUEST_CODE_IMAGE_CAMERA = 1;
     private static final int MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 10;
-    private static final int  MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE = 11;
+    private static final int MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE = 11;
     private static final int MY_PERMISSIONS_REQUEST_CAMERA = 12;
+    private static final int MY_PERMISSIONS_REQUEST_CODE = 123;
     String path;
     private Uri mPath;
+    AFR_FSDKEngine engine1;
+    AFR_FSDKError error1;
+
+
     @Bean
     DataSourceServices dataSourceServices;
 
+    @Bean
+    NavigationService navigationService;
+
+    AlertDialog dialog;
 
     @AfterViews
     void init() {
+        final List<String> permissionsList = new ArrayList<String>();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (ContextCompat.checkSelfPermission(this,
+                    Manifest.permission.READ_EXTERNAL_STORAGE)
+                    != PackageManager.PERMISSION_GRANTED) {
 
-        if (ContextCompat.checkSelfPermission(this,
-                Manifest.permission.READ_EXTERNAL_STORAGE)
-                != PackageManager.PERMISSION_GRANTED) {
-
-            ActivityCompat.requestPermissions(this,
-                    new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
-                    MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE);
+                permissionsList.add(Manifest.permission.READ_EXTERNAL_STORAGE);
+//                ActivityCompat.requestPermissions(this,
+//                        new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+//                        MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE);
+            }
+            if (ContextCompat.checkSelfPermission(this,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                    != PackageManager.PERMISSION_GRANTED) {
+                permissionsList.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+//                ActivityCompat.requestPermissions(this,
+//                        new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+//                        MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE);
+            }
+            if (ContextCompat.checkSelfPermission(this,
+                    Manifest.permission.CAMERA)
+                    != PackageManager.PERMISSION_GRANTED) {
+                permissionsList.add(Manifest.permission.CAMERA);
+//                ActivityCompat.requestPermissions(this,
+//                        new String[]{Manifest.permission.CAMERA},
+//                        MY_PERMISSIONS_REQUEST_CAMERA);
+            }
+            if(!permissionsList.isEmpty()){
+                requestPermissions( permissionsList.toArray( new String[permissionsList.size()] ), MY_PERMISSIONS_REQUEST_CODE
+                );
+            }
         }
-        if (ContextCompat.checkSelfPermission(this,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                != PackageManager.PERMISSION_GRANTED) {
 
-            ActivityCompat.requestPermissions(this,
-                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
-                    MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE);
-        }
-        if (ContextCompat.checkSelfPermission(this,
-                Manifest.permission.CAMERA)
-                != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this,
-                    new String[]{Manifest.permission.CAMERA},
-                    MY_PERMISSIONS_REQUEST_CAMERA);
-        }
-
-        Button b1 = this.findViewById(R.id.button);
+        Button b1 = this.findViewById(R.id.button2);
         b1.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 Intent getImageByCamera = new Intent(
@@ -196,10 +224,8 @@ public class PhotoActivity extends AppCompatActivity {
         return null;
     }
 
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
+    @Background
+    protected void faceRecognition(int requestCode, int resultCode ){
         Bitmap b2 = null;
         AFR_FSDKFace face2 = new AFR_FSDKFace();
         if (requestCode == REQUEST_CODE_IMAGE_CAMERA && resultCode == RESULT_OK) {
@@ -207,6 +233,13 @@ public class PhotoActivity extends AppCompatActivity {
             b2 = Application.decodeImage(file);
             face2 = convertToFace(b2);
         }
+        if(face2==null){
+            Toast.makeText(this, "No face detected.", Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(this, PhotoActivity_.class);
+            startActivity(intent);
+            return;
+        }
+
 
         ArrayList<String> pass = new ArrayList<String>();
 
@@ -217,86 +250,110 @@ public class PhotoActivity extends AppCompatActivity {
 
 
 
+        engine1 = new AFR_FSDKEngine();
+        error1 = engine1.AFR_FSDK_InitialEngine(FaceDB.appid, FaceDB.fr_key);
 
-
+        /*
+         * Image resource form sever synchronization
+         * */
         path = userPrefs.urlImagePath().get();
         File[] files = new File(path).listFiles();
-        for (File file : files) {
-            String imageName = file.getName();
-            //imageName = imageName.replace(".jpg", "");
+        if(files.length>0) {
+            for (File file : files) {
+                String imageName = file.getName();
+
+                String end = imageName.substring(imageName.length() - 4);
+                if (end.compareToIgnoreCase(".jpg") != 0){
+                    continue;
+                }
 
 
+                imageName = imageName.replace(".jpg", "");
 
-//
-//                Bitmap mBitmap = Application.decodeImage(file.getPath());
-//                byte[] data = new byte[mBitmap.getWidth() * mBitmap.getHeight() * 3 / 2];
-//                ImageConverter convert = new ImageConverter();
-//                convert.initial(mBitmap.getWidth(), mBitmap.getHeight(), ImageConverter.CP_PAF_NV21);
-//                if (convert.convert(mBitmap, data)) {
-//                    Log.d("photo", "convert ok!");
-//                }
-//                convert.destroy();
-//
-//                AFD_FSDKEngine engine = new AFD_FSDKEngine();
-//
-//                List<AFD_FSDKFace> result = new ArrayList<AFD_FSDKFace>();
-//                AFD_FSDKError err = engine.AFD_FSDK_InitialFaceEngine(FaceDB.appid, FaceDB.fd_key, AFD_FSDKEngine.AFD_OPF_0_HIGHER_EXT, 16, 5);
-//                Log.d("photo", "AFD_FSDK_InitialFaceEngine = " + err.getCode());
+                //
+                //                Bitmap mBitmap = Application.decodeImage(file.getPath());
+                //                byte[] data = new byte[mBitmap.getWidth() * mBitmap.getHeight() * 3 / 2];
+                //                ImageConverter convert = new ImageConverter();
+                //                convert.initial(mBitmap.getWidth(), mBitmap.getHeight(), ImageConverter.CP_PAF_NV21);
+                //                if (convert.convert(mBitmap, data)) {
+                //                    Log.d("photo", "convert ok!");
+                //                }
+                //                convert.destroy();
+                //
+                //                AFD_FSDKEngine engine = new AFD_FSDKEngine();
+                //
+                //                List<AFD_FSDKFace> result = new ArrayList<AFD_FSDKFace>();
+                //                AFD_FSDKError err = engine.AFD_FSDK_InitialFaceEngine(FaceDB.appid, FaceDB.fd_key, AFD_FSDKEngine.AFD_OPF_0_HIGHER_EXT, 16, 5);
+                //                Log.d("photo", "AFD_FSDK_InitialFaceEngine = " + err.getCode());
 
-//                err  = engine.AFD_FSDK_StillImageFaceDetection(data, mBitmap.getWidth(), mBitmap.getHeight(), AFD_FSDKEngine.CP_PAF_NV21, result);
-//                Log.d("photo", "AFD_FSDK_StillImageFaceDetection =" + err.getCode() + "<" + result.size());
-//                for (AFD_FSDKFace face : result) {
-//                    Log.d("com.arcsoft", "Face:" + face.toString());
-//                }
-//                if(result.size()>0){
-//
-//                }
-//                err = engine.AFD_FSDK_UninitialFaceEngine();
-//                Log.d("com.arcsoft", "AFD_FSDK_UninitialFaceEngine =" + err.getCode());
-
-
+                //                err  = engine.AFD_FSDK_StillImageFaceDetection(data, mBitmap.getWidth(), mBitmap.getHeight(), AFD_FSDKEngine.CP_PAF_NV21, result);
+                //                Log.d("photo", "AFD_FSDK_StillImageFaceDetection =" + err.getCode() + "<" + result.size());
+                //                for (AFD_FSDKFace face : result) {
+                //                    Log.d("com.arcsoft", "Face:" + face.toString());
+                //                }
+                //                if(result.size()>0){
+                //
+                //                }
+                //                err = engine.AFD_FSDK_UninitialFaceEngine();
+                //                Log.d("com.arcsoft", "AFD_FSDK_UninitialFaceEngine =" + err.getCode());
 
 
                 //String path1 = Environment.getExternalStorageDirectory().toString() + "/DCIM/Camera/IMG_20180314_125422.jpg";
                 //String path2 = Environment.getExternalStorageDirectory().toString() + "/DCIM/Camera/IMG_20180224_180355.jpg";
 
+                Log.d("pHOTO","this is aaaaaaaaa" + file.getPath());
 
-            Bitmap b1 = Application.decodeImage(file.getPath());
-            float score = 0;
-            //score = compare(b1, b2);
-            score = compare(b1,face2);
-            if(score==-2){
-                Log.d("Photo", "No face detected in the taken photo");
+                Bitmap b1 = Application.decodeImage(file.getPath());
+                float score = 0;
+                //score = compare(b1, b2);
+                score = compare(b1, face2);
+                if (score == -2) {
+                    Log.d("Photo", "No face detected in the taken photo");
+                }
+                if (score == -1) {
+                    Log.d("Photo", "No face detected in the photo file");
+                }
+                if (score > 0.40 && scores.contains(new MatchedImage(score, imageName))==false) {
+                    Log.d("Photo 2 ", String.valueOf(score));
+                    scores.add(new MatchedImage(score, imageName));
+                    //pass.add(entity.getId());
+                    //images.add(imageName);
+                }
+
+
             }
 
-            if(score > 0.2 && scores.contains(new MatchedImage(score,imageName))){
-                scores.add(new MatchedImage(score,imageName));
-                //pass.add(entity.getId());
-                //images.add(imageName);
+            Log.d("Photo 001",String.valueOf(scores.size()));
+            Data data1 = dataSourceServices.getPeopleSource(this);
+            Collections.sort(scores);
+            for (MatchedImage currImage : scores) {
+                String imageName = currImage.getImage();
+                Entities entity = dataSourceServices.getEntityByImageName(imageName, this, data1);
+                if (entity != null) {
+                    Log.d("photo 001", entity.getId()+" "+currImage.getScore());
+                    pass.add(entity.getId());
+                }
             }
-
-
         }
-        Data data1 = dataSourceServices.getPeopleSource(this);
-        Collections.sort(scores);
-        for(MatchedImage currImage: scores)
-        {
-            String imageName = currImage.getImage();
-            Entities entity = dataSourceServices.getEntityByImageName(imageName, this,data1);
-            if (entity != null) {
-                Log.d("photo 001", entity.getId());
-                pass.add(entity.getId());
-            }
-        }
 
 
+        error1 = engine1.AFR_FSDK_UninitialEngine();
 //        Collections.sort(scores);
 //        TextView text = this.findViewById(R.id.textView2);
 //        text.setText(scores.toString() );
 
+        onDismiss();
         Intent result = new Intent(this,MainActivity_.class);
         result.putStringArrayListExtra("pass",pass);
         startActivity(result);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        onLoading();
+        faceRecognition(requestCode,resultCode);
+
 
 
 }
@@ -308,14 +365,14 @@ public class PhotoActivity extends AppCompatActivity {
 
     public float compare(AFR_FSDKFace face1, AFR_FSDKFace face2) {
 
-        AFR_FSDKEngine engine = new AFR_FSDKEngine();//用来存放提取到的人脸信息, face_1 是注册的人脸，face_2 是要识别的人脸
+        AFR_FSDKEngine engine = new AFR_FSDKEngine();
         AFR_FSDKError error = engine.AFR_FSDK_InitialEngine(FaceDB.appid, FaceDB.fd_key);
-        Log.d("com.arcsoft", "AFR_FSDK_InitialEngine = " + error.getCode());//输入的 data 数据为 NV21 格式(如 Camera 里 NV21 格式的 preview 数据);人脸坐标一般使用人 脸检测返回的 Rect 传入;人脸角度请按照人脸检测引擎返回的值传入。
-        AFR_FSDKMatching score = new AFR_FSDKMatching();//score 用于存放人脸对比的相似度值
+        Log.d("com.arcsoft", "AFR_FSDK_InitialEngine = " + error.getCode());
+        AFR_FSDKMatching score = new AFR_FSDKMatching();
         error = engine.AFR_FSDK_FacePairMatching(face1, face2, score);
         Log.d("com.arcsoft", "AFR_FSDK_FacePairMatching=" + error.getCode());
         Log.d("com.arcsoft", "Score:" + score.getScore());
-        error = engine.AFR_FSDK_UninitialEngine();//销毁人脸识别引擎
+        error = engine.AFR_FSDK_UninitialEngine();
         Log.d("com.arcsoft", "AFR_FSDK_UninitialEngine : " + error.getCode());
         return score.getScore();
     }
@@ -328,10 +385,13 @@ public class PhotoActivity extends AppCompatActivity {
         if (isOdd(mBitmap.getHeight())) {
             mBitmap = scaleBitmap(mBitmap, mBitmap.getWidth(), mBitmap.getHeight() + 1);
         }
-        AFR_FSDKEngine engine = new AFR_FSDKEngine();//用来存放提取到的人脸信息, face_1 是注册的人脸，face_2 是要识别的人脸
+        AFR_FSDKEngine engine = new AFR_FSDKEngine();
         AFR_FSDKFace face = new AFR_FSDKFace();
         byte[] faceData = Bitmap2Byte(mBitmap);
         AFR_FSDKError error = engine.AFR_FSDK_InitialEngine(FaceDB.appid, FaceDB.fr_key);
+        if(getFace(faceData, mBitmap)==null){
+            return null;
+        }
         error = engine.AFR_FSDK_ExtractFRFeature(faceData, mBitmap.getWidth(), mBitmap.getHeight(), AFR_FSDKEngine.CP_PAF_NV21, getFace(faceData, mBitmap).getRect(), AFR_FSDKEngine.AFR_FOC_0, face);
         error = engine.AFR_FSDK_UninitialEngine();
         Log.d("photo ",face.toString());
@@ -347,10 +407,8 @@ public class PhotoActivity extends AppCompatActivity {
             aBitmap = scaleBitmap(aBitmap, aBitmap.getWidth(), aBitmap.getHeight() + 1);
         }
 
-        AFR_FSDKEngine engine = new AFR_FSDKEngine();//用来存放提取到的人脸信息, face_1 是注册的人脸，face_2 是要识别的人脸
+
         AFR_FSDKFace face1 = new AFR_FSDKFace();
-        AFR_FSDKError error = engine.AFR_FSDK_InitialEngine(FaceDB.appid, FaceDB.fr_key);
-        Log.d("com.arcsoft", "AFR_FSDK_InitialEngine = " + error.getCode());//输入的 data 数据为 NV21 格式(如 Camera 里 NV21 格式的 preview 数据);人脸坐标一般使用人 脸检测返回的 Rect 传入;人脸角度请按照人脸检测引擎返回的值传入。
 
         byte[] faceData1 = Bitmap2Byte(aBitmap);
 
@@ -358,14 +416,14 @@ public class PhotoActivity extends AppCompatActivity {
             return -1;
 
         } else {
-            error = engine.AFR_FSDK_ExtractFRFeature(faceData1, aBitmap.getWidth(), aBitmap.getHeight(), AFR_FSDKEngine.CP_PAF_NV21, getFace(faceData1, aBitmap).getRect(), AFR_FSDKEngine.AFR_FOC_0, face1);
-            Log.d("com.arcsoft", "1Face=" + face1.getFeatureData()[0] + "," + face1.getFeatureData()[1] + "," + face1.getFeatureData()[2] + "," + error.getCode());
-            AFR_FSDKMatching score = new AFR_FSDKMatching();//score 用于存放人脸对比的相似度值
-            error = engine.AFR_FSDK_FacePairMatching(face1, face2, score);
-            Log.d("com.arcsoft", "AFR_FSDK_FacePairMatching=" + error.getCode());
+            error1 = engine1.AFR_FSDK_ExtractFRFeature(faceData1, aBitmap.getWidth(), aBitmap.getHeight(), AFR_FSDKEngine.CP_PAF_NV21, getFace(faceData1, aBitmap).getRect(), AFR_FSDKEngine.AFR_FOC_0, face1);
+            Log.d("com.arcsoft", "1Face=" + face1.getFeatureData()[0] + "," + face1.getFeatureData()[1] + "," + face1.getFeatureData()[2] + "," + error1.getCode());
+            AFR_FSDKMatching score = new AFR_FSDKMatching();
+            error1 = engine1.AFR_FSDK_FacePairMatching(face1, face2, score);
+            Log.d("com.arcsoft", "AFR_FSDK_FacePairMatching=" + error1.getCode());
             Log.d("com.arcsoft", "Score:" + score.getScore());
-            error = engine.AFR_FSDK_UninitialEngine();//销毁人脸识别引擎
-            Log.d("com.arcsoft", "AFR_FSDK_UninitialEngine : " + error.getCode());
+
+            Log.d("com.arcsoft", "AFR_FSDK_UninitialEngine : " + error1.getCode());
             return score.getScore();
         }
     }
@@ -385,11 +443,11 @@ public class PhotoActivity extends AppCompatActivity {
             bBitmap = scaleBitmap(bBitmap, bBitmap.getWidth(), bBitmap.getHeight() + 1);
         }
 
-        AFR_FSDKEngine engine = new AFR_FSDKEngine();//用来存放提取到的人脸信息, face_1 是注册的人脸，face_2 是要识别的人脸
+        AFR_FSDKEngine engine = new AFR_FSDKEngine();
         AFR_FSDKFace face1 = new AFR_FSDKFace();
         AFR_FSDKFace face2 = new AFR_FSDKFace();
         AFR_FSDKError error = engine.AFR_FSDK_InitialEngine(FaceDB.appid, FaceDB.fr_key);
-        Log.d("com.arcsoft", "AFR_FSDK_InitialEngine = " + error.getCode());//输入的 data 数据为 NV21 格式(如 Camera 里 NV21 格式的 preview 数据);人脸坐标一般使用人 脸检测返回的 Rect 传入;人脸角度请按照人脸检测引擎返回的值传入。
+        Log.d("com.arcsoft", "AFR_FSDK_InitialEngine = " + error.getCode());
 
         byte[] faceData1 = Bitmap2Byte(aBitmap);
         byte[] faceData2 = Bitmap2Byte(bBitmap);
@@ -403,11 +461,11 @@ public class PhotoActivity extends AppCompatActivity {
             Log.d("com.arcsoft", "1Face=" + face1.getFeatureData()[0] + "," + face1.getFeatureData()[1] + "," + face1.getFeatureData()[2] + "," + error.getCode());
             error = engine.AFR_FSDK_ExtractFRFeature(faceData2, bBitmap.getWidth(), bBitmap.getHeight(), AFR_FSDKEngine.CP_PAF_NV21, getFace(faceData2, bBitmap).getRect(), AFR_FSDKEngine.AFR_FOC_0, face2);
             Log.d("com.arcsoft", "2Face=" + face2.getFeatureData()[0] + "," + face2.getFeatureData()[1] + "," + face2.getFeatureData()[2] + "," + error.getCode());
-            AFR_FSDKMatching score = new AFR_FSDKMatching();//score 用于存放人脸对比的相似度值
+            AFR_FSDKMatching score = new AFR_FSDKMatching();
             error = engine.AFR_FSDK_FacePairMatching(face1, face2, score);
             Log.d("com.arcsoft", "AFR_FSDK_FacePairMatching=" + error.getCode());
             Log.d("com.arcsoft", "Score:" + score.getScore());
-            error = engine.AFR_FSDK_UninitialEngine();//销毁人脸识别引擎
+            error = engine.AFR_FSDK_UninitialEngine();
             Log.d("com.arcsoft", "AFR_FSDK_UninitialEngine : " + error.getCode());
             return score.getScore();
         }
@@ -426,10 +484,10 @@ public class PhotoActivity extends AppCompatActivity {
     }
     private AFD_FSDKFace getFace(byte[] data, Bitmap bitmap) {
 
-        AFD_FSDKEngine engine = new AFD_FSDKEngine();// 用来存放检测到的人脸信息列表
-        List<AFD_FSDKFace> result = new ArrayList<AFD_FSDKFace>();//初始化人脸检测引擎，使用时请替换申请的 APPID 和 SDKKEY
+        AFD_FSDKEngine engine = new AFD_FSDKEngine();
+        List<AFD_FSDKFace> result = new ArrayList<AFD_FSDKFace>();
         AFD_FSDKError err = engine.AFD_FSDK_InitialFaceEngine(FaceDB.appid, FaceDB.fd_key, AFD_FSDKEngine.AFD_OPF_0_HIGHER_EXT, 16, 5);
-        Log.d("com.arcsoft", "AFD_FSDK_InitialFaceEngine = " + err.getCode());//输入的 data 数据为 NV21 格式(如 Camera 里 NV21 格式的 preview 数据)，其中 height 不能为奇数，人脸检测返回结果保存在 result。
+        Log.d("com.arcsoft", "AFD_FSDK_InitialFaceEngine = " + err.getCode());
         err = engine.AFD_FSDK_StillImageFaceDetection(data, bitmap.getWidth(), bitmap.getHeight(), AFD_FSDKEngine.CP_PAF_NV21, result);
         Log.d("com.arcsoft", "AFD_FSDK_StillImageFaceDetection =" + err.getCode());
         Log.d("com.arcsoft", "Face=" + result.size());
@@ -438,7 +496,7 @@ public class PhotoActivity extends AppCompatActivity {
             Log.d("com.arcsoft", "Face:" + face.toString());
             mFace = face;
         }
-        err = engine.AFD_FSDK_UninitialFaceEngine();//销毁人脸检测引擎
+        err = engine.AFD_FSDK_UninitialFaceEngine();
         Log.d("com.arcsoft", "AFD_FSDK_UninitialFaceEngine =" + err.getCode());
         return mFace;
     }
@@ -451,7 +509,7 @@ public class PhotoActivity extends AppCompatActivity {
         float scaleWidth = ((float) newWidth) / width;
         float scaleHeight = ((float) newHeight) / height;
         Matrix matrix = new Matrix();
-        matrix.postScale(scaleWidth, scaleHeight);// 使用后乘
+        matrix.postScale(scaleWidth, scaleHeight);
         Bitmap newBM = Bitmap.createBitmap(origin, 0, 0, width, height, matrix, false);
         if (!origin.isRecycled()) {
             origin.recycle();
@@ -463,7 +521,24 @@ public class PhotoActivity extends AppCompatActivity {
     }
 
 
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        startActivity(navigationService.getActivity(this, item));
 
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawer.closeDrawer(GravityCompat.START);
+        return true;
+    }
+
+
+    @UiThread
+    void onLoading(){
+        dialog = Utils.setProgressDialog(this);
+    }
+    @UiThread
+    void onDismiss(){
+        dialog.dismiss();
+    }
 }
 
 

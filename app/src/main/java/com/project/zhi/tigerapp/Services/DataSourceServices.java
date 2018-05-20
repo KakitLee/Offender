@@ -153,8 +153,7 @@ public class DataSourceServices implements IDataSourceServices {
         fileName = FilenameUtils.removeExtension(fileName);
         return  fileName;
     }
-    public Entities getEntityByImageName(String imageName, Context context){
-        Data data = this.getPeopleSource(context);
+    public Entities getEntityByImageName(String imageName, Context context, Data data){
         for (Entities entity: data.getEntitiesList()
              ) {
             if (entity.getAttachments() != null){
