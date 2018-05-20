@@ -59,15 +59,15 @@ public class DataSourceServices implements IDataSourceServices {
     }
 
     public ArrayList<Entities> getEntityById(Context context, String id){
+        ArrayList<Entities> matchedEntity = new ArrayList<Entities>();
         for (Entities entity: getPeopleSource(context).getEntitiesList()
              ) {
             if(entity.getId().equalsIgnoreCase(id)){
-                ArrayList<Entities> matchedEntity = new ArrayList<Entities>();
                 matchedEntity.add(entity);
-                return matchedEntity;
+                break;
             }
         }
-        return null;
+        return matchedEntity;
     }
 
     @Override
