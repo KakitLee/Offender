@@ -46,6 +46,8 @@ public class PlaybackFragment extends DialogFragment {
     private FloatingActionButton mRecogButton = null;
     private TextView mCurrentProgressTextView = null;
     private TextView mFileNameTextView = null;
+    private TextView mMatchedNameTextView = null;
+    private TextView mLikelihoodTextView = null;
     private TextView mFileLengthTextView = null;
 
     //stores whether or not the mediaplayer is currently playing audio
@@ -102,7 +104,10 @@ public class PlaybackFragment extends DialogFragment {
 
         mFileNameTextView = (TextView) view.findViewById(R.id.file_name_text_view);
         mFileLengthTextView = (TextView) view.findViewById(R.id.file_length_text_view);
+        mMatchedNameTextView = (TextView) view.findViewById(R.id.matched_name_text_view);
+        mLikelihoodTextView = (TextView) view.findViewById(R.id.likelihood_text_view);
         mCurrentProgressTextView = (TextView) view.findViewById(R.id.current_progress_text_view);
+
 
         mSeekBar = (SeekBar) view.findViewById(R.id.seekbar);
         ColorFilter filter = new LightingColorFilter
@@ -156,8 +161,6 @@ public class PlaybackFragment extends DialogFragment {
         });
 
         mPlayButton = (FloatingActionButton) view.findViewById(R.id.fab_play);
-        mRecogButton = (FloatingActionButton) view.findViewById(R.id.fab_recog);
-
         mPlayButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -165,16 +168,18 @@ public class PlaybackFragment extends DialogFragment {
                 isPlaying = !isPlaying;
             }
         });
-
+/*
          mRecogButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
             }
         });
-
+*/
 
         mFileNameTextView.setText(item.getName());
+        mMatchedNameTextView.setText("Matched Name: "+item.getMatchedName());
+        mLikelihoodTextView.setText("Likelihood: "+item.getLikelihood());
         mFileLengthTextView.setText(String.format("%02d:%02d", minutes,seconds));
 
         builder.setView(view);

@@ -124,16 +124,9 @@ public class RecordingService extends Service {
     }
 
     public void stopRecording() {
-        //mRecorder.stop();
-        //mElapsedMillis = (System.currentTimeMillis() - mStartingTimeMillis);
-        //mRecorder.release();
-        try {
-            PrintWriter out = new PrintWriter(mFilePath);
-            out.println(mFilePath);
-            out.close();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
+        mRecorder.stop();
+        mElapsedMillis = (System.currentTimeMillis() - mStartingTimeMillis);
+        mRecorder.release();
         Toast.makeText(this, getString(R.string.toast_recording_finish) + " " + mFilePath, Toast.LENGTH_LONG).show();
 
         //remove notification
@@ -145,7 +138,7 @@ public class RecordingService extends Service {
         //mRecorder = null;
 
         try {
-            mDatabase.addRecording(mFileName, mFilePath, mElapsedMillis=0);
+            //mDatabase.addRecording(mFileName, mFilePath, mElapsedMillis=0);
             //mDatabase.addRecording(mFileName, mFilePath, mElapsedMillis);
 
         } catch (Exception e){

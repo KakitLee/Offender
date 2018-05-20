@@ -31,9 +31,13 @@ public class DBHelper extends SQLiteOpenHelper {
         public static final String COLUMN_NAME_RECORDING_FILE_PATH = "file_path";
         public static final String COLUMN_NAME_RECORDING_LENGTH = "length";
         public static final String COLUMN_NAME_TIME_ADDED = "time_added";
+        public static final String COLUMN_NAME_MATCHED_NAME = "matched_name";
+        public static final String COLUMN_NAME_LIKELIHOOD= "likelihood";
+
     }
 
     private static final String TEXT_TYPE = " TEXT";
+    private static final String DOUBLE_TYPE = " DOUBLE";
     private static final String COMMA_SEP = ",";
     private static final String SQL_CREATE_ENTRIES =
             "CREATE TABLE " + DBHelperItem.TABLE_NAME + " (" +
@@ -41,7 +45,9 @@ public class DBHelper extends SQLiteOpenHelper {
                     DBHelperItem.COLUMN_NAME_RECORDING_NAME + TEXT_TYPE + COMMA_SEP +
                     DBHelperItem.COLUMN_NAME_RECORDING_FILE_PATH + TEXT_TYPE + COMMA_SEP +
                     DBHelperItem.COLUMN_NAME_RECORDING_LENGTH + " INTEGER " + COMMA_SEP +
-                    DBHelperItem.COLUMN_NAME_TIME_ADDED + " INTEGER " + ")";
+                    DBHelperItem.COLUMN_NAME_TIME_ADDED + " INTEGER "+COMMA_SEP+
+                    DBHelperItem.COLUMN_NAME_MATCHED_NAME+ TEXT_TYPE + COMMA_SEP +
+                    DBHelperItem.COLUMN_NAME_LIKELIHOOD+ DOUBLE_TYPE + ")";
 
     @SuppressWarnings("unused")
     private static final String SQL_DELETE_ENTRIES = "DROP TABLE IF EXISTS " + DBHelperItem.TABLE_NAME;
@@ -72,7 +78,10 @@ public class DBHelper extends SQLiteOpenHelper {
                 DBHelperItem.COLUMN_NAME_RECORDING_NAME,
                 DBHelperItem.COLUMN_NAME_RECORDING_FILE_PATH,
                 DBHelperItem.COLUMN_NAME_RECORDING_LENGTH,
-                DBHelperItem.COLUMN_NAME_TIME_ADDED
+                DBHelperItem.COLUMN_NAME_TIME_ADDED,
+                DBHelperItem.COLUMN_NAME_MATCHED_NAME,
+                DBHelperItem.COLUMN_NAME_LIKELIHOOD
+
         };
         Cursor c = db.query(DBHelperItem.TABLE_NAME, projection, null, null, null, null, null);
         if (c.moveToPosition(position)) {
@@ -82,6 +91,8 @@ public class DBHelper extends SQLiteOpenHelper {
             item.setFilePath(c.getString(c.getColumnIndex(DBHelperItem.COLUMN_NAME_RECORDING_FILE_PATH)));
             item.setLength(c.getInt(c.getColumnIndex(DBHelperItem.COLUMN_NAME_RECORDING_LENGTH)));
             item.setTime(c.getLong(c.getColumnIndex(DBHelperItem.COLUMN_NAME_TIME_ADDED)));
+            item.setMatchedName(c.getString(c.getColumnIndex(DBHelperItem.COLUMN_NAME_MATCHED_NAME)));
+            item.setLikelihood(c.getDouble(c.getColumnIndex(DBHelperItem.COLUMN_NAME_LIKELIHOOD)));
             c.close();
             return item;
         }
@@ -115,7 +126,7 @@ public class DBHelper extends SQLiteOpenHelper {
         }
     }
 
-    public long addRecording(String recordingName, String filePath, long length) {
+    public long addRecording(String recordingName, String filePath, long length, String matchedName, double likelihood) {
 
         SQLiteDatabase db = getWritableDatabase();
         ContentValues cv = new ContentValues();
@@ -123,6 +134,8 @@ public class DBHelper extends SQLiteOpenHelper {
         cv.put(DBHelperItem.COLUMN_NAME_RECORDING_FILE_PATH, filePath);
         cv.put(DBHelperItem.COLUMN_NAME_RECORDING_LENGTH, length);
         cv.put(DBHelperItem.COLUMN_NAME_TIME_ADDED, System.currentTimeMillis());
+        cv.put(DBHelperItem.COLUMN_NAME_MATCHED_NAME, matchedName);
+        cv.put(DBHelperItem.COLUMN_NAME_LIKELIHOOD, likelihood);
         long rowId = db.insert(DBHelperItem.TABLE_NAME, null, cv);
 
         if (mOnDatabaseChangedListener != null) {

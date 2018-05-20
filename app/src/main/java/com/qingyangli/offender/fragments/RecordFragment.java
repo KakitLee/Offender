@@ -7,7 +7,9 @@ import android.content.ServiceConnection;
 import android.media.AudioFormat;
 import android.media.AudioRecord;
 import android.media.MediaRecorder;
+import android.media.audiofx.NoiseSuppressor;
 import android.os.Bundle;
+import android.os.Debug;
 import android.os.Environment;
 import android.os.IBinder;
 import android.os.SystemClock;
@@ -16,6 +18,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.Chronometer;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -23,6 +26,7 @@ import android.widget.Toast;
 import com.project.zhi.tigerapp.MainActivity_;
 import com.project.zhi.tigerapp.ProfileActivity_;
 import com.qingyangli.offender.AudioDispatcher;
+import com.qingyangli.offender.DBHelper;
 import com.qingyangli.offender.GaussianMixture;
 import com.qingyangli.offender.Matrix;
 import com.qingyangli.offender.PointList;
@@ -32,6 +36,8 @@ import com.qingyangli.offender.RecordingMfccService.LocalBinder;
 import com.qingyangli.offender.ShortMFCC;
 import com.melnykov.fab.FloatingActionButton;
 
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -40,14 +46,20 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.PrintWriter;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Scanner;
+import java.util.TimerTask;
 
 import be.tarsos.dsp.AudioEvent;
 import be.tarsos.dsp.AudioProcessor;
 import be.tarsos.dsp.io.TarsosDSPAudioFormat;
 import be.tarsos.dsp.io.UniversalAudioInputStream;
+
+import static android.media.audiofx.NoiseSuppressor.isAvailable;
 
 //import be.tarsos.dsp.AudioDispatcher;
 //import be.tarsos.dsp.mfcc.MFCC;
@@ -90,18 +102,18 @@ public class RecordFragment extends Fragment {
     boolean isBound = false;
     final static String TAG = "MFCCBindingActivity";
     BroadcastReceiver receiver;
-    final String storageRootPath= String.valueOf(Environment.getExternalStorageDirectory());
+    final String storageRootPath = String.valueOf(Environment.getExternalStorageDirectory());
     final static String Thesis_Tarsos_CSV_PATH = "Thesis/Tarsos/CSV";
     final static String Thesis_Tarsos_Logs_PATH = "Thesis/Tarsos/Logs";
-    final File folderPara = new File(storageRootPath+"/Thesis/Tarsos/Covs");
-    final File folderModel = new File(storageRootPath+"/Thesis/Tarsos/model");
+    final File folderPara = new File(storageRootPath + "/Thesis/Tarsos/Covs");
+    final File folderModel = new File(storageRootPath + "/Thesis/Tarsos/model");
 
     final static String csvFileName = "tarsos_mfcc.csv";
     //final String batteryFileName = "battery_data.txt";
     final static String trainedWeightsPath = "Thesis/Tarsos/Weights";
     final static String trainedMeansPath = "Thesis/Tarsos/Means";
     final static String trainedCovsPath = "Thesis/Tarsos/Covs";
-    final static String trainedModelPath="Thesis/Tarsos/model";
+    final static String trainedModelPath = "Thesis/Tarsos/model";
     //final static String trainedFileName = "fdnc0.txt";
     //final static String trainedFileName = "lqy_test_android_mfcc_model_001_big.txt";
     //final static String trainedFileName = "lqy_test_android_mfcc_model_002_big.txt";
@@ -109,27 +121,28 @@ public class RecordFragment extends Fragment {
     final static int CompononetsNum = 32;
     final static int FeatureLength = 13;
     //********************************************************************************************
-     //**record from microphone
-     private static final int RECORDER_SAMPLERATE = 8000;
-     private static final int RECORDER_CHANNELS = AudioFormat.CHANNEL_IN_MONO;
-     private static final int RECORDER_AUDIO_ENCODING = AudioFormat.ENCODING_PCM_16BIT;
-     private AudioRecord recorder = null;
-     private Thread recordingThread = null;
-     private boolean isRecording = false;
-    String pcmFilePath=Environment.getExternalStorageDirectory() +"/ShenYi.pcm";
-    String mfccFilePath=Environment.getExternalStorageDirectory() +"/ShenYi_andriod_MFCC.txt";
+    //**record from microphone
+    private static final int RECORDER_SAMPLERATE = 8000;
+    private static final int RECORDER_CHANNELS = AudioFormat.CHANNEL_IN_MONO;
+    private static final int RECORDER_AUDIO_ENCODING = AudioFormat.ENCODING_PCM_16BIT;
+    private AudioRecord recorder = null;
+    private Thread recordingThread = null;
+    private boolean isRecording = false;
+    //String pcmFilePath = Environment.getExternalStorageDirectory() + "/ShenYi.pcm";
+    //String mfccFilePath = Environment.getExternalStorageDirectory() + "/ShenYi_andriod_MFCC.txt";
+    //String wavFilePath = Environment.getExternalStorageDirectory() + "/ShenYi.wav";
     //String pcmFilePath=Environment.getExternalStorageDirectory() +"/ShunshunDuan.pcm";
     //String mfccFilePath=Environment.getExternalStorageDirectory() +"/ShunshunDuan_andriod_MFCC.txt";
-     //String pcmFilePath=Environment.getExternalStorageDirectory() +"/lqy_test_001_big.pcm";
+    //String pcmFilePath=Environment.getExternalStorageDirectory() +"/lqy_test_001_big.pcm";
     //String mfccFilePath=Environment.getExternalStorageDirectory() +"/lqy_test_android_mfcc_001_big.txt";
-     //String pcmFilePath=Environment.getExternalStorageDirectory() +"/lqy_test_001_little.pcm";
-     //String mfccFilePath=Environment.getExternalStorageDirectory() +"/lqy_test_android_mfcc_001_little.txt";
+    //String pcmFilePath=Environment.getExternalStorageDirectory() +"/lqy_test_001_little.pcm";
+    //String mfccFilePath=Environment.getExternalStorageDirectory() +"/lqy_test_android_mfcc_001_little.txt";
     //String pcmFilePath=Environment.getExternalStorageDirectory() +"/current_lqy_test_001_little.pcm";
     //String mfccFilePath=Environment.getExternalStorageDirectory() +"/current_lqy_test_android_mfcc_001_little.txt";
-     //String pcmFilePath=Environment.getExternalStorageDirectory() +"/current_lqy_test_002_big.pcm";
-     //String mfccFilePath=Environment.getExternalStorageDirectory() +"/current_lqy_test_android_mfcc_002_big.txt";
-    //String pcmFilePath= Environment.getExternalStorageDirectory() +"/current.pcm";
-    //String mfccFilePath= Environment.getExternalStorageDirectory() +"/current.txt";
+    //String pcmFilePath=Environment.getExternalStorageDirectory() +"/current_lqy_test_002_big.pcm";
+    //String mfccFilePath=Environment.getExternalStorageDirectory() +"/current_lqy_test_android_mfcc_002_big.txt";
+    String pcmFilePath = Environment.getExternalStorageDirectory() + "/current.pcm";
+    String mfccFilePath = Environment.getExternalStorageDirectory() + "/current.txt";
     String[] modelName;
     double[] modelLikelihood;
     int BufferElements2Rec = 1024; // want to play 2048 (2K) since 2 bytes we use only 1024
@@ -146,26 +159,33 @@ public class RecordFragment extends Fragment {
     float upperFilterFreq = ((float) sampleRate) / 2f;
 
 
-    int modelCount=0;
+    int modelCount = 0;
+
+
+    private String mFileName = null;
+    private String mFilePath = null;
+    private DBHelper mDatabase;
+    private TimerTask mIncrementTimerTask = null;
+    private long mElapsedMillis = 0;
+    private long mStartingTimeMillis = 0;
     //*/
 
 
+    private void startRecording() {
+        recorder = new AudioRecord(MediaRecorder.AudioSource.MIC,
+                RECORDER_SAMPLERATE, RECORDER_CHANNELS,
+                RECORDER_AUDIO_ENCODING, BufferElements2Rec * BytesPerElement);
 
+        recorder.startRecording();
+        isRecording = true;
+        recordingThread = new Thread(new Runnable() {
+            public void run() {
+                writeAudioDataToFile();
+            }
+        }, "AudioRecorder Thread");
+        recordingThread.start();
+    }
 
-        private void startRecording() {
-         recorder = new AudioRecord(MediaRecorder.AudioSource.MIC,
-                 RECORDER_SAMPLERATE, RECORDER_CHANNELS,
-                 RECORDER_AUDIO_ENCODING, BufferElements2Rec * BytesPerElement);
-
-         recorder.startRecording();
-         isRecording = true;
-         recordingThread = new Thread(new Runnable() {
-             public void run() {
-                 writeAudioDataToFile();
-             }
-         }, "AudioRecorder Thread");
-         recordingThread.start();
-     }
     private byte[] short2byte(short[] sData) {
         int shortArrsize = sData.length;
         byte[] bytes = new byte[shortArrsize * 2];
@@ -181,7 +201,7 @@ public class RecordFragment extends Fragment {
     private void writeAudioDataToFile() {
         // Write the output audio in byte
 
-        String filePath =pcmFilePath;
+        String filePath = pcmFilePath;
         short sData[] = new short[BufferElements2Rec];
 
         FileOutputStream os = null;
@@ -195,7 +215,8 @@ public class RecordFragment extends Fragment {
             // gets the voice output from microphone to byte format
 
             recorder.read(sData, 0, BufferElements2Rec);
-            System.out.println("Short wirting to file" + sData.toString());
+
+            //System.out.println("Short wirting to file" + sData.toString());
             try {
                 // // writes the data to file from buffer
                 // // stores the voice buffer
@@ -204,6 +225,8 @@ public class RecordFragment extends Fragment {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+
+
         }
         try {
             os.close();
@@ -222,6 +245,7 @@ public class RecordFragment extends Fragment {
             recordingThread = null;
         }
     }
+
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
@@ -278,7 +302,7 @@ public class RecordFragment extends Fragment {
         });
 
         //mPauseButton = (Button) recordView.findViewById(R.id.btnPause);
-       //mPauseButton.setVisibility(View.GONE); //hide pause button before recording starts
+        //mPauseButton.setVisibility(View.GONE); //hide pause button before recording starts
 
         /*
         mPauseButton.setOnClickListener(new View.OnClickListener() {
@@ -295,10 +319,7 @@ public class RecordFragment extends Fragment {
 
     // Recording Start/Stop
     //TODO: recording pause
-    private void onRecord(boolean start){
-
-        //Intent intent = new Intent(getActivity(), RecordingService.class);
-
+    private void onRecord(boolean start) {
         if (start) {
             // start recording
             mLikelihoodPrompt.setText("Likelihood:");
@@ -307,7 +328,7 @@ public class RecordFragment extends Fragment {
             mMatchedNameValuePrompt.setText("");
             mRecordButton.setImageResource(R.drawable.ic_media_stop);
             //mPauseButton.setVisibility(View.VISIBLE);
-            Toast.makeText(getActivity(),R.string.toast_recording_start, Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), R.string.toast_recording_start, Toast.LENGTH_SHORT).show();
             File folder = new File(Environment.getExternalStorageDirectory() + "/SoundRecorder");
             if (!folder.exists()) {
                 //folder /SoundRecorder doesn't exist, create the folder
@@ -333,33 +354,15 @@ public class RecordFragment extends Fragment {
                 }
             });
 
-            //start RecordingService
-           // getActivity().startService(intent);
             //keep screen on while recording
-            //getActivity().getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+            getActivity().getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
             mRecordingPrompt.setText(getString(R.string.record_in_progress) + ".");
             mRecordPromptCount++;
 
             //*start record from microphone
             startRecording();
-            /*
-            //start deal with mfcc feature
-            if (mService.isDispatcherNull() == true) {
-                // Call a method from the LocalService.
-                // However, if this call were something that might hang, then this request should
-                // occur in a separate thread to avoid slowing down the activity performance.
-                mService.initDispatcher();
-                mService.startMfccExtraction();
-                ///Testing
-                //int num = mService.methodTwo();
-                //Toast.makeText(getApplicationContext(), "number: " + num, Toast.LENGTH_SHORT).show();
-            } else {
-                // Bind to LocalService. Also to rebind
-                intentBindService = new Intent(getActivity(), RecordingMfccService.class);
-                getActivity().bindService(intentBindService, mConnection, Context.BIND_AUTO_CREATE);
-            }
-            //*/
+            mStartingTimeMillis = System.currentTimeMillis();
 
         } else {
             //stop recording
@@ -370,12 +373,32 @@ public class RecordFragment extends Fragment {
             //timeWhenPaused = 0;
             mRecordingPrompt.setText(getString(R.string.record_prompt));
             //tap the button to start recording
-            //getActivity().stopService(intent);
             //allow the screen to turn off again once recording is finished
-            //getActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+            getActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
             //*start record from microphone
             stopRecording();
+            //get the length of audio
+            mElapsedMillis = (System.currentTimeMillis() - mStartingTimeMillis);
             mfccList = new ArrayList<float[]>();
+            mDatabase = new DBHelper(getActivity().getApplicationContext());
+            setFileNameAndPath();
+            //transform the .pcm to .wav
+            File f1 = new File(pcmFilePath); // The location of your PCM file
+            File f2 = new File(mFilePath);
+            try {
+                rawToWave(f1, f2);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            Toast.makeText(getActivity(), getString(R.string.toast_recording_finish)
+                    + " " + mFilePath, Toast.LENGTH_LONG).show();
+
+            //remove notification
+            if (mIncrementTimerTask != null) {
+                mIncrementTimerTask.cancel();
+                mIncrementTimerTask = null;
+            }
+
 
             //sampleRate, audioBufferSize, int bufferOverlap
             //Florian suggested to use 16kHz as sample rate
@@ -389,11 +412,13 @@ public class RecordFragment extends Fragment {
             }
 
             AudioDispatcher dispatcher = new AudioDispatcher(new UniversalAudioInputStream(inStream,
-                    new TarsosDSPAudioFormat(RECORDER_SAMPLERATE, sampleSizeInBits, 1, true, false)), bufferSize, bufferSize/2);
+                    new TarsosDSPAudioFormat(RECORDER_SAMPLERATE, sampleSizeInBits, 1, true, false))
+                    , bufferSize, bufferSize / 2);
             // audiorecord starts recording
-//MFCC( samplesPerFrame, sampleRate ) //typical samplesperframe are power of 2 & Samples per frame = (sample rate)/FPS
+            //MFCC( samplesPerFrame, sampleRate ) //typical samplesperframe are power of 2 & Samples per frame = (sample rate)/FPS
             //Florian suggested to use 16kHz as sample rate and 512 for frame size
-            final ShortMFCC mfccObj = new ShortMFCC(samplesPerFrame, sampleRate, amountOfCepstrumCoef, amountOfMelFilters, lowerFilterFreq, upperFilterFreq); //(1024,22050);
+            final ShortMFCC mfccObj = new ShortMFCC(samplesPerFrame, sampleRate
+                    , amountOfCepstrumCoef, amountOfMelFilters, lowerFilterFreq, upperFilterFreq); //(1024,22050);
 
   		/*AudioProcessors are responsible for actual digital signal processing. AudioProcessors are meant to be chained
   		e.g. execute an effect and then play the sound.
@@ -419,7 +444,7 @@ public class RecordFragment extends Fragment {
                     //fetchng MFCC array and removing the 0th index because its energy coefficient and florian asked to discard
                     float[] mfccOutput = mfccObj.getMFCC();
                     //mfccOutput = Arrays.copyOfRange(mfccOutput, 1, mfccOutput.length);
-                     mfccOutput = Arrays.copyOfRange(mfccOutput, 0, mfccOutput.length);
+                    mfccOutput = Arrays.copyOfRange(mfccOutput, 0, mfccOutput.length);
 
                     //Storing in global arraylist so that i can easily transform it into csv
                     mfccList.add(mfccOutput);
@@ -432,86 +457,55 @@ public class RecordFragment extends Fragment {
             //its better to use thread vs asynctask here. ref : http://stackoverflow.com/a/18480297/1016544
             //new Thread(dispatcher, "Audio Dispatcher").run();
             dispatcher.run();
-            /*
-            try {
-                TimeUnit.SECONDS.sleep(1);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            */
-            Log.i("MFCC-length of list", String.valueOf(mfccList.size()));
-            saveFloatArrayToFile(mfccList,mfccFilePath);
-            /*
-            FileOutputStream fos = null;
-            try {
-                fos = new FileOutputStream(mfccFilePath);
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            }
-            DataOutputStream dos = new DataOutputStream(fos);
-            for(float[] list: mfccList) {
-                for(int i=0;i<list.length;i++){
-                    try {
-                        dos.writeFloat(list[i]);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
+            //Log.i("MFCC-length of list", String.valueOf(mfccList.size()));
+            saveFloatArrayToFile(mfccList, mfccFilePath);
 
-            }
+            //do speaker recognition
             try {
-                dos.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            */
-
-            try {
-                /*modelNameInFolder(folderPara);
-                modelLikelihood=new double[modelCount];
-                for(int i=0;i<modelCount;i++){
-                    modelLikelihood[i]=audioFeatureClassify(mfccList,modelName[i]);
-                }
-                */
                 modelNameInFolder(folderModel);
-                modelLikelihood=new double[modelCount];
-                for(int i=0;i<modelCount;i++){
-                    modelLikelihood[i]=audioFeatureClassifyNew(mfccList,modelName[i]);
+                modelLikelihood = new double[modelCount];
+                for (int i = 0; i < modelCount; i++) {
+                    modelLikelihood[i] = audioFeatureClassifyNew(mfccList, modelName[i]);
                 }
 
-                double max=-9999999;
-                int index=-1;
-                for (int i = 0; i < modelCount; i++)
-                {
-                    if (modelLikelihood[i] > max)
-                    {
+                double max = -9999999;
+                int index = -1;
+                for (int i = 0; i < modelCount; i++) {
+                    if (modelLikelihood[i] > max) {
                         max = modelLikelihood[i];
-                        index= i;
+                        index = i;
                     }
                 }
                 String[] tempParts = modelName[index].split("_");
-                String matchedModelName=tempParts[0];
+                String matchedModelName = tempParts[0];
                 mLikelihoodValuePrompt.setText(String.valueOf(max));
                 mMatchedNameValuePrompt.setText(matchedModelName);
-                Log.i(TAG,"likelihood is:"+ String.valueOf(modelLikelihood[index]));
+                Log.i(TAG, "likelihood is:" + String.valueOf(modelLikelihood[index]));
                 String id = "";
+
+                try {
+                    Log.i("Audiolength", String.valueOf(mElapsedMillis));
+                    mDatabase.addRecording(mFileName, mFilePath, mElapsedMillis, matchedModelName,max);
+                    //mDatabase.addRecording(mFileName, mFilePath, mElapsedMillis);
+
+                } catch (Exception e) {
+                    Log.e(LOG_TAG, "exception", e);
+                }
+
+
                 boolean isMatched = true;
-                if(matchedModelName.toLowerCase().equalsIgnoreCase("george")){
+                if (matchedModelName.toLowerCase().equalsIgnoreCase("george")) {
                     id = "ZHENG_George_BHU/0712/2018";
-                }
-                else if(matchedModelName.toLowerCase().equalsIgnoreCase("shenyi")){
+                } else if (matchedModelName.toLowerCase().equalsIgnoreCase("shenyi")) {
                     id = "YI_Eason_BHU/0712/2018";
-                }
-                else if(matchedModelName.toLowerCase().equalsIgnoreCase("qingyangli")){
+                } else if (matchedModelName.toLowerCase().equalsIgnoreCase("qingyangli")) {
                     id = "LI_qingyang_BHU/0712/2018";
-                }
-                else if (matchedModelName.toLowerCase().equalsIgnoreCase("shunshunduan")){
+                } else if (matchedModelName.toLowerCase().equalsIgnoreCase("shunshunduan")) {
                     id = "DUAN_shunshun_BHU/0712/2018";
-                }
-                else{
+                } else {
                     isMatched = false;
                 }
-                if(isMatched) {
+                if (isMatched) {
                     Intent newIntend = new Intent(this.getActivity(), MainActivity_.class);
                     newIntend.putExtra("voice", id);
                     startActivity(newIntend);
@@ -519,63 +513,15 @@ public class RecordFragment extends Fragment {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-
-            /*
-            //start deal with mfcc feature
-            // TODO Auto-generated method stub
-
-            //boolean num = mService.methodOne();
-            //Toast.makeText(getApplicationContext(), "number: " + num, Toast.LENGTH_SHORT).show();
-
-
-            // Unbind from the service
-            if (isBound) {
-                getActivity().unbindService(mConnection);
-                isBound = false;
-                Log.i(TAG, "onStopRecording Service unbinded & isbound :123 " + isBound);
-
-                LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(receiver);
-            } else {
-                Log.i(TAG, "onStopRecording Service unbinded & isbound : " + isBound);
-
-            }
-            //stop MFCC tasks
-            if (mService.isDispatcherNull() == false) {
-                Log.i(TAG, "onStopRecording isDispatcher : " + mService.isDispatcherNull());
-
-                mService.stopDispatcher();
-
-                //monitorBatteryUsage();
-                //monitorBatteryUsage("End  ");
-                //monitorCpuAndMemoryUsage("End  ");
-
-                // storing to csv done on a separate thread
-                Runnable runnable = new Runnable() {
-                    @Override
-                    public void run() {
-
-                        try {
-                            //audioFeatures2csv(mService.getMfccList());
-                            audioFeatureClassify(mService.getMfccList());
-
-                        } catch (IOException e) {
-                            // TODO Auto-generated catch block
-                            e.printStackTrace();
-                        }
-                    }
-                };
-
-                new Thread(runnable).start();
-            } else
-                Log.i(TAG, "onStopRecording isDispatcher : " + mService.isDispatcherNull());//*/
         }
 
     }
-    public static void saveFloatArrayToFile(ArrayList<float[]> mfccList, String vPath){
-        if(null == mfccList){
+
+    public static void saveFloatArrayToFile(ArrayList<float[]> mfccList, String vPath) {
+        if (null == mfccList) {
             return;
         }
-        if(null == vPath || vPath.equals("")){
+        if (null == vPath || vPath.equals("")) {
             return;
         }
 
@@ -586,18 +532,18 @@ public class RecordFragment extends Fragment {
 //      int len = vArr.length;
 //      System.out.println("len="+len);
 
-        for(float[] list: mfccList) {
+        for (float[] list : mfccList) {
             for (float val : list) {
                 //保留18位小数，这里可以改为其他值
                 tBuffer.append(String.format("%.18f", val));
                 tBuffer.append("\r\n");
             }
         }
-        try{
+        try {
             FileWriter out = new FileWriter(file);  //文件写入流
             out.write(tBuffer.toString());
             out.close();
-        }catch(Exception e){
+        } catch (Exception e) {
             Log.i(TAG, "write error!");
         }
 
@@ -644,8 +590,6 @@ public class RecordFragment extends Fragment {
             isBound = true;
 
 
-
-
         }
 
         @Override
@@ -659,12 +603,11 @@ public class RecordFragment extends Fragment {
     };
 
     private void modelNameInFolder(final File folder) {
-        modelCount=0;
+        modelCount = 0;
         File[] files = folder.listFiles();
-        modelName= new String[files.length];
-        for (int i = 0; i < files.length; i++)
-        {
-            modelName[modelCount]=new String(files[i].getName());
+        modelName = new String[files.length];
+        for (int i = 0; i < files.length; i++) {
+            modelName[modelCount] = new String(files[i].getName());
             modelCount++;
         }
         /*
@@ -680,28 +623,27 @@ public class RecordFragment extends Fragment {
         }
         */
     }
- private double audioFeatureClassifyNew(ArrayList<float[]> mfccFeatureInput, String trainedFileName)throws IOException{
-     String traindModelStoragePath = Environment.getExternalStorageDirectory()
-             + File.separator + trainedModelPath + File.separator + trainedFileName;
-     GaussianMixture gmmModel = GaussianMixture.readGMM(traindModelStoragePath);
-     //mfcc feature for collected audio sample
-     PointList mfccFeature = new PointList(FeatureLength);
-     int pointListNum= mfccFeatureInput.size();
-     for (int i=0 ;i<pointListNum ; i++ ){
-         float[] tempFeature = mfccFeatureInput.get(i);
-         double[] tempFeatureTrans = new double[FeatureLength];
-         for (int j = 0; j < FeatureLength; j++) {
-             tempFeatureTrans[j] = (double)tempFeature[j];
-         }
-         mfccFeature.add(tempFeatureTrans);
-     }
-     double result=gmmModel.getLogLikelihood(mfccFeature);
 
-     return result;
+    private double audioFeatureClassifyNew(ArrayList<float[]> mfccFeatureInput, String trainedFileName) throws IOException {
+        String traindModelStoragePath = Environment.getExternalStorageDirectory()
+                + File.separator + trainedModelPath + File.separator + trainedFileName;
+        GaussianMixture gmmModel = GaussianMixture.readGMM(traindModelStoragePath);
+        //mfcc feature for collected audio sample
+        PointList mfccFeature = new PointList(FeatureLength);
+        int pointListNum = mfccFeatureInput.size();
+        for (int i = 0; i < pointListNum; i++) {
+            float[] tempFeature = mfccFeatureInput.get(i);
+            double[] tempFeatureTrans = new double[FeatureLength];
+            for (int j = 0; j < FeatureLength; j++) {
+                tempFeatureTrans[j] = (double) tempFeature[j];
+            }
+            mfccFeature.add(tempFeatureTrans);
+        }
+        double result = gmmModel.getLogLikelihood(mfccFeature);
 
- }
+        return result;
 
-
+    }
 
     private double audioFeatureClassify(ArrayList<float[]> mfccFeatureInput, String trainedFileName) throws IOException {
         double[] weights = new double[CompononetsNum];
@@ -751,19 +693,126 @@ public class RecordFragment extends Fragment {
 
         //mfcc feature for collected audio sample
         PointList mfccFeature = new PointList(FeatureLength);
-        int pointListNum= mfccFeatureInput.size();
-        for (int i=0 ;i<pointListNum ; i++ ){
+        int pointListNum = mfccFeatureInput.size();
+        for (int i = 0; i < pointListNum; i++) {
             float[] tempFeature = mfccFeatureInput.get(i);
             double[] tempFeatureTrans = new double[FeatureLength];
             for (int j = 0; j < FeatureLength; j++) {
-                tempFeatureTrans[j] = (double)tempFeature[j];
+                tempFeatureTrans[j] = (double) tempFeature[j];
             }
             mfccFeature.add(tempFeatureTrans);
         }
-        double result=gmmModel.getLogLikelihood(mfccFeature);
+        double result = gmmModel.getLogLikelihood(mfccFeature);
 
         return result;
 
+    }
+
+    private void rawToWave(final File rawFile, final File waveFile) throws IOException {
+
+        byte[] rawData = new byte[(int) rawFile.length()];
+        DataInputStream input = null;
+        try {
+            input = new DataInputStream(new FileInputStream(rawFile));
+            input.read(rawData);
+        } finally {
+            if (input != null) {
+                input.close();
+            }
+        }
+
+        DataOutputStream output = null;
+        try {
+            output = new DataOutputStream(new FileOutputStream(waveFile));
+            // WAVE header
+            // see http://ccrma.stanford.edu/courses/422/projects/WaveFormat/
+            writeString(output, "RIFF"); // chunk id
+            writeInt(output, 36 + rawData.length); // chunk size
+            writeString(output, "WAVE"); // format
+            writeString(output, "fmt "); // subchunk 1 id
+            writeInt(output, 16); // subchunk 1 size
+            writeShort(output, (short) 1); // audio format (1 = PCM)
+            writeShort(output, (short) 1); // number of channels
+            writeInt(output, 8000); // sample rate
+            writeInt(output, RECORDER_SAMPLERATE * 2); // byte rate
+            writeShort(output, (short) 2); // block align
+            writeShort(output, (short) 16); // bits per sample
+            writeString(output, "data"); // subchunk 2 id
+            writeInt(output, rawData.length); // subchunk 2 size
+            // Audio data (conversion big endian -> little endian)
+            short[] shorts = new short[rawData.length / 2];
+            ByteBuffer.wrap(rawData).order(ByteOrder.LITTLE_ENDIAN).asShortBuffer().get(shorts);
+            ByteBuffer bytes = ByteBuffer.allocate(shorts.length * 2);
+            for (short s : shorts) {
+                bytes.putShort(s);
+            }
+
+            output.write(fullyReadFileToBytes(rawFile));
+        } finally {
+            if (output != null) {
+                output.close();
+            }
+        }
+    }
+
+    byte[] fullyReadFileToBytes(File f) throws IOException {
+        int size = (int) f.length();
+        byte bytes[] = new byte[size];
+        byte tmpBuff[] = new byte[size];
+        FileInputStream fis = new FileInputStream(f);
+        try {
+
+            int read = fis.read(bytes, 0, size);
+            if (read < size) {
+                int remain = size - read;
+                while (remain > 0) {
+                    read = fis.read(tmpBuff, 0, remain);
+                    System.arraycopy(tmpBuff, 0, bytes, size - remain, read);
+                    remain -= read;
+                }
+            }
+        } catch (IOException e) {
+            throw e;
+        } finally {
+            fis.close();
+        }
+
+        return bytes;
+    }
+
+    private void writeInt(final DataOutputStream output, final int value) throws IOException {
+        output.write(value >> 0);
+        output.write(value >> 8);
+        output.write(value >> 16);
+        output.write(value >> 24);
+    }
+
+    private void writeShort(final DataOutputStream output, final short value) throws IOException {
+        output.write(value >> 0);
+        output.write(value >> 8);
+    }
+
+    private void writeString(final DataOutputStream output, final String value) throws IOException {
+        for (int i = 0; i < value.length(); i++) {
+            output.write(value.charAt(i));
+        }
+    }
+
+    public void setFileNameAndPath() {
+        int count = 0;
+        File f;
+
+        do {
+            count++;
+            mFileName = getString(R.string.default_file_name)
+                    + "_" + (mDatabase.getCount() + count) + ".wav";
+            //mFileName = getString(R.string.default_file_name)
+            //      + "_" + (mDatabase.getCount() + count) + ".mp4";
+            mFilePath = Environment.getExternalStorageDirectory().getAbsolutePath();
+            mFilePath += "/SoundRecorder/" + mFileName;
+
+            f = new File(mFilePath);
+        } while (f.exists() && !f.isDirectory());
     }
     /*
     private void simpleTest() throws IOException {

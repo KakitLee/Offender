@@ -12,6 +12,8 @@ public class RecordingItem implements Parcelable {
     private int mId; //id in database
     private int mLength; // length of recording in seconds
     private long mTime; // date/time of the recording
+    private double mLikelihood;
+    private String mMatchedName;
 
     public RecordingItem()
     {
@@ -23,6 +25,8 @@ public class RecordingItem implements Parcelable {
         mId = in.readInt();
         mLength = in.readInt();
         mTime = in.readLong();
+        mLikelihood=in.readDouble();
+        mMatchedName=in.readString();
     }
 
     public String getFilePath() {
@@ -64,6 +68,21 @@ public class RecordingItem implements Parcelable {
     public void setTime(long time) {
         mTime = time;
     }
+    public double getLikelihood() {
+        return mLikelihood;
+    }
+
+    public void setLikelihood(double likelihood) {
+        mLikelihood = likelihood;
+    }
+
+    public String getMatchedName() {
+        return mMatchedName;
+    }
+
+    public void setMatchedName(String matchedName) {
+        mMatchedName = matchedName;
+    }
 
     public static final Parcelable.Creator<RecordingItem> CREATOR = new Parcelable.Creator<RecordingItem>() {
         public RecordingItem createFromParcel(Parcel in) {
@@ -82,6 +101,9 @@ public class RecordingItem implements Parcelable {
         dest.writeLong(mTime);
         dest.writeString(mFilePath);
         dest.writeString(mName);
+        dest.writeDouble(mLikelihood);
+        dest.writeString(mMatchedName);
+
     }
 
     @Override
