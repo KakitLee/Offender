@@ -2,21 +2,15 @@ package com.project.zhi.tigerapp;
 
 import android.content.Intent;
 import android.os.Build;
-import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
-import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.ListView;
 
 import com.google.gson.Gson;
-import com.project.zhi.tigerapp.Adapter.PeopleAdapter;
 import com.project.zhi.tigerapp.Adapter.ProfileAdapter;
 import com.project.zhi.tigerapp.Entities.Attributes;
 import com.project.zhi.tigerapp.Entities.Entities;
@@ -25,8 +19,6 @@ import com.project.zhi.tigerapp.Services.DataSortService;
 import com.project.zhi.tigerapp.Services.DataSourceServices;
 import com.project.zhi.tigerapp.Services.UserPrefs_;
 import com.project.zhi.tigerapp.Utils.Utils;
-import com.project.zhi.tigerapp.complexmenu.MenuModel;
-import com.project.zhi.tigerapp.complexmenu.SelectMenuView;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Bean;
@@ -35,9 +27,6 @@ import org.androidannotations.annotations.ViewById;
 import org.androidannotations.annotations.sharedpreferences.Pref;
 
 import java.util.ArrayList;
-
-import lombok.experimental.var;
-
 
 @EActivity(R.layout.activity_profile)
 public class ProfileActivity extends AppCompatActivity {

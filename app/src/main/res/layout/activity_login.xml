@@ -21,16 +21,6 @@
             layout="@layout/toolbar"
             />
 
-        <!--<TextView-->
-            <!--android:id="@+id/state"-->
-            <!--android:layout_above="@id/url"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_centerHorizontal="true"-->
-            <!--android:layout_centerVertical="true"-->
-            <!--android:layout_marginLeft="50dp"-->
-            <!--android:textSize="@dimen/px_36"-->
-            <!--android:text="Not logged in"/>-->
         <EditText
             android:id="@+id/url"
             android:layout_above="@id/username"
