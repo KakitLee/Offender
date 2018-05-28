@@ -1,8 +1,10 @@
 package com.project.zhi.tigerapp;
 
+import com.google.gson.Gson;
 import com.project.zhi.tigerapp.Entities.Attributes;
 import com.project.zhi.tigerapp.Entities.Data;
 import com.project.zhi.tigerapp.Entities.Entities;
+import com.project.zhi.tigerapp.Entities.Person;
 import com.project.zhi.tigerapp.Enums.AttributeType;
 import com.project.zhi.tigerapp.FaceUtils.MatchedImage;
 import com.project.zhi.tigerapp.Services.DataFilteringService;
@@ -12,6 +14,7 @@ import com.project.zhi.tigerapp.Services.MenuService;
 import com.project.zhi.tigerapp.Utils.Utils;
 import com.project.zhi.tigerapp.complexmenu.MenuModel;
 import com.project.zhi.tigerapp.complexmenu.MenuTuple;
+import com.wutka.dtd.EntityExpansion;
 
 import org.junit.Test;
 import org.mockito.cglib.core.Local;
@@ -232,6 +235,28 @@ public class localTest {
         assertEquals("firstname",attributes.get(0).getAttributeKey());
 
     }
+    @Test
+    public void gsonTest(){
+        ArrayList<Person> people = new ArrayList<Person>();
+        Entities e = new Entities();
+        e.setId("1");
+        Person person1 = new Person();
+        person1.setEntity(e);
+        Entities e2 = new Entities();
+        e2.setId("2");
+        Person person2 = new Person();
+        person2.setEntity(e2);
+        people.add(person1);
+        people.add(person2);
+
+        Gson gson = new Gson();
+        String peopleObj = gson.toJson(people);
+
+        ArrayList<Person> people2 = gson.fromJson(peopleObj, ArrayList.class);
+        assertEquals(2,people2.size());
+
+    }
+
     @Test
     public void ImagePathTest(){
         DataSourceServices dataSourceServices = new DataSourceServices();

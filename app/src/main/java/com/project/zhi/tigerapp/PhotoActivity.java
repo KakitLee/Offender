@@ -45,6 +45,7 @@ import com.arcsoft.facerecognition.AFR_FSDKMatching;
 import com.guo.android_extend.image.ImageConverter;
 import com.project.zhi.tigerapp.Entities.Data;
 import com.project.zhi.tigerapp.Entities.Entities;
+import com.project.zhi.tigerapp.Entities.Person;
 import com.project.zhi.tigerapp.FaceUtils.Application;
 import com.project.zhi.tigerapp.FaceUtils.FaceDB;
 import com.project.zhi.tigerapp.FaceUtils.MatchedImage;
@@ -375,7 +376,7 @@ public class PhotoActivity extends AppCompatActivity implements NavigationView.O
 
         Collections.sort(scores,Utils.getComparator());
 
-
+        ArrayList<Person> People = new ArrayList<Person>();
         for (MatchedImage currImage : scores) {
             String imageName = currImage.getImage();
             Entities entity = dataSourceServices.getEntityByImageName(imageName, this, data1);
@@ -383,8 +384,13 @@ public class PhotoActivity extends AppCompatActivity implements NavigationView.O
                 passIds.add(entity.getId());
                 passScores.add(currImage.getScore());
 
+
             }
+
+
         }
+
+
 
         Bundle bundle = new Bundle();
 
