@@ -13,6 +13,7 @@ import com.project.zhi.tigerapp.Utils.Utils;
 
 import org.androidannotations.annotations.EBean;
 import org.androidannotations.annotations.sharedpreferences.Pref;
+import org.androidannotations.annotations.sharedpreferences.SharedPref;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.simpleframework.xml.Serializer;
@@ -36,6 +37,9 @@ interface  IDataSourceServices{
 
 @EBean
 public class DataSourceServices implements IDataSourceServices {
+
+    @Pref
+    UserPrefs_ userPrefs;
 
     public boolean isValidDataSource(String filePath){
         if(filePath == null || filePath.isEmpty()){
@@ -180,6 +184,18 @@ public class DataSourceServices implements IDataSourceServices {
             }
         }
         return null;
+    }
+
+    public String getSourceFolder(){
+        String path = "";
+        if(userPrefs.isUrl().get()){
+            path = userPrefs.urlImagePath().get();;
+        }
+        else{
+            path = userPrefs.folder().get();
+        }
+
+        return path;
     }
 }
 
