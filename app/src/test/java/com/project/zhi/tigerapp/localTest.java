@@ -4,6 +4,7 @@ import com.project.zhi.tigerapp.Entities.Attributes;
 import com.project.zhi.tigerapp.Entities.Data;
 import com.project.zhi.tigerapp.Entities.Entities;
 import com.project.zhi.tigerapp.Enums.AttributeType;
+import com.project.zhi.tigerapp.FaceUtils.MatchedImage;
 import com.project.zhi.tigerapp.Services.DataFilteringService;
 import com.project.zhi.tigerapp.Services.DataSortService;
 import com.project.zhi.tigerapp.Services.DataSourceServices;
@@ -19,6 +20,8 @@ import org.simpleframework.xml.core.Persister;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -241,5 +244,25 @@ public class localTest {
 //        assertEquals("bilat",dataSourceServices.setImagePath(data).getEntitiesList().get(2).getAttachments().getFilename());
 //        assertEquals("pbm",dataSourceServices.setImagePath(data).getEntitiesList().get(4).getAttachments().getFilename());
 //        assertEquals("patrol_alpha__0087_image_1",dataSourceServices.setImagePath(data).getEntitiesList().get(5).getAttachments().getFilename());
+    }
+
+    @Test
+    public void FaceScoreTest(){
+
+
+        ArrayList<MatchedImage> faces = new ArrayList<MatchedImage>();
+        faces.add(new MatchedImage((float)2,"ddd"));
+        faces.add(new MatchedImage((float)1,"ss"));
+        faces.add(new MatchedImage((float)3,"aa"));
+//        Collections.sort(faces,Comparator<>);
+//        assertEquals(faces.get(0).getImage(),"a1a");
+//        assertEquals(faces.get(1).getImage(),"aa");
+//        assertEquals(faces.get(2).getImage(),"ddd");
+        Collections.sort(faces,Utils.getComparator());
+
+
+
+
+
     }
 }

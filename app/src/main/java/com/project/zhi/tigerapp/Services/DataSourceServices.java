@@ -153,5 +153,33 @@ public class DataSourceServices implements IDataSourceServices {
         fileName = FilenameUtils.removeExtension(fileName);
         return  fileName;
     }
+    public Entities getEntityByImageName(String imageName, Context context, Data data){
+        for (Entities entity: data.getEntitiesList()
+             ) {
+            if (entity.getAttachments() != null){
+                for(Attachments attachment:entity.getAttachments()) {
+                    if (attachment.getFilename().equalsIgnoreCase(imageName)) {
+                        return entity;
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
+    public Entities getEntityById(String id, Context context){
+        Data data = this.getPeopleSource(context);
+        for (Entities entity: data.getEntitiesList()
+                ) {
+            if (entity.getId() != null){
+
+                if (entity.getId().equalsIgnoreCase(id)) {
+                    return entity;
+                }
+
+            }
+        }
+        return null;
+    }
 }
 

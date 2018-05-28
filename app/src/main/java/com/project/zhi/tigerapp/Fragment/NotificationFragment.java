@@ -1,22 +1,12 @@
 package com.project.zhi.tigerapp.Fragment;
 
-import android.Manifest;
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
-import android.content.pm.PackageManager;
-import android.graphics.BitmapFactory;
-import android.os.Build;
-import android.preference.EditTextPreference;
-import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.SwitchPreference;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 import android.webkit.URLUtil;
 
 import com.google.android.gms.common.util.IOUtils;
-import com.google.common.io.Files;
 import com.project.zhi.tigerapp.R;
 import com.project.zhi.tigerapp.Services.DataSourceServices;
 import com.project.zhi.tigerapp.Services.UserPrefs_;
@@ -41,13 +31,10 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.lang.reflect.Field;
-import java.nio.file.StandardCopyOption;
-import java.util.Calendar;
+import java.util.concurrent.TimeUnit;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-import okhttp3.Credentials;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -60,14 +47,8 @@ public class NotificationFragment extends PreferenceFragment {
     @Pref
     UserPrefs_ userPrefs;
 
-//    @PreferenceByKey(R.string.pref_url_details)
-//    EditTextPreference urlAddress;
-
     @PreferenceByKey(R.string.pref_url_switch)
     SwitchPreference urlSwitch;
-
-//    @PreferenceByKey(R.string.synButton)
-//    SwitchPreference synButton;
 
     @Bean
     DataSourceServices dataSourceServices;
@@ -77,7 +58,6 @@ public class NotificationFragment extends PreferenceFragment {
     @AfterPreferences
     void initPrefs() {
         urlSwitch.setChecked(userPrefs.isUrl().get());
-//        urlAddress.setSummary(userPrefs.urlAddres().get());
     }
 
     @PreferenceChange(R.string.pref_url_switch)
@@ -85,14 +65,11 @@ public class NotificationFragment extends PreferenceFragment {
 
         //is URL
         userPrefs.isUrl().put(isUrl);
-        //is Using URL
-        userPrefs.isUsingUrl().put(isUrl);
-
     }
 
     @PreferenceClick(R.string.synButton)
     void buttonClick(){
-        String url = userPrefs.urlAddres().get();
+        String url = userPrefs.urlAddress().get();
 
         if(!URLUtil.isHttpUrl(url) && !URLUtil.isHttpsUrl(url)){
             onError();
@@ -168,7 +145,7 @@ public class NotificationFragment extends PreferenceFragment {
     Boolean getFile(){
         try {
             onLoading();
-            String url = userPrefs.urlAddres().get()+"/upload";
+            String url = userPrefs.urlAddress().get()+"/upload";
             System.out.println(url);
             Request request = new Request.Builder()
                     .url(url)
@@ -214,8 +191,14 @@ public class NotificationFragment extends PreferenceFragment {
     Boolean getPhoto(){
         try {
             onLoading();
-            String url = userPrefs.urlAddres().get()+"/images/"+userPrefs.username().get();
+            String url = userPrefs.urlAddress().get()+"/images/"+userPrefs.username().get();
             System.out.println(url);
+            client = new OkHttpClient.Builder()
+                    .connectTimeout(10, TimeUnit.SECONDS)
+                    .writeTimeout(10, TimeUnit.SECONDS)
+                    .readTimeout(1000, TimeUnit.SECONDS)
+                    .build();
+
             Request request = new Request.Builder()
                     .url(url)
                     .header("Authorization", "Bearer"+ userPrefs.token().get())
@@ -346,6 +329,18 @@ public class NotificationFragment extends PreferenceFragment {
 //            }
 //        }
 //        System.out.println("======================");
+//    }
+
+//    void imagesFilter(File file){
+//        if (file.isDirectory()) {
+//            File[] files = file.listFiles();
+//            for (int i = 0; i < files.length; i++) {
+//                File f = files[i];
+//                if (f.getName() == ".DS_Store"){
+//                    f.delete();
+//                }
+//            }
+//        }
 //    }
 
 }

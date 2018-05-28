@@ -10,12 +10,9 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.widget.EditText;
-import android.widget.TextView;
-import android.widget.Toast;
 import android.view.View;
 
 import com.project.zhi.tigerapp.Services.NavigationService;
@@ -27,15 +24,12 @@ import org.androidannotations.annotations.Background;
 import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.sharedpreferences.Pref;
-import org.apache.commons.collections4.Get;
-import org.json.JSONObject;
 
 import java.io.IOException;
 
 import okhttp3.Credentials;
 import okhttp3.FormBody;
 import okhttp3.MediaType;
-import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
@@ -65,15 +59,14 @@ public class LoginActivity extends AppCompatActivity implements NavigationView.O
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-
-
-//        TextView state = (TextView) findViewById(R.id.state);
-        String username = userPrefs.username().get();
-        if (username!=null){
-//            state.setText("Logged as "+username);
-//            R.string.LoginActivity = "Logged as "+username;
+        if (!userPrefs.urlAddress().get().isEmpty()){
+            EditText host_text = (EditText) findViewById(R.id.url);
+            host_text.setText(userPrefs.urlAddress().get());
         }
-
+        if (!userPrefs.username().get().isEmpty()){
+            EditText username_text = (EditText) findViewById(R.id.username);
+            username_text.setText(userPrefs.urlAddress().get());
+        }
     }
 
     public void login(View v){
@@ -81,16 +74,15 @@ public class LoginActivity extends AppCompatActivity implements NavigationView.O
         EditText username_text = (EditText) findViewById(R.id.username);
         EditText password_text = (EditText) findViewById(R.id.password);
 
-//        userPrefs.urlAddres().put(host_text.getText().toString());
-//        userPrefs.urlAddres().put("http://10.0.2.2:8080");
-        userPrefs.urlAddres().put("http://10.13.39.29:8080");
+        userPrefs.urlAddress().put(host_text.getText().toString());
+//        userPrefs.urlAddress().put("http://10.13.39.29:8080");
         userPrefs.username().put(username_text.getText().toString());
         String password = password_text.getText().toString();
-        String url = userPrefs.urlAddres().get()+"/oauth/token";
-        System.out.println(url);
+        String url = userPrefs.urlAddress().get()+"/oauth/token";
+//        System.out.println(url);
 
         getToken(url,"my-trusted-client","secret","password",userPrefs.username().get(),password);
-        System.out.println(userPrefs.token().get());
+//        System.out.println(userPrefs.token().get());
     }
 
     @Override
@@ -110,8 +102,6 @@ public class LoginActivity extends AppCompatActivity implements NavigationView.O
             JSONObject response_json = new JSONObject(response);
             userPrefs.token().put(response_json.get("access_token").toString());
             onValid(username);
-//            TextView state = (TextView) findViewById(R.id.state);
-//            state.setText("Logged as "+username);
 
         }catch (Exception e){
             onInValid();
@@ -151,7 +141,6 @@ public class LoginActivity extends AppCompatActivity implements NavigationView.O
         Utils.setAlertDialog("Warning", "Login Failed", this).setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-//                btn_comfirm.setEnabled(false);
                 dialog.dismiss();
             }
         }).show();

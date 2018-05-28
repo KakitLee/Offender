@@ -12,7 +12,7 @@ import lombok.Data;
 
 @Data
 @Root(strict = false)
-public class Entities {
+public class Entities{
     @Element
     protected String id;
     @Attribute

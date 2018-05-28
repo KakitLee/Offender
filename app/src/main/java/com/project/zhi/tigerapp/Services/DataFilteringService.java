@@ -38,13 +38,22 @@ public class DataFilteringService {
     }
 
     public ArrayList<Entities> search(ArrayList<Entities> entities, String query){
-        ArrayList<Entities> filteredEntities = new ArrayList<>();
-        for (Entities entity: entities){
-            if(isSatisySingleQuery(query,entity.getList())){
-                filteredEntities.add(entity);
-            }
+        if(query == null || query.isEmpty()){
+            return entities;
         }
-        return filteredEntities;
+        String [] queries = query.split(",");
+        ArrayList<Entities> filteredEntities = new ArrayList<>();
+        for (String oneQuery: queries
+             ) {
+            for (Entities entity: entities){
+                if(isSatisySingleQuery(oneQuery.trim(),entity.getList())){
+                    filteredEntities.add(entity);
+                }
+            }
+            entities.retainAll(filteredEntities);
+            filteredEntities.clear();
+        }
+        return entities;
     }
 
     public ArrayList<Entities> update(ArrayList<Entities> entities, ArrayList<MenuModel> nameMenu, ArrayList<MenuModel> mainDemoMenu, ArrayList<MenuModel> otherDemoMenu) {
@@ -94,15 +103,27 @@ public class DataFilteringService {
         for(var i =0; i< attributes.size(); i++){
             var attribute= attributes.get(i);
             var key = attribute.getAttributeKey();
+            var isFuzzy = true;
             var value = "";
             if(attribute.getType().equalsIgnoreCase("TEXT")){
                 value = attribute.getStringValue();
             }
+            else if(attribute.getType().equalsIgnoreCase(AttributeType.LIST.name())){
+                value = attribute.getListKey();
+                isFuzzy = false;
+            }
             else if (attribute.getDoubleValue()!=null){
                 value = attribute.getDoubleValue().toString();
             }
-            if(value.toLowerCase().contains(query.toLowerCase())){
-                return true;
+            if(isFuzzy) {
+                if (value.toLowerCase().contains(query.toLowerCase())) {
+                    return true;
+                }
+            }
+            else{
+                if (value.toLowerCase().equalsIgnoreCase(query.toLowerCase())) {
+                    return true;
+                }
             }
         }
         return false;
