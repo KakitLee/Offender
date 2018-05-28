@@ -7,9 +7,7 @@ import android.content.ServiceConnection;
 import android.media.AudioFormat;
 import android.media.AudioRecord;
 import android.media.MediaRecorder;
-import android.media.audiofx.NoiseSuppressor;
 import android.os.Bundle;
-import android.os.Debug;
 import android.os.Environment;
 import android.os.IBinder;
 import android.os.SystemClock;
@@ -22,9 +20,7 @@ import android.view.WindowManager;
 import android.widget.Chronometer;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.project.zhi.tigerapp.MainActivity_;
-import com.project.zhi.tigerapp.ProfileActivity_;
 import com.qingyangli.offender.AudioDispatcher;
 import com.qingyangli.offender.DBHelper;
 import com.qingyangli.offender.GaussianMixture;
@@ -35,7 +31,6 @@ import com.qingyangli.offender.RecordingMfccService;
 import com.qingyangli.offender.RecordingMfccService.LocalBinder;
 import com.qingyangli.offender.ShortMFCC;
 import com.melnykov.fab.FloatingActionButton;
-
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
@@ -46,26 +41,18 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.PrintWriter;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Scanner;
 import java.util.TimerTask;
-
 import be.tarsos.dsp.AudioEvent;
 import be.tarsos.dsp.AudioProcessor;
 import be.tarsos.dsp.io.TarsosDSPAudioFormat;
 import be.tarsos.dsp.io.UniversalAudioInputStream;
 
-import static android.media.audiofx.NoiseSuppressor.isAvailable;
-
-//import be.tarsos.dsp.AudioDispatcher;
-//import be.tarsos.dsp.mfcc.MFCC;
-//import com.danielkim.soundrecorder.MFCC;
-
-
+import android.os.Debug;
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
@@ -114,10 +101,6 @@ public class RecordFragment extends Fragment {
     final static String trainedMeansPath = "Thesis/Tarsos/Means";
     final static String trainedCovsPath = "Thesis/Tarsos/Covs";
     final static String trainedModelPath = "Thesis/Tarsos/model";
-    //final static String trainedFileName = "fdnc0.txt";
-    //final static String trainedFileName = "lqy_test_android_mfcc_model_001_big.txt";
-    //final static String trainedFileName = "lqy_test_android_mfcc_model_002_big.txt";
-    //final static String trainedFileName = "QingyangLi_andriod_MFCC_model.txt";
     final static int CompononetsNum = 32;
     final static int FeatureLength = 13;
     //********************************************************************************************
@@ -524,31 +507,22 @@ public class RecordFragment extends Fragment {
         if (null == vPath || vPath.equals("")) {
             return;
         }
-
-        File file = new File(vPath);  //存放数组数据的文件
-        //long t = System.currentTimeMillis();
-
+        File file = new File(vPath);
         StringBuffer tBuffer = new StringBuffer();
-//      int len = vArr.length;
-//      System.out.println("len="+len);
 
         for (float[] list : mfccList) {
             for (float val : list) {
-                //保留18位小数，这里可以改为其他值
                 tBuffer.append(String.format("%.18f", val));
                 tBuffer.append("\r\n");
             }
         }
         try {
-            FileWriter out = new FileWriter(file);  //文件写入流
+            FileWriter out = new FileWriter(file);
             out.write(tBuffer.toString());
             out.close();
         } catch (Exception e) {
             Log.i(TAG, "write error!");
         }
-
-        //t = System.currentTimeMillis()- t;
-        //System.out.println("t="+t);
     }
 
 
@@ -564,43 +538,8 @@ public class RecordFragment extends Fragment {
     public void onResume() {
         super.onResume();
         Log.i(TAG, "onResume");
-
-        // Bind to LocalService. Also in onResume so that it rebinds after coming back from homepressed
-        //intentBindService = new Intent(getActivity(), RecordingMfccService.class);
-        //getActivity().bindService(intentBindService, mConnection, Context.BIND_AUTO_CREATE);
-
-        //LocalBroadcastManager.getInstance(getActivity()).registerReceiver((receiver), new IntentFilter(RecordingMfccService.COPA_RESULT));
-
     }
 
-
-    /**
-     * Defines callbacks for service binding, passed to bindService()
-     */
-    private ServiceConnection mConnection = new ServiceConnection() {
-
-        @Override
-        public void onServiceConnected(ComponentName className,
-                                       IBinder service) {
-            Log.i(TAG, "onServiceConnected");
-
-            // We've bound to LocalService, cast the IBinder and get LocalService instance
-            LocalBinder binder = (LocalBinder) service;
-            mService = binder.getService();
-            isBound = true;
-
-
-        }
-
-        @Override
-        public void onServiceDisconnected(ComponentName arg0) {
-            Log.i(TAG, "onServiceDisConnected");
-
-            isBound = false;
-
-
-        }
-    };
 
     private void modelNameInFolder(final File folder) {
         modelCount = 0;
@@ -639,70 +578,7 @@ public class RecordFragment extends Fragment {
             }
             mfccFeature.add(tempFeatureTrans);
         }
-        double result = gmmModel.getLogLikelihood(mfccFeature);
-
-        return result;
-
-    }
-
-    private double audioFeatureClassify(ArrayList<float[]> mfccFeatureInput, String trainedFileName) throws IOException {
-        double[] weights = new double[CompononetsNum];
-        Matrix[] means = new Matrix[CompononetsNum];
-        Matrix[] covs = new Matrix[CompononetsNum];
-        String traindWeightsStoragePath = Environment.getExternalStorageDirectory()
-                + File.separator + trainedWeightsPath + File.separator + trainedFileName;
-        String traindMeansStoragePath = Environment.getExternalStorageDirectory()
-                + File.separator + trainedMeansPath + File.separator + trainedFileName;
-        String traindCovsStoragePath = Environment.getExternalStorageDirectory()
-                + File.separator + trainedCovsPath + File.separator + trainedFileName;
-        FileReader trainedWeights = new FileReader(traindWeightsStoragePath);
-        FileReader trainedMeans = new FileReader(traindMeansStoragePath);
-        FileReader trainedCovs = new FileReader(traindCovsStoragePath);
-        Scanner srcWeights = new Scanner(trainedWeights);
-        Scanner srcMeans = new Scanner(trainedMeans);
-        Scanner srcCovs = new Scanner(trainedCovs);
-        //error handlling!!!!!
-        //get weights, means and covs of one model for gmm
-        for (int i = 0; i < CompononetsNum; i++) {
-            if (srcWeights.hasNextDouble())
-                weights[i] = srcWeights.nextDouble();
-        }
-        Log.i(TAG, "get_weights");
-        for (int i = 0; i < CompononetsNum; i++) {
-            double[][] tempComponent = new double[FeatureLength][1];
-            for (int j = 0; j < FeatureLength; j++) {
-                if (srcMeans.hasNextDouble()) {
-                    tempComponent[j][0] = srcMeans.nextDouble();
-                }
-            }
-            means[i] = new Matrix(tempComponent);
-        }
-        for (int i = 0; i < CompononetsNum; i++) {
-            double[][] tempComponent = new double[FeatureLength][FeatureLength];
-            for (int j = 0; j < FeatureLength; j++) {
-                for (int k = 0; k < FeatureLength; k++) {
-                    if (srcCovs.hasNextDouble()) {
-                        tempComponent[j][k] = srcCovs.nextDouble();
-                    }
-                }
-            }
-            covs[i] = new Matrix(tempComponent);
-        }
-        //construct gmm model
-        GaussianMixture gmmModel = new GaussianMixture(weights, means, covs);
-
-        //mfcc feature for collected audio sample
-        PointList mfccFeature = new PointList(FeatureLength);
-        int pointListNum = mfccFeatureInput.size();
-        for (int i = 0; i < pointListNum; i++) {
-            float[] tempFeature = mfccFeatureInput.get(i);
-            double[] tempFeatureTrans = new double[FeatureLength];
-            for (int j = 0; j < FeatureLength; j++) {
-                tempFeatureTrans[j] = (double) tempFeature[j];
-            }
-            mfccFeature.add(tempFeatureTrans);
-        }
-        double result = gmmModel.getLogLikelihood(mfccFeature);
+        double result = Math.exp(gmmModel.getLogLikelihood(mfccFeature));
 
         return result;
 
@@ -806,59 +682,11 @@ public class RecordFragment extends Fragment {
             count++;
             mFileName = getString(R.string.default_file_name)
                     + "_" + (mDatabase.getCount() + count) + ".wav";
-            //mFileName = getString(R.string.default_file_name)
-            //      + "_" + (mDatabase.getCount() + count) + ".mp4";
             mFilePath = Environment.getExternalStorageDirectory().getAbsolutePath();
             mFilePath += "/SoundRecorder/" + mFileName;
 
             f = new File(mFilePath);
         } while (f.exists() && !f.isDirectory());
     }
-    /*
-    private void simpleTest() throws IOException {
-        double[] weights = new double[CompononetsNum];
-        Matrix[] means = new Matrix[CompononetsNum];
-        Matrix[] covs = new Matrix[CompononetsNum];
-        String traindWeightsStoragePath = Environment.getExternalStorageDirectory()
-                + File.separator + trainedWeightsPath + File.separator + trainedFileName;
-        String traindMeansStoragePath = Environment.getExternalStorageDirectory()
-                + File.separator + trainedMeansPath + File.separator + trainedFileName;
-        String traindCovsStoragePath = Environment.getExternalStorageDirectory()
-                + File.separator + trainedCovsPath + File.separator + trainedFileName;
-        FileReader trainedWeights = new FileReader(traindWeightsStoragePath);
-        FileReader trainedMeans = new FileReader(traindMeansStoragePath);
-        FileReader trainedCovs = new FileReader(traindCovsStoragePath);
-        Scanner srcWeights = new Scanner(trainedWeights);
-        Scanner srcMeans = new Scanner(trainedMeans);
-        Scanner srcCovs = new Scanner(trainedCovs);
-        //error handlling!!!!!
-        //get weights, means and covs of one model for gmm
-        for (int i = 0; i < CompononetsNum; i++) {
-            if (srcWeights.hasNextDouble())
-                weights[i] = srcWeights.nextDouble();
-        }
-        Log.i(TAG, "get_weights");
-        for (int i = 0; i < CompononetsNum; i++) {
-            double[][] tempComponent = new double[FeatureLength][1];
-            for (int j = 0; j < FeatureLength; j++) {
-                if (srcMeans.hasNextDouble()) {
-                    tempComponent[j][0] = srcMeans.nextDouble();
-                }
-            }
-            means[i] = new Matrix(tempComponent);
-        }
-        for (int i = 0; i < CompononetsNum; i++) {
-            double[][] tempComponent = new double[FeatureLength][FeatureLength];
-            for (int j = 0; j < FeatureLength; j++) {
-                for (int k = 0; k < FeatureLength; k++) {
-                    if (srcCovs.hasNextDouble()) {
-                        tempComponent[j][k] = srcCovs.nextDouble();
-                    }
-                }
-            }
-            covs[i] = new Matrix(tempComponent);
-        }
-        //construct gmm model
-        GaussianMixture gmmModel = new GaussianMixture(weights, means, covs);
-    }*/
+
 }
