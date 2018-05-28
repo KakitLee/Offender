@@ -25,6 +25,7 @@ import org.androidannotations.annotations.sharedpreferences.SharedPref;
         String urlAddress();
         String urlImagePath();
         String file();
+        String voiceFolder();
         String folder();
         String gender();
         String appId();
