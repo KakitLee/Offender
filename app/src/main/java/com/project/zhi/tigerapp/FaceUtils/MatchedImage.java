@@ -7,15 +7,15 @@ import com.project.zhi.tigerapp.Entities.Entities;
 import java.io.Serializable;
 
 public class MatchedImage implements Comparable<MatchedImage> {
-    private float score;
+    private Float score;
     private String image;
 
-    public MatchedImage(float score, String image){
+    public MatchedImage(Float score, String image){
         this.score = score;
         this.image = image;
     }
 
-    public float getScore() {
+    public Float getScore() {
         return this.score;
     }
 

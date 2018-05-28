@@ -2,6 +2,7 @@ package com.project.zhi.tigerapp.ViewGroup;
 
 import android.content.Context;
 import android.os.Build;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -35,6 +36,8 @@ public class PersonItemView extends LinearLayout {
     TextView tvPersonName;
     @ViewById(R.id.imgPerson)
     ImageView imgPersonAvatar;
+    @ViewById(R.id.score)
+    TextView scoreText;
     @Bean
     DataFilteringService dataFilteringService;
     @Pref
@@ -44,8 +47,15 @@ public class PersonItemView extends LinearLayout {
         super(context);
     }
 
-    public void bind(Entities entities) {
+    public void bind(Entities entities, Float score) {
         tvPersonName.setText(dataFilteringService.getPersonName(entities));
+        if(score == null){
+            scoreText.setVisibility(View.INVISIBLE);
+        }
+        else{
+            scoreText.setText(String.valueOf(score*100)+"%");
+        }
+
         if(userPrefs.isUrl().get()){
             imgPersonAvatar.setImageBitmap(Utils.getImageExternal(entities,userPrefs.urlImagePath().get()));
         }

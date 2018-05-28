@@ -2,6 +2,7 @@ package com.project.zhi.tigerapp;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -85,6 +86,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             drawer.closeDrawer(GravityCompat.START);
         }
 
+
+
         gridview.setAdapter(adapter);
 
         selectMenuView.setOnFilteringBtnListener(new SelectMenuView.OnFilteringBtnListener() {
@@ -92,7 +95,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             public void OnFiltering(ArrayList<MenuModel> nameMenus, ArrayList<MenuModel> mainDemoMenu, ArrayList<MenuModel> otherDemoMenu) {
                 onLoading();
                 var newList = dataFilteringService.update(dataSourceServices.getPeopleSource(context).getEntitiesList(), nameMenus, mainDemoMenu, otherDemoMenu);
-                adapter.setDataList(newList);
+                adapter.setDataList(newList,null);
                 adapter.notifyDataSetChanged();
                 onDismiss();
             }
@@ -103,7 +106,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             public void OnSearching(String query) {
                 onLoading();
                 var newList = dataFilteringService.search(dataSourceServices.getPeopleSource(context).getEntitiesList(),query);
-                adapter.setDataList(newList);
+                adapter.setDataList(newList,null);
                 adapter.notifyDataSetChanged();
                 onDismiss();
             }
@@ -111,41 +114,32 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         if(getIntent().getStringExtra("voice") != null && !getIntent().getStringExtra("voice").isEmpty()){
             onLoading();
-            adapter.setDataList(dataSourceServices.getEntityById(this, getIntent().getStringExtra("voice")));
+            adapter.setDataList(dataSourceServices.getEntityById(this, getIntent().getStringExtra("voice")),null);
             adapter.notifyDataSetChanged();
             onDismiss();
         }
 
 
-	if(getIntent().getStringArrayListExtra("pass")!=null)
-    {
-        onLoading();
-//            ArrayList<MatchedPerson> people = new ArrayList<MatchedPerson>();
-//            ArrayList<Entities> list = new ArrayList<Entities>();
-//            Bundle bundle = getIntent().getExtras();
-//            if(bundle!=null) {
-//                people = (ArrayList<MatchedPerson>) bundle.getSerializable("Entites");
-//                if (people != null) {
-//                    for (MatchedPerson person : people) {
-//                        list.add(person.getEntity());
-//                    }
-//                    adapter.setDataList(list);
-//                    adapter.notifyDataSetChanged();
-//                    onDismiss();
-//                }
-//            }
-        ArrayList<Entities> list = new ArrayList<Entities>();
-        ArrayList<String> ids = getIntent().getStringArrayListExtra("pass");
-        DataSourceServices service = new DataSourceServices();
-        for (String currId : ids) {
-            Entities currEntity = service.getEntityById(currId, this);
-            list.add(currEntity);
-            Log.d("photo ", currId);
+        Bundle bundle = getIntent().getExtras();
+        if(bundle != null) {
+            if (getIntent().getSerializableExtra("passId") != null && getIntent().getSerializableExtra("passScore") != null) {
+                onLoading();
+                ArrayList<Entities> list = new ArrayList<Entities>();
+                //ArrayList<String> ids = getIntent().getStringArrayListExtra("pass");
+                ArrayList<String> ids = (ArrayList<String>) getIntent().getExtras().get("passId");
+
+                ArrayList<Float> scores = (ArrayList<Float>) getIntent().getExtras().get("passScore");
+
+                DataSourceServices service = new DataSourceServices();
+                for (String currId : ids) {
+                    Entities currEntity = service.getEntityById(currId, this);
+                    list.add(currEntity);
+                }
+                adapter.setDataList(list, scores);
+                adapter.notifyDataSetChanged();
+                onDismiss();
+            }
         }
-        adapter.setDataList(list);
-        adapter.notifyDataSetChanged();
-        onDismiss();
-    }
 
 
         }

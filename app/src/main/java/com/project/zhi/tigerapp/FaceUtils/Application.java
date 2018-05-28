@@ -5,6 +5,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.media.ExifInterface;
 import android.net.Uri;
+import android.os.Environment;
 import android.util.Log;
 
 import com.project.zhi.tigerapp.FaceUtils.FaceDB;
@@ -12,13 +13,14 @@ import com.project.zhi.tigerapp.FaceUtils.FaceDB;
 
 public class Application extends android.app.Application {
 	private final String TAG = this.getClass().toString();
-	FaceDB mFaceDB;
+	public FaceDB mFaceDB;
 	Uri mImage;
 
 	@Override
 	public void onCreate() {
 		super.onCreate();
-		mFaceDB = new FaceDB(this.getExternalCacheDir().getPath());
+		mFaceDB = new FaceDB(this.getExternalFilesDir(null).getPath());
+		//mFaceDB = new FaceDB(this.getExternalCacheDir().getPath());
 		mImage = null;
 	}
 

@@ -37,6 +37,7 @@ public class PeopleAdapter extends BaseAdapter {
     DataSourceServices dataSourceServices;
 
     private ArrayList<Entities> entities;
+    private ArrayList<Float> scores;
     int screenHeight;
 
     @AfterInject
@@ -45,11 +46,18 @@ public class PeopleAdapter extends BaseAdapter {
         if(entities == null){
             entities = new ArrayList<Entities>();
         }
+        if(scores == null){
+            scores = new ArrayList<Float>();
+        }
         screenHeight = ((Activity) context).getWindowManager()
                 .getDefaultDisplay().getHeight();
     }
-    public void setDataList(ArrayList<Entities> list){
+    public void setDataList(ArrayList<Entities> list, ArrayList<Float> scoreList){
         entities = list;
+        if(scoreList!=null){
+            scores = scoreList;
+        }
+
     }
 
     @Override
@@ -67,6 +75,14 @@ public class PeopleAdapter extends BaseAdapter {
         return position;
     }
 
+
+    public Float getScore(int position) {
+        if(scores.isEmpty()){
+            return null;
+        }
+        return scores.get(position);
+    }
+
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         PersonItemView personItemView;
@@ -75,7 +91,7 @@ public class PeopleAdapter extends BaseAdapter {
         } else {
             personItemView = (PersonItemView) convertView;
         }
-        personItemView.bind(getItem(position));
+        personItemView.bind(getItem(position),getScore(position));
         TypedValue tv = new TypedValue();
         if (context.getTheme().resolveAttribute(R.attr.actionBarSize, tv, true)) {
             personItemView.setMinimumHeight((screenHeight - TypedValue.complexToDimensionPixelSize(tv.data, context.getResources().getDisplayMetrics())) / 3);
