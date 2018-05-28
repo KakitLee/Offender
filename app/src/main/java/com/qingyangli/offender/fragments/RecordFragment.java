@@ -1,9 +1,12 @@
 package com.qingyangli.offender.fragments;
 
+import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.SharedPreferences;
 import android.media.AudioFormat;
 import android.media.AudioRecord;
 import android.media.MediaRecorder;
@@ -11,6 +14,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.IBinder;
 import android.os.SystemClock;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -93,7 +97,7 @@ public class RecordFragment extends Fragment {
     final static String Thesis_Tarsos_CSV_PATH = "Thesis/Tarsos/CSV";
     final static String Thesis_Tarsos_Logs_PATH = "Thesis/Tarsos/Logs";
     final File folderPara = new File(storageRootPath + "/Thesis/Tarsos/Covs");
-    final File folderModel = new File(storageRootPath + "/Thesis/Tarsos/model");
+    static File folderModel;
 
     final static String csvFileName = "tarsos_mfcc.csv";
     //final String batteryFileName = "battery_data.txt";
@@ -235,12 +239,14 @@ public class RecordFragment extends Fragment {
      *
      * @return A new instance of fragment Record_Fragment.
      */
-    public static RecordFragment newInstance(int position) {
+    public static RecordFragment newInstance(int position,Context context) {
         RecordFragment f = new RecordFragment();
         Bundle b = new Bundle();
         b.putInt(ARG_POSITION, position);
         f.setArguments(b);
-
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        String voicePath = prefs.getString("file", "");
+        folderModel =new File(prefs.getString("voiceFolder",String.valueOf(Environment.getExternalStorageDirectory()) + "/Thesis/Tarsos/model"));
         return f;
     }
 
@@ -578,7 +584,7 @@ public class RecordFragment extends Fragment {
             }
             mfccFeature.add(tempFeatureTrans);
         }
-        double result = Math.exp(gmmModel.getLogLikelihood(mfccFeature));
+        double result = gmmModel.getLogLikelihood(mfccFeature);
 
         return result;
 
