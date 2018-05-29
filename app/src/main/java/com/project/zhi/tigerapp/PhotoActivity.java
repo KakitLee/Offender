@@ -89,6 +89,7 @@ public class PhotoActivity extends AppCompatActivity implements NavigationView.O
     AFR_FSDKEngine engine1;
     AFR_FSDKError error1;
     List<FaceDB.FaceRegist> mRegist;
+    Context context;
 
     @Bean
     DataSourceServices dataSourceServices;
@@ -144,7 +145,7 @@ public class PhotoActivity extends AppCompatActivity implements NavigationView.O
         Application app = (Application)PhotoActivity.this.getApplicationContext();
         app.mFaceDB.loadFaces();
         mRegist = app.mFaceDB.mRegister;
-
+        context = this;
 
         Button b1 = this.findViewById(R.id.button1);
         b1.setOnClickListener(new View.OnClickListener() {
@@ -160,7 +161,7 @@ public class PhotoActivity extends AppCompatActivity implements NavigationView.O
         b2.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 if(mRegist.isEmpty()){
-                    display("Please register first.");
+                    display(getApplicationContext(),"Please register first.");
                     return;
                 }
 
@@ -192,14 +193,20 @@ public class PhotoActivity extends AppCompatActivity implements NavigationView.O
         return file;
     }
 
-    public void display(String text){
-        Toast toast = Toast.makeText(PhotoActivity.this, text, Toast.LENGTH_LONG);
+    public void display(Context context, String text){
+        Toast toast = Toast.makeText(context, text, Toast.LENGTH_LONG);
         //toast.setGravity(Gravity.CENTER_HORIZONTAL,0,0);
         toast.show();
     }
 
     public void faceRegister(){
-        onLoading();
+
+        path = dataSourceServices.getSourceFolder();
+        if(path.isEmpty() || path==""){
+            display(context,"No image source selected.");
+            return;
+        }
+        onLoading(context);
         engine1 = new AFR_FSDKEngine();
         error1 = engine1.AFR_FSDK_InitialEngine(FaceDB.appid, FaceDB.fr_key);
 
@@ -208,8 +215,9 @@ public class PhotoActivity extends AppCompatActivity implements NavigationView.O
 
 
        // path = userPrefs.urlImagePath().get();
-        path = dataSourceServices.getSourceFolder();
+
         File[] files = new File(path).listFiles();
+
         if(files.length>0) {
             for (File file : files) {
                 String imageName = file.getName();
@@ -221,7 +229,7 @@ public class PhotoActivity extends AppCompatActivity implements NavigationView.O
                 }
 
                 //match test data
-                imageName = imageName.replace(".jpg", "");
+                //imageName = imageName.replace(".jpg", "");
 
                 Bitmap b1 = Application.decodeImage(file.getPath());
                 register(imageName,b1);
@@ -230,7 +238,7 @@ public class PhotoActivity extends AppCompatActivity implements NavigationView.O
 
         error1 = engine1.AFR_FSDK_UninitialEngine();
         onDismiss();
-        display( "Register Successfully.");
+        display(PhotoActivity.this, "Register Successfully.");
 
 }
 
@@ -331,9 +339,8 @@ public class PhotoActivity extends AppCompatActivity implements NavigationView.O
 
         }
         if(face2==null){
-
-            display("No face detected.");
-
+            onDismiss();
+            display(context,"No face detected.");
             return;
         }
         onLoading();
@@ -434,7 +441,7 @@ public class PhotoActivity extends AppCompatActivity implements NavigationView.O
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        //onLoading();
+        onLoading(PhotoActivity.this);
         faceRecognition(requestCode,resultCode);
 
 
@@ -623,9 +630,9 @@ public class PhotoActivity extends AppCompatActivity implements NavigationView.O
 
 
     @UiThread
-    void onLoading(){
+    void onLoading(Context context){
         //dialog = Utils.setProgressDialog(PhotoActivity.this);
-        dialog = Utils.setProgressDialog(this);
+        dialog = Utils.setProgressDialog(context);
     }
     @UiThread
     void onDismiss(){

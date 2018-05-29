@@ -8,7 +8,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 
+import com.project.zhi.tigerapp.Entities.Data;
 import com.project.zhi.tigerapp.Entities.Entities;
+import com.project.zhi.tigerapp.Entities.Person;
 import com.project.zhi.tigerapp.R;
 import com.project.zhi.tigerapp.Services.DataSourceServices;
 import com.project.zhi.tigerapp.Services.UserPrefs_;
@@ -38,19 +40,32 @@ public class PeopleAdapter extends BaseAdapter {
 
     private ArrayList<Entities> entities;
     private ArrayList<Float> scores;
+    private ArrayList<Person> people;
     int screenHeight;
 
     @AfterInject
     void initAdapter() {
-        entities = dataSourceServices.getPeopleSource(context).getEntitiesList();
+        entities = new ArrayList<Entities>();
+
+        Data data  = dataSourceServices.getPeopleSource(context);
+
+        if(data == null){
+            return;
+        }
+        entities = data.getEntitiesList();
         if(entities == null){
-            entities = new ArrayList<Entities>();
+            return;
+        }else {
+            people = dataSourceServices.getPeopleFromEntities(entities);
+            if (entities == null) {
+                entities = new ArrayList<Entities>();
+            }
+            if (scores == null) {
+                scores = new ArrayList<Float>();
+            }
+            screenHeight = ((Activity) context).getWindowManager()
+                    .getDefaultDisplay().getHeight();
         }
-        if(scores == null){
-            scores = new ArrayList<Float>();
-        }
-        screenHeight = ((Activity) context).getWindowManager()
-                .getDefaultDisplay().getHeight();
     }
     public void setDataList(ArrayList<Entities> list, ArrayList<Float> scoreList){
         entities = list;

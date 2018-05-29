@@ -48,6 +48,11 @@ public class PersonItemView extends LinearLayout {
     }
 
     public void bind(Entities entities, Float score) {
+        if(entities == null){
+            tvPersonName.setText("");
+            return;
+        }
+
         tvPersonName.setText(dataFilteringService.getPersonName(entities));
         if(score == null){
             scoreText.setVisibility(View.INVISIBLE);

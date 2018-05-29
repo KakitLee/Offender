@@ -63,16 +63,17 @@ public class LoginActivity extends AppCompatActivity implements NavigationView.O
             EditText host_text = (EditText) findViewById(R.id.url);
             host_text.setText(userPrefs.urlAddress().get());
         }
-//        if (!userPrefs.username().get().isEmpty()){
-//            EditText username_text = (EditText) findViewById(R.id.username);
-//            username_text.setText(userPrefs.urlAddress().get());
-//        }
+        if (!userPrefs.username().get().isEmpty()){
+            EditText username_text = (EditText) findViewById(R.id.username);
+            username_text.setText(userPrefs.username().get());
+        }
     }
 
     public void login(View v){
         EditText host_text = (EditText) findViewById(R.id.url);
         EditText username_text = (EditText) findViewById(R.id.username);
         EditText password_text = (EditText) findViewById(R.id.password);
+
 
         userPrefs.urlAddress().put(host_text.getText().toString());
 //        userPrefs.urlAddress().put("http://10.13.61.104:8080");
