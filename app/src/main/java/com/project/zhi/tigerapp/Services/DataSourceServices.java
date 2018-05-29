@@ -8,6 +8,7 @@ import com.project.zhi.tigerapp.Entities.Attachments;
 import com.project.zhi.tigerapp.Entities.Attributes;
 import com.project.zhi.tigerapp.Entities.Data;
 import com.project.zhi.tigerapp.Entities.Entities;
+import com.project.zhi.tigerapp.Entities.Person;
 import com.project.zhi.tigerapp.R;
 import com.project.zhi.tigerapp.Utils.Utils;
 
@@ -198,6 +199,16 @@ public class DataSourceServices implements IDataSourceServices {
         return path;
     }
 
-
+    public ArrayList<Person> getPeopleFromEntities(ArrayList<Entities> entities){
+        ArrayList<Person> people = new ArrayList<Person>();
+        if(entities == null || entities.size() == 0) return people;
+        for (Entities entity: entities
+             ) {
+            Person person = new Person();
+            person.setEntity(entity);
+            people.add(person);
+        }
+        return people;
+    }
 }
 
