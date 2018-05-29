@@ -42,15 +42,19 @@ public class PeopleAdapter extends BaseAdapter {
 
     @AfterInject
     void initAdapter() {
-        entities = dataSourceServices.getPeopleSource(context).getEntitiesList();
-        if(entities == null){
+        if (dataSourceServices.getPeopleSource(context) == null){
             entities = new ArrayList<Entities>();
+        }else {
+            entities = dataSourceServices.getPeopleSource(context).getEntitiesList();
+            if (entities == null) {
+                entities = new ArrayList<Entities>();
+            }
+            if (scores == null) {
+                scores = new ArrayList<Float>();
+            }
+            screenHeight = ((Activity) context).getWindowManager()
+                    .getDefaultDisplay().getHeight();
         }
-        if(scores == null){
-            scores = new ArrayList<Float>();
-        }
-        screenHeight = ((Activity) context).getWindowManager()
-                .getDefaultDisplay().getHeight();
     }
     public void setDataList(ArrayList<Entities> list, ArrayList<Float> scoreList){
         entities = list;

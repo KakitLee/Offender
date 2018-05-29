@@ -1,5 +1,7 @@
 package com.project.zhi.tigerapp;
 
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -9,12 +11,17 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.project.zhi.tigerapp.Services.ActivityService;
 import com.project.zhi.tigerapp.Services.NavigationService;
+import com.project.zhi.tigerapp.Services.UserPrefs_;
+import com.project.zhi.tigerapp.Utils.Utils;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.EActivity;
+import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
+import org.androidannotations.annotations.sharedpreferences.Pref;
 
 @EActivity(R.layout.activity_preference)
 public class SettingsActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
@@ -28,6 +35,10 @@ public class SettingsActivity extends AppCompatActivity implements NavigationVie
 
     @Bean
     NavigationService navigationService;
+    @Bean
+    ActivityService activityService;
+    @Pref
+    UserPrefs_ userPrefs;
 
     @AfterViews
     void setUp(){
@@ -67,9 +78,8 @@ public class SettingsActivity extends AppCompatActivity implements NavigationVie
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
-        // Handle navigation view item clicks here.
+            startActivity(navigationService.getActivity(this, item));
 
-        startActivity(navigationService.getActivity(this, item));
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
