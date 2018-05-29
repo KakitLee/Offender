@@ -114,6 +114,7 @@ public class SelectMenuView extends LinearLayout{
 
     private void init(){
         Data data = dataSourceServices.getPeopleSource(this.mContext);
+        if(data == null) return;
         //ArrayList<String> keys = dataSourceServices.getUniqueKey(data);
         ArrayList<Attributes> keys = dataSourceServices.getUniqueKeyAttributes(data);
 
