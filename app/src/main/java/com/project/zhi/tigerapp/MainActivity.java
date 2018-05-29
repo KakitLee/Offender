@@ -17,6 +17,7 @@ import android.widget.GridView;
 import com.google.gson.Gson;
 import com.project.zhi.tigerapp.Adapter.PeopleAdapter;
 import com.project.zhi.tigerapp.Entities.Entities;
+import com.project.zhi.tigerapp.Entities.Person;
 import com.project.zhi.tigerapp.Services.DataFilteringService;
 import com.project.zhi.tigerapp.Services.DataSourceServices;
 import com.project.zhi.tigerapp.Services.NavigationService;
@@ -72,6 +73,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @AfterViews
     void bindAdapter() {
+
         setSupportActionBar(Toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(false);
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -95,7 +97,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             public void OnFiltering(ArrayList<MenuModel> nameMenus, ArrayList<MenuModel> mainDemoMenu, ArrayList<MenuModel> otherDemoMenu) {
                 onLoading();
                 var newList = dataFilteringService.update(dataSourceServices.getPeopleSource(context).getEntitiesList(), nameMenus, mainDemoMenu, otherDemoMenu);
-                adapter.setDataList(newList,null);
+                var people = dataSourceServices.getPeopleFromEntities(newList);
+                adapter.setDataList(people,null);
                 adapter.notifyDataSetChanged();
                 onDismiss();
             }
@@ -105,16 +108,19 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             @Override
             public void OnSearching(String query) {
                 onLoading();
+//                userPrefs.searchQuery().put(Utils.gson.toJson(query));
                 var newList = dataFilteringService.search(dataSourceServices.getPeopleSource(context).getEntitiesList(),query);
-                adapter.setDataList(newList,null);
+                var people = dataSourceServices.getPeopleFromEntities(newList);
+                adapter.setDataList(people,null);
                 adapter.notifyDataSetChanged();
                 onDismiss();
             }
         });
 
+
         if(getIntent().getStringExtra("voice") != null && !getIntent().getStringExtra("voice").isEmpty()){
             onLoading();
-            adapter.setDataList(dataSourceServices.getEntityById(this, getIntent().getStringExtra("voice")),null);
+            adapter.setDataList(dataSourceServices.getPeopleFromEntities(dataSourceServices.getEntityById(this, getIntent().getStringExtra("voice"))),null);
             adapter.notifyDataSetChanged();
             onDismiss();
         }
@@ -135,7 +141,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     Entities currEntity = service.getEntityById(currId, this);
                     list.add(currEntity);
                 }
-                adapter.setDataList(list, scores);
+
+                adapter.setDataList(service.getPeopleFromEntities(list), scores);
                 adapter.notifyDataSetChanged();
                 onDismiss();
             }
@@ -154,9 +161,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     @ItemClick(R.id.gridview)
-    void gridViewItemClicked(Entities entity) {
-        Gson gson = new Gson();
-        String objStr = gson.toJson(entity);
+    void gridViewItemClicked(Person person) {
+        String objStr = Utils.gson.toJson(person.getEntity());
         Intent intent = new Intent(this, ProfileActivity_.class);
         intent.putExtra("Profile", objStr);
         startActivity(intent);

@@ -37,14 +37,13 @@ public class PeopleAdapter extends BaseAdapter {
     @Bean
     DataSourceServices dataSourceServices;
 
-    private ArrayList<Entities> entities;
     private ArrayList<Float> scores;
     private ArrayList<Person> people;
     int screenHeight;
 
     @AfterInject
     void initAdapter() {
-        entities = dataSourceServices.getPeopleSource(context).getEntitiesList();
+        ArrayList<Entities> entities = dataSourceServices.getPeopleSource(context).getEntitiesList();
         people = dataSourceServices.getPeopleFromEntities(entities);
 
         if(entities == null){
@@ -56,8 +55,8 @@ public class PeopleAdapter extends BaseAdapter {
         screenHeight = ((Activity) context).getWindowManager()
                 .getDefaultDisplay().getHeight();
     }
-    public void setDataList(ArrayList<Entities> list, ArrayList<Float> scoreList){
-        entities = list;
+    public void setDataList(ArrayList<Person> list, ArrayList<Float> scoreList){
+        people = list;
         if(scoreList!=null){
             scores = scoreList;
         }
@@ -66,12 +65,12 @@ public class PeopleAdapter extends BaseAdapter {
 
     @Override
     public int getCount() {
-        return entities.size();
+        return people.size();
     }
 
     @Override
-    public Entities getItem(int position) {
-        return entities.get(position);
+    public Person getItem(int position) {
+        return people.get(position);
     }
 
     @Override
@@ -81,7 +80,7 @@ public class PeopleAdapter extends BaseAdapter {
 
 
     public Float getScore(int position) {
-        if(scores.isEmpty()){
+        if(scores == null || scores.isEmpty()){
             return null;
         }
         return scores.get(position);
@@ -97,11 +96,11 @@ public class PeopleAdapter extends BaseAdapter {
         }
         personItemView.bind(getItem(position),getScore(position));
         TypedValue tv = new TypedValue();
-        if (context.getTheme().resolveAttribute(R.attr.actionBarSize, tv, true)) {
-            personItemView.setMinimumHeight((screenHeight - TypedValue.complexToDimensionPixelSize(tv.data, context.getResources().getDisplayMetrics())) / 3);
-        } else {
-            personItemView.setMinimumHeight(screenHeight / 3);
-        }
+//        if (context.getTheme().resolveAttribute(R.attr.actionBarSize, tv, true)) {
+//            personItemView.setMinimumHeight((screenHeight - TypedValue.complexToDimensionPixelSize(tv.data, context.getResources().getDisplayMetrics())) / 3);
+//        } else {
+//            personItemView.setMinimumHeight(screenHeight / 3);
+//        }
         return personItemView;
     }
 }

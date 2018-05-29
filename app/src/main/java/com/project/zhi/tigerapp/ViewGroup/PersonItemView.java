@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import com.project.zhi.tigerapp.Entities.Attributes;
 import com.project.zhi.tigerapp.Entities.Entities;
+import com.project.zhi.tigerapp.Entities.Person;
 import com.project.zhi.tigerapp.R;
 import com.project.zhi.tigerapp.Services.DataFilteringService;
 import com.project.zhi.tigerapp.Services.UserPrefs_;
@@ -47,8 +48,8 @@ public class PersonItemView extends LinearLayout {
         super(context);
     }
 
-    public void bind(Entities entities, Float score) {
-        tvPersonName.setText(dataFilteringService.getPersonName(entities));
+    public void bind(Person person, Float score) {
+        tvPersonName.setText(dataFilteringService.getPersonName(person.getEntity()));
         if(score == null){
             scoreText.setVisibility(View.INVISIBLE);
         }
@@ -57,13 +58,13 @@ public class PersonItemView extends LinearLayout {
         }
 
         if(userPrefs.isUrl().get()){
-            imgPersonAvatar.setImageBitmap(Utils.getImageExternal(entities,userPrefs.urlImagePath().get()));
+            imgPersonAvatar.setImageBitmap(Utils.getImageExternal(person.getEntity(),userPrefs.urlImagePath().get()));
         }
-        else if(userPrefs.isFolder().get() && userPrefs.folder().get() != null && !userPrefs.folder().get().isEmpty() && Utils.getImageExternal(entities,userPrefs.folder().get()) != null){
-            imgPersonAvatar.setImageBitmap(Utils.getImageExternal(entities,userPrefs.folder().get()));
+        else if(userPrefs.isFolder().get() && userPrefs.folder().get() != null && !userPrefs.folder().get().isEmpty() && Utils.getImageExternal(person.getEntity(),userPrefs.folder().get()) != null){
+            imgPersonAvatar.setImageBitmap(Utils.getImageExternal(person.getEntity(),userPrefs.folder().get()));
         }
         else {
-            imgPersonAvatar.setImageResource(Utils.getImageId(entities, getContext()));
+            imgPersonAvatar.setImageResource(Utils.getImageId(person.getEntity(), getContext()));
         }
     }
 }

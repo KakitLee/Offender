@@ -1,17 +1,14 @@
 package com.project.zhi.tigerapp.complexmenu;
 
-import android.app.Activity;
 import android.content.Context;
-import android.graphics.drawable.ColorDrawable;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.util.AttributeSet;
-import android.util.Printer;
-import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -21,19 +18,15 @@ import com.project.zhi.tigerapp.Entities.Data;
 import com.project.zhi.tigerapp.R;
 import com.project.zhi.tigerapp.Services.DataSourceServices;
 import com.project.zhi.tigerapp.Services.MenuService;
+import com.project.zhi.tigerapp.Utils.Utils;
 import com.project.zhi.tigerapp.complexmenu.holder.SelectHolder;
 import com.project.zhi.tigerapp.complexmenu.holder.SortHolder;
 import com.project.zhi.tigerapp.complexmenu.holder.SubjectHolder;
-
-import org.androidannotations.annotations.Bean;
-import org.androidannotations.annotations.EBean;
-import org.androidannotations.api.sharedpreferences.StringPrefField;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import lombok.Getter;
-import lombok.experimental.var;
 
 /**
  *
@@ -114,10 +107,16 @@ public class SelectMenuView extends LinearLayout{
 
     private void init(){
         Data data = dataSourceServices.getPeopleSource(this.mContext);
-        //ArrayList<String> keys = dataSourceServices.getUniqueKey(data);
+//        ArrayList<String> keys = dataSourceServices.getUniqueKey(data);
         ArrayList<Attributes> keys = dataSourceServices.getUniqueKeyAttributes(data);
 
         ArrayList<ArrayList<MenuModel>> allMenus = menuService.getAllMenus(keys);
+//        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mContext);
+//        String gsonAllMenu = prefs.getString("allMenu",null);
+//        if(gsonAllMenu == null || gsonAllMenu.isEmpty()){
+//            dataSourceServices.dataSourceChange(mContext);
+//        }
+//        ArrayList<ArrayList<MenuModel>> allMenus = Utils.gson.fromJson(gsonAllMenu, ArrayList.class );
         mGroupList = new ArrayList<MenuModel>();
         mGroupList = menuService.getMainMenus();
 
@@ -154,6 +153,7 @@ public class SelectMenuView extends LinearLayout{
                 mSubjectText.setText(text);
             }
         });
+
         mSubjectHolder.setOnSearchBtnListner(new SubjectHolder.OnSearchBtnListener() {
             @Override
             public void OnSearchBtnListener() {
@@ -213,6 +213,13 @@ public class SelectMenuView extends LinearLayout{
 
     private int getSubjectId(int index){
         return index;
+    }
+
+    protected void onSaveMenuState(){
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mContext);
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putString(("allMenu"), Utils.gson.toJson(mSubjectDataList));
+        editor.commit();
     }
 
     @Override
@@ -334,6 +341,7 @@ public class SelectMenuView extends LinearLayout{
     private void dismissPopupWindow(){
         mContentLayout.removeAllViews();
         setTabClose();
+        onSaveMenuState();
     }
 
     public void setOnMenuSelectDataChangedListener(OnMenuSelectDataChangedListener onMenuSelectDataChangedListener){

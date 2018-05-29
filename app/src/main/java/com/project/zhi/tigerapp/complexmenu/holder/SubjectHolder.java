@@ -62,6 +62,7 @@ public class SubjectHolder extends BaseWidgetHolder<List<List<MenuModel>>> {
 
     private OnSearchBtnListener onSearchBtnListener;
     private OnClearBtnListener onClearBtnListner;
+    private OnSubjectItemChangeListener onSubjectItemChangeListener;
 
     public SubjectHolder(Context context) {
         super(context);
@@ -178,6 +179,7 @@ public class SubjectHolder extends BaseWidgetHolder<List<List<MenuModel>>> {
                 if(menuModel.getAttributeType() == AttributeType.BOOLEAN){
                     value = toggleSwitch.isChecked() ? "Yes" : "No";
                 }
+
                 else if(menuModel.getAttributeType() != AttributeType.NUMERIC){
                     value = input.getText().toString();
                 }
@@ -383,6 +385,13 @@ public class SubjectHolder extends BaseWidgetHolder<List<List<MenuModel>>> {
 
     public interface OnRightListViewItemSelectedListener{
         void OnRightListViewItemSelected(int leftIndex, int rightIndex, String text);
+    }
+
+    public void setOnSubjectItemChangeListner(OnSubjectItemChangeListener onSubjectItemChangeListener){
+        this.onSubjectItemChangeListener = onSubjectItemChangeListener;
+    }
+    public interface OnSubjectItemChangeListener{
+        void onSubjectItemChangeListener();
     }
 
 
