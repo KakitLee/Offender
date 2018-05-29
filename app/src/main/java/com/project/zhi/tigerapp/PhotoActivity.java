@@ -42,6 +42,7 @@ import com.arcsoft.facedetection.AFD_FSDKFace;
 import com.arcsoft.facerecognition.AFR_FSDKEngine;
 import com.arcsoft.facerecognition.AFR_FSDKFace;
 import com.arcsoft.facerecognition.AFR_FSDKMatching;
+import com.google.gson.Gson;
 import com.guo.android_extend.image.ImageConverter;
 import com.project.zhi.tigerapp.Entities.Data;
 import com.project.zhi.tigerapp.Entities.Entities;
@@ -148,6 +149,8 @@ public class PhotoActivity extends AppCompatActivity implements NavigationView.O
         Button b1 = this.findViewById(R.id.button1);
         b1.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
+                onLoading();
+
                 faceRegister();
             }
         });
@@ -191,7 +194,7 @@ public class PhotoActivity extends AppCompatActivity implements NavigationView.O
 
     public void display(String text){
         Toast toast = Toast.makeText(PhotoActivity.this, text, Toast.LENGTH_LONG);
-        toast.setGravity(Gravity.CENTER_HORIZONTAL,0,0);
+        //toast.setGravity(Gravity.CENTER_HORIZONTAL,0,0);
         toast.show();
     }
 
@@ -218,7 +221,7 @@ public class PhotoActivity extends AppCompatActivity implements NavigationView.O
                 }
 
                 //match test data
-                //imageName = imageName.replace(".jpg", "");
+                imageName = imageName.replace(".jpg", "");
 
                 Bitmap b1 = Application.decodeImage(file.getPath());
                 register(imageName,b1);
@@ -328,11 +331,12 @@ public class PhotoActivity extends AppCompatActivity implements NavigationView.O
 
         }
         if(face2==null){
-            onDismiss();
+
             display("No face detected.");
+
             return;
         }
-
+        onLoading();
         engine1 = new AFR_FSDKEngine();
         error1 = engine1.AFR_FSDK_InitialEngine(FaceDB.appid, FaceDB.fr_key);
 
@@ -376,21 +380,26 @@ public class PhotoActivity extends AppCompatActivity implements NavigationView.O
 
         Collections.sort(scores,Utils.getComparator());
 
-        ArrayList<Person> People = new ArrayList<Person>();
+        ArrayList<Person> people = new ArrayList<Person>();
         for (MatchedImage currImage : scores) {
             String imageName = currImage.getImage();
             Entities entity = dataSourceServices.getEntityByImageName(imageName, this, data1);
             if (entity != null && !passIds.contains(entity.getId())) {
-                passIds.add(entity.getId());
-                passScores.add(currImage.getScore());
+                Person person = new Person();
+                person.setEntity(entity);
+                person.setFacialSimilarity(new Double(currImage.getScore().toString()));
+                people.add(person);
+//                passIds.add(entity.getId());
+//                passScores.add(currImage.getScore());
 
 
             }
 
-
         }
 
-
+        Gson gson = new Gson();
+        String peopleObj = gson.toJson(people);
+        userPrefs.FacialEntities().put(peopleObj);
 
         Bundle bundle = new Bundle();
 
@@ -425,7 +434,7 @@ public class PhotoActivity extends AppCompatActivity implements NavigationView.O
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        onLoading();
+        //onLoading();
         faceRecognition(requestCode,resultCode);
 
 
@@ -615,6 +624,7 @@ public class PhotoActivity extends AppCompatActivity implements NavigationView.O
 
     @UiThread
     void onLoading(){
+        //dialog = Utils.setProgressDialog(PhotoActivity.this);
         dialog = Utils.setProgressDialog(this);
     }
     @UiThread
