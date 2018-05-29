@@ -525,7 +525,7 @@ public class RecordFragment extends Fragment {
                     ////////////////////////////////////////////////////////////////
 
                     Intent newIntend = new Intent(this.getActivity(), MainActivity_.class);
-                    newIntend.putExtra("voice", id);
+                    //newIntend.putExtra("voice", id);
                     startActivity(newIntend);
                 }
             } catch (IOException e) {

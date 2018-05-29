@@ -1,5 +1,8 @@
 package com.project.zhi.tigerapp.Services;
 
+import android.content.Context;
+
+import com.google.gson.Gson;
 import com.project.zhi.tigerapp.Entities.Attributes;
 import com.project.zhi.tigerapp.Entities.Entities;
 import com.project.zhi.tigerapp.Entities.Person;
@@ -7,6 +10,7 @@ import com.project.zhi.tigerapp.Enums.AttributeType;
 import com.project.zhi.tigerapp.Utils.Utils;
 import com.project.zhi.tigerapp.complexmenu.MenuModel;
 
+import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.EBean;
 import org.androidannotations.annotations.sharedpreferences.Pref;
 import org.apache.commons.collections4.CollectionUtils;
@@ -23,6 +27,8 @@ import lombok.val;
 public class DataFilteringService {
     @Pref
     UserPrefs_ userPrefs;
+    @Bean
+    DataSourceServices dataSourceServices;
     public String getPersonName(Entities entities){
         String firstName = "";
         String middleName = "";
@@ -177,11 +183,61 @@ public class DataFilteringService {
         return false;
     }
 
-    public ArrayList<Person> mergeAll(){
+    public ArrayList<Person> mergeAll(Context context){
         ArrayList<Person> filteredPersonList = new ArrayList<Person>();
-        String jsonFilteredEntites = userPrefs.filteredEntites().get();////json filterd
+
+        ArrayList<Entities> entities = dataSourceServices.getPeopleSource(context).getEntitiesList();
+        ArrayList<Person> people = dataSourceServices.getPeopleFromEntities(entities);
+        Gson gson = new Gson();
+        //ArrayList<Entities> filterList= new ArrayList<Entities>();
+        //Union
+       // String jsonFilteredEntites = userPrefs.filteredEntites().get();////json filterd
         String jsonVoice = userPrefs.voiceEntities().get();/// json voice
         String jsonFace = userPrefs.facialEntities().get(); //// json face
+        if((jsonVoice.isEmpty()||jsonVoice==null)&&(jsonFace.isEmpty()||jsonFace==null)){
+            filteredPersonList=people;
+        }
+        else if(jsonVoice.isEmpty()||jsonVoice==null){
+            filteredPersonList=gson.fromJson(userPrefs.facialEntities().get(),ArrayList.class);
+        }
+        else if(jsonFace.isEmpty()||jsonFace==null){
+            filteredPersonList=gson.fromJson(userPrefs.voiceEntities().get(),ArrayList.class);
+        }
+        else{
+            ArrayList<Person> faceAndVoiceList= new ArrayList<Person>();
+            faceAndVoiceList= gson.fromJson(userPrefs.facialEntities().get(),ArrayList.class);
+            ArrayList<Person> voiceList= new ArrayList<Person>();
+            voiceList= gson.fromJson(userPrefs.voiceEntities().get(),ArrayList.class);
+            for(int i=0; i<voiceList.size();i++){
+                Person voiceItem=voiceList.get(i);
+                boolean flag= false;
+                for(int j=0; j<faceAndVoiceList.size();j++)
+                {
+                    Person faceItem=faceAndVoiceList.get(j);
+                    String faceId= faceItem.getEntity().getId();
+                    String voiceId= voiceItem.getEntity().getId();
+                    if(faceId.equals(voiceId)){
+                        faceItem.setVoiceSimilarity(voiceItem.getVoiceSimilarity());
+                        faceItem.setOverallSimilarity(0.5*faceItem.getFacialSimilarity()+0.5*voiceItem.getVoiceSimilarity());
+                        flag=true;
+                    }
+                }
+                if(flag==false){
+                    faceAndVoiceList.add(voiceItem);
+                }
+            }
+            // Intersection
+            for(int i=0; i<faceAndVoiceList.size();i++){
+                Person faceAndVoiceItem=faceAndVoiceList.get(i);
+                for(int j=0; j<people.size();j++){
+                    String faceAndVoiceId=faceAndVoiceItem.getEntity().getId();
+                    String filterId=people.get(j).getEntity().getId();
+                    if(faceAndVoiceId.equals(filterId)){
+                        filteredPersonList.add(faceAndVoiceItem);
+                    }
+                }
+            }
+        }
         return filteredPersonList;
     }
 }
