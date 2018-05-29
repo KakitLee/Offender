@@ -2,7 +2,9 @@ package com.project.zhi.tigerapp.complexmenu;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.drawable.ColorDrawable;
+import android.preference.PreferenceManager;
 import android.util.AttributeSet;
 import android.util.Printer;
 import android.view.Gravity;
@@ -21,6 +23,7 @@ import com.project.zhi.tigerapp.Entities.Data;
 import com.project.zhi.tigerapp.R;
 import com.project.zhi.tigerapp.Services.DataSourceServices;
 import com.project.zhi.tigerapp.Services.MenuService;
+import com.project.zhi.tigerapp.Utils.Utils;
 import com.project.zhi.tigerapp.complexmenu.holder.SelectHolder;
 import com.project.zhi.tigerapp.complexmenu.holder.SortHolder;
 import com.project.zhi.tigerapp.complexmenu.holder.SubjectHolder;
@@ -115,10 +118,13 @@ public class SelectMenuView extends LinearLayout{
     private void init(){
         Data data = dataSourceServices.getPeopleSource(this.mContext);
         if(data == null) return;
-        //ArrayList<String> keys = dataSourceServices.getUniqueKey(data);
-        ArrayList<Attributes> keys = dataSourceServices.getUniqueKeyAttributes(data);
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mContext);
+        String gsonAllMenu = prefs.getString("allMenu",null);
+        if(gsonAllMenu == null || gsonAllMenu.isEmpty()) {
+            return;
+        }
+       ArrayList<ArrayList<MenuModel>> allMenus = Utils.gson.fromJson(gsonAllMenu, ArrayList.class );
 
-        ArrayList<ArrayList<MenuModel>> allMenus = menuService.getAllMenus(keys);
         mGroupList = new ArrayList<MenuModel>();
         mGroupList = menuService.getMainMenus();
 

@@ -21,6 +21,7 @@ import com.project.zhi.tigerapp.Entities.Entities;
 import com.project.zhi.tigerapp.Services.ActivityService;
 import com.project.zhi.tigerapp.Services.DataFilteringService;
 import com.project.zhi.tigerapp.Services.DataSourceServices;
+import com.project.zhi.tigerapp.Services.MenuService;
 import com.project.zhi.tigerapp.Services.NavigationService;
 import com.project.zhi.tigerapp.Services.UserPrefs_;
 import com.project.zhi.tigerapp.Utils.Utils;
@@ -65,6 +66,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     NavigationService navigationService;
     @Bean
     ActivityService activityService;
+    @Bean
+    MenuService menuService;
 
     android.app.AlertDialog dialog;
 
@@ -78,6 +81,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @AfterViews
     void bindAdapter() {
         boolean isValid =  checkValidActivity();
+        boolean isMenuValid = activityService.validInitMenu(this);
+        if(isValid && !isMenuValid){
+            dataSourceServices.dataSourceChange(this);
+        }
         setSupportActionBar(Toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(false);
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

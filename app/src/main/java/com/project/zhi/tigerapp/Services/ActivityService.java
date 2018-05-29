@@ -28,6 +28,14 @@ public class ActivityService {
             }
         }
     }
+
+    public boolean validInitMenu(Context context){
+        String userData = userPrefs.allMenu().get();
+        if(userData == null || userData.isEmpty()){
+            return false;
+        }
+        return true;
+    }
     public boolean isInternetSourceExist(Context context){
         File targetFile = new File(context.getFilesDir() + "/", "source.xml");
         return targetFile.exists();

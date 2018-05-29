@@ -9,9 +9,13 @@ import com.project.zhi.tigerapp.Entities.Attributes;
 import com.project.zhi.tigerapp.Entities.Data;
 import com.project.zhi.tigerapp.Entities.Entities;
 import com.project.zhi.tigerapp.Entities.Person;
+import com.project.zhi.tigerapp.FaceUtils.Application;
 import com.project.zhi.tigerapp.R;
 import com.project.zhi.tigerapp.Utils.Utils;
+import com.project.zhi.tigerapp.complexmenu.MenuModel;
 
+import org.androidannotations.annotations.App;
+import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.EBean;
 import org.androidannotations.annotations.sharedpreferences.Pref;
 import org.androidannotations.annotations.sharedpreferences.SharedPref;
@@ -41,6 +45,9 @@ public class DataSourceServices implements IDataSourceServices {
 
     @Pref
     UserPrefs_ userPrefs;
+
+    @Bean
+    MenuService menuService;
 
     public boolean isValidDataSource(String filePath){
         if(filePath == null || filePath.isEmpty()){
@@ -209,6 +216,16 @@ public class DataSourceServices implements IDataSourceServices {
             people.add(person);
         }
         return people;
+    }
+    public void dataSourceChange(Context context){
+        Data data = this.getPeopleSource(context);
+        List<Entities> entities = data.getEntitiesList();
+        ArrayList<Attributes> keys = getUniqueKeyAttributes(data);
+        if(menuService == null){
+            menuService = new MenuService();
+        }
+        ArrayList<ArrayList<MenuModel>> allMenus = menuService.getAllMenus(keys);
+        userPrefs.allMenu().put(Utils.gson.toJson(allMenus));
     }
 }
 

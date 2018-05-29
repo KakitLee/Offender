@@ -35,4 +35,5 @@ import org.androidannotations.annotations.sharedpreferences.SharedPref;
         String facialEntities();
         String voiceEntities();
         String filteredEntites();
+        String allMenu();
     }
