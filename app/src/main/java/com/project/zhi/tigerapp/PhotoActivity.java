@@ -27,6 +27,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -44,6 +45,7 @@ import com.arcsoft.facerecognition.AFR_FSDKMatching;
 import com.guo.android_extend.image.ImageConverter;
 import com.project.zhi.tigerapp.Entities.Data;
 import com.project.zhi.tigerapp.Entities.Entities;
+import com.project.zhi.tigerapp.Entities.Person;
 import com.project.zhi.tigerapp.FaceUtils.Application;
 import com.project.zhi.tigerapp.FaceUtils.FaceDB;
 import com.project.zhi.tigerapp.FaceUtils.MatchedImage;
@@ -146,7 +148,6 @@ public class PhotoActivity extends AppCompatActivity implements NavigationView.O
         Button b1 = this.findViewById(R.id.button1);
         b1.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                onLoading();
                 faceRegister();
             }
         });
@@ -158,7 +159,6 @@ public class PhotoActivity extends AppCompatActivity implements NavigationView.O
                 if(mRegist.isEmpty()){
                     display("Please register first.");
                     return;
-
                 }
 
                 Intent getImageByCamera = new Intent(
@@ -190,29 +190,35 @@ public class PhotoActivity extends AppCompatActivity implements NavigationView.O
     }
 
     public void display(String text){
-        Toast.makeText(this, text, Toast.LENGTH_LONG).show();
+        Toast toast = Toast.makeText(PhotoActivity.this, text, Toast.LENGTH_LONG);
+        toast.setGravity(Gravity.CENTER_HORIZONTAL,0,0);
+        toast.show();
     }
 
     public void faceRegister(){
-
+        onLoading();
         engine1 = new AFR_FSDKEngine();
         error1 = engine1.AFR_FSDK_InitialEngine(FaceDB.appid, FaceDB.fr_key);
 
-        path = userPrefs.folder().get();
+        //User selected directory
+        //path = userPrefs.folder().get();
 
 
-        //path = userPrefs.urlImagePath().get();
+       // path = userPrefs.urlImagePath().get();
+        path = dataSourceServices.getSourceFolder();
         File[] files = new File(path).listFiles();
         if(files.length>0) {
             for (File file : files) {
                 String imageName = file.getName();
 
                 //Check if the file is a image file
-//                String end = imageName.substring(imageName.length() - 4);
-//                if (end.compareToIgnoreCase(".jpg") != 0 && end.compareToIgnoreCase(".png") != 0) {
-//                    continue;
-//                }
-                imageName = imageName.replace(".jpg", "");
+                String end = imageName.substring(imageName.length() - 4);
+                if (end.compareToIgnoreCase(".jpg") != 0 && end.compareToIgnoreCase(".png") != 0) {
+                    continue;
+                }
+
+                //match test data
+                //imageName = imageName.replace(".jpg", "");
 
                 Bitmap b1 = Application.decodeImage(file.getPath());
                 register(imageName,b1);
@@ -318,25 +324,11 @@ public class PhotoActivity extends AppCompatActivity implements NavigationView.O
             String file = getPath(mPath);
             b2 = Application.decodeImage(file);
             face2 = convertToFace(b2);
-            File dir = getPublicAlbumStorageDir("CapturedPhotos");
-            String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-            String fname = "Suspect"+ timeStamp +".jpg";
-            File photo = new File(dir, fname);
-            if (photo.exists()){
-                fname += "_new";
-                photo.renameTo (new File(dir, "Suspect"+ timeStamp +"_new.jpg"));
-            }
-            try {
-                FileOutputStream out = new FileOutputStream(photo);
-                b2.compress(Bitmap.CompressFormat.JPEG, 100, out);
-                out.flush();
-                out.close();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            savePhoto(b2);
 
         }
         if(face2==null){
+            onDismiss();
             display("No face detected.");
             return;
         }
@@ -349,7 +341,6 @@ public class PhotoActivity extends AppCompatActivity implements NavigationView.O
 
         ArrayList<MatchedImage> scores = new ArrayList<MatchedImage>();
 
-        ArrayList<String> images = new ArrayList<String>();
 
 
 
@@ -370,8 +361,7 @@ public class PhotoActivity extends AppCompatActivity implements NavigationView.O
                 if (score > 0.35) {
                     Log.d("Photo result-------- ", String.valueOf(score));
                     scores.add(new MatchedImage(score, matchedName));
-                    //pass.add(entity.getId());
-                    //images.add(imageName);
+
                 }
 
             }
@@ -386,7 +376,7 @@ public class PhotoActivity extends AppCompatActivity implements NavigationView.O
 
         Collections.sort(scores,Utils.getComparator());
 
-
+        ArrayList<Person> People = new ArrayList<Person>();
         for (MatchedImage currImage : scores) {
             String imageName = currImage.getImage();
             Entities entity = dataSourceServices.getEntityByImageName(imageName, this, data1);
@@ -394,8 +384,13 @@ public class PhotoActivity extends AppCompatActivity implements NavigationView.O
                 passIds.add(entity.getId());
                 passScores.add(currImage.getScore());
 
+
             }
+
+
         }
+
+
 
         Bundle bundle = new Bundle();
 
@@ -407,6 +402,24 @@ public class PhotoActivity extends AppCompatActivity implements NavigationView.O
     }
 
 
+    public void savePhoto(Bitmap b2){
+        File dir = getPublicAlbumStorageDir("CapturedPhotos");
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String fname = "Suspect"+ timeStamp +".jpg";
+        File photo = new File(dir, fname);
+        if (photo.exists()){
+            fname += "_new";
+            photo.renameTo (new File(dir, "Suspect"+ timeStamp +"_new.jpg"));
+        }
+        try {
+            FileOutputStream out = new FileOutputStream(photo);
+            b2.compress(Bitmap.CompressFormat.JPEG, 100, out);
+            out.flush();
+            out.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
 
     @Override
@@ -431,7 +444,6 @@ public class PhotoActivity extends AppCompatActivity implements NavigationView.O
 
         return score.getScore();
     }
-
 
     public AFR_FSDKFace convertToFace(Bitmap mBitmap){
         if (isOdd(mBitmap.getWidth())) {

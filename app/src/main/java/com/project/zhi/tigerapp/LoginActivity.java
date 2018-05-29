@@ -74,8 +74,9 @@ public class LoginActivity extends AppCompatActivity implements NavigationView.O
         EditText username_text = (EditText) findViewById(R.id.username);
         EditText password_text = (EditText) findViewById(R.id.password);
 
-//        userPrefs.urlAddress().put(host_text.getText().toString());
-        userPrefs.urlAddress().put("http://10.13.61.104:8080");
+
+        userPrefs.urlAddress().put(host_text.getText().toString());
+//        userPrefs.urlAddress().put("http://10.13.61.104:8080");
         userPrefs.username().put(username_text.getText().toString());
         String password = password_text.getText().toString();
         String url = userPrefs.urlAddress().get()+"/oauth/token";

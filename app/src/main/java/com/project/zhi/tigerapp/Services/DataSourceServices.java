@@ -8,11 +8,13 @@ import com.project.zhi.tigerapp.Entities.Attachments;
 import com.project.zhi.tigerapp.Entities.Attributes;
 import com.project.zhi.tigerapp.Entities.Data;
 import com.project.zhi.tigerapp.Entities.Entities;
+import com.project.zhi.tigerapp.Entities.Person;
 import com.project.zhi.tigerapp.R;
 import com.project.zhi.tigerapp.Utils.Utils;
 
 import org.androidannotations.annotations.EBean;
 import org.androidannotations.annotations.sharedpreferences.Pref;
+import org.androidannotations.annotations.sharedpreferences.SharedPref;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.simpleframework.xml.Serializer;
@@ -36,6 +38,9 @@ interface  IDataSourceServices{
 
 @EBean
 public class DataSourceServices implements IDataSourceServices {
+
+    @Pref
+    UserPrefs_ userPrefs;
 
     public boolean isValidDataSource(String filePath){
         if(filePath == null || filePath.isEmpty()){
@@ -180,6 +185,30 @@ public class DataSourceServices implements IDataSourceServices {
             }
         }
         return null;
+    }
+
+    public String getSourceFolder(){
+        String path = "";
+        if(userPrefs.isUrl().get()){
+            path = userPrefs.urlImagePath().get();;
+        }
+        else{
+            path = userPrefs.folder().get();
+        }
+
+        return path;
+    }
+
+    public ArrayList<Person> getPeopleFromEntities(ArrayList<Entities> entities){
+        ArrayList<Person> people = new ArrayList<Person>();
+        if(entities == null || entities.size() == 0) return people;
+        for (Entities entity: entities
+             ) {
+            Person person = new Person();
+            person.setEntity(entity);
+            people.add(person);
+        }
+        return people;
     }
 }
 
