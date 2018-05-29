@@ -25,13 +25,14 @@ import org.androidannotations.annotations.sharedpreferences.SharedPref;
         String urlAddress();
         String urlImagePath();
         String file();
+        String voiceFolder();
         String folder();
         String gender();
         String appId();
         String host();
         String username();
         String token();
-        String FacialEntities();
-        String VoiceEntities();
-
+        String facialEntities();
+        String voiceEntities();
+        String filteredEntites();
     }

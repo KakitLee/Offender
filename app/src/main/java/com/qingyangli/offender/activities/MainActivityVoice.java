@@ -1,6 +1,7 @@
 package com.qingyangli.offender.activities;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
@@ -54,7 +55,7 @@ public class MainActivityVoice extends AppCompatActivity {
         });
 
         pager = (ViewPager) findViewById(R.id.pager);
-        pager.setAdapter(new MyAdapter(getSupportFragmentManager()));
+        pager.setAdapter(new MyAdapter(getSupportFragmentManager(), this));
         tabs = (PagerSlidingTabStrip) findViewById(R.id.tabs);
         tabs.setViewPager(pager);
 
@@ -126,17 +127,19 @@ public class MainActivityVoice extends AppCompatActivity {
 
     public class MyAdapter extends FragmentPagerAdapter {
         private String[] titles = { getString(R.string.tab_title_record),
-                getString(R.string.tab_title_saved_recordings) };
+                getString(R.string.tab_title_saved_recordings)};
+        private Context context;
 
-        public MyAdapter(FragmentManager fm) {
+        public MyAdapter(FragmentManager fm, Context context) {
             super(fm);
+            this.context = context;
         }
 
         @Override
         public Fragment getItem(int position) {
             switch(position){
                 case 0:{
-                    return RecordFragment.newInstance(position);
+                    return RecordFragment.newInstance(position,this.context);
                 }
                 case 1:{
                     return FileViewerFragment.newInstance(position);

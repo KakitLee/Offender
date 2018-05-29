@@ -149,5 +149,6 @@
     <string name="tab_title_record">Record</string>
     <string name="tab_title_saved_recordings">Saved Recordings</string>
     <string name="link">Website: github.com/dkim0419/SoundRecorder</string>
+    <string name="select_folder_voice">Select folder for voice</string>
 
 </resources>

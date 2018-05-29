@@ -2,11 +2,13 @@ package com.project.zhi.tigerapp.Services;
 
 import com.project.zhi.tigerapp.Entities.Attributes;
 import com.project.zhi.tigerapp.Entities.Entities;
+import com.project.zhi.tigerapp.Entities.Person;
 import com.project.zhi.tigerapp.Enums.AttributeType;
 import com.project.zhi.tigerapp.Utils.Utils;
 import com.project.zhi.tigerapp.complexmenu.MenuModel;
 
 import org.androidannotations.annotations.EBean;
+import org.androidannotations.annotations.sharedpreferences.Pref;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.Predicate;
 
@@ -19,6 +21,8 @@ import lombok.val;
 
 @EBean
 public class DataFilteringService {
+    @Pref
+    UserPrefs_ userPrefs;
     public String getPersonName(Entities entities){
         String firstName = "";
         String middleName = "";
@@ -171,5 +175,13 @@ public class DataFilteringService {
             }
         }
         return false;
+    }
+
+    public ArrayList<Person> mergeAll(){
+        ArrayList<Person> filteredPersonList = new ArrayList<Person>();
+        String jsonFilteredEntites = userPrefs.filteredEntites().get();////json filterd
+        String jsonVoice = userPrefs.voiceEntities().get();/// json voice
+        String jsonFace = userPrefs.facialEntities().get(); //// json face
+        return filteredPersonList;
     }
 }
