@@ -100,7 +100,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             @Override
             public void OnFiltering(ArrayList<MenuModel> nameMenus, ArrayList<MenuModel> mainDemoMenu, ArrayList<MenuModel> otherDemoMenu) {
                 onLoading();
-                var newList = dataFilteringService.update(dataSourceServices.getPeopleSource(context).getEntitiesList(), nameMenus, mainDemoMenu, otherDemoMenu);
+                var newList = dataSourceServices.getPeopleFromEntities(dataFilteringService.update(dataSourceServices.getPeopleSource(context).getEntitiesList(), nameMenus, mainDemoMenu, otherDemoMenu));
                 adapter.setDataList(newList, null);
                 adapter.notifyDataSetChanged();
                 onDismiss();
@@ -111,7 +111,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             @Override
             public void OnSearching(String query) {
                 onLoading();
-                var newList = dataFilteringService.search(dataSourceServices.getPeopleSource(context).getEntitiesList(), query);
+                var newList = dataSourceServices.getPeopleFromEntities(dataFilteringService.search(dataSourceServices.getPeopleSource(context).getEntitiesList(), query));
                 adapter.setDataList(newList, null);
                 adapter.notifyDataSetChanged();
                 onDismiss();
@@ -120,7 +120,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         if (getIntent().getStringExtra("voice") != null && !getIntent().getStringExtra("voice").isEmpty()) {
             onLoading();
-            adapter.setDataList(dataSourceServices.getEntityById(this, getIntent().getStringExtra("voice")), null);
+            adapter.setDataList(dataSourceServices.getPeopleFromEntities(dataSourceServices.getEntityById(this, getIntent().getStringExtra("voice"))), null);
             adapter.notifyDataSetChanged();
             onDismiss();
         }
@@ -141,7 +141,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     Entities currEntity = service.getEntityById(currId, this);
                     list.add(currEntity);
                 }
-                adapter.setDataList(list, scores);
+                adapter.setDataList(dataSourceServices.getPeopleFromEntities(list), scores);
                 adapter.notifyDataSetChanged();
                 onDismiss();
             }

@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import com.project.zhi.tigerapp.Entities.Attributes;
 import com.project.zhi.tigerapp.Entities.Entities;
+import com.project.zhi.tigerapp.Entities.Person;
 import com.project.zhi.tigerapp.R;
 import com.project.zhi.tigerapp.Services.DataFilteringService;
 import com.project.zhi.tigerapp.Services.UserPrefs_;
@@ -47,11 +48,12 @@ public class PersonItemView extends LinearLayout {
         super(context);
     }
 
-    public void bind(Entities entities, Float score) {
-        if(entities == null){
+    public void bind(Person person, Float score) {
+        if(person == null){
             tvPersonName.setText("");
             return;
         }
+        Entities entities = person.getEntity();
 
         tvPersonName.setText(dataFilteringService.getPersonName(entities));
         if(score == null){

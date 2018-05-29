@@ -67,8 +67,8 @@ public class PeopleAdapter extends BaseAdapter {
                     .getDefaultDisplay().getHeight();
         }
     }
-    public void setDataList(ArrayList<Entities> list, ArrayList<Float> scoreList){
-        entities = list;
+    public void setDataList(ArrayList<Person> list, ArrayList<Float> scoreList){
+        people = list;
         if(scoreList!=null){
             scores = scoreList;
         }
@@ -77,12 +77,12 @@ public class PeopleAdapter extends BaseAdapter {
 
     @Override
     public int getCount() {
-        return entities.size();
+        return people.size();
     }
 
     @Override
-    public Entities getItem(int position) {
-        return entities.get(position);
+    public Person getItem(int position) {
+        return people.get(position);
     }
 
     @Override
