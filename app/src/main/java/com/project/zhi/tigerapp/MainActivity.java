@@ -1,6 +1,7 @@
 package com.project.zhi.tigerapp;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -17,7 +18,6 @@ import android.widget.GridView;
 import com.google.gson.Gson;
 import com.project.zhi.tigerapp.Adapter.PeopleAdapter;
 import com.project.zhi.tigerapp.Entities.Entities;
-import com.project.zhi.tigerapp.Entities.Person;
 import com.project.zhi.tigerapp.Services.DataFilteringService;
 import com.project.zhi.tigerapp.Services.DataSourceServices;
 import com.project.zhi.tigerapp.Services.NavigationService;
@@ -28,6 +28,7 @@ import com.project.zhi.tigerapp.complexmenu.SelectMenuView;
 import com.project.zhi.tigerapp.complexmenu.holder.SubjectHolder;
 
 import org.androidannotations.annotations.AfterViews;
+import org.androidannotations.annotations.Background;
 import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.ItemClick;
@@ -61,6 +62,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     DataSourceServices dataSourceServices;
     @Bean
     NavigationService navigationService;
+    @Bean
+    ActivityService activityService;
 
     android.app.AlertDialog dialog;
 
@@ -73,7 +76,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @AfterViews
     void bindAdapter() {
-
+        boolean isValid =  checkValidActivity();
         setSupportActionBar(Toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(false);
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -88,9 +91,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             drawer.closeDrawer(GravityCompat.START);
         }
 
-
-
-        gridview.setAdapter(adapter);
+        if(isValid) {
+            gridview.setAdapter(adapter);
+        }
 
         selectMenuView.setOnFilteringBtnListener(new SelectMenuView.OnFilteringBtnListener() {
             @Override
@@ -109,7 +112,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             public void OnSearching(String query) {
                 onLoading();
 //                userPrefs.searchQuery().put(Utils.gson.toJson(query));
-                var newList = dataFilteringService.search(dataSourceServices.getPeopleSource(context).getEntitiesList(),query);
+                var newList = dataFilteringService.search(dataSourceServices.getPeopleSource(context).getEntitiesList(), query);
                 var people = dataSourceServices.getPeopleFromEntities(newList);
                 adapter.setDataList(people,null);
                 adapter.notifyDataSetChanged();
@@ -118,7 +121,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         });
 
 
-        if(getIntent().getStringExtra("voice") != null && !getIntent().getStringExtra("voice").isEmpty()){
+        if (getIntent().getStringExtra("voice") != null && !getIntent().getStringExtra("voice").isEmpty()) {
             onLoading();
             adapter.setDataList(dataSourceServices.getPeopleFromEntities(dataSourceServices.getEntityById(this, getIntent().getStringExtra("voice"))),null);
             adapter.notifyDataSetChanged();
@@ -127,7 +130,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
 
         Bundle bundle = getIntent().getExtras();
-        if(bundle != null) {
+        if (bundle != null) {
             if (getIntent().getSerializableExtra("passId") != null && getIntent().getSerializableExtra("passScore") != null) {
                 onLoading();
                 ArrayList<Entities> list = new ArrayList<Entities>();
@@ -149,8 +152,47 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
 
 
-        }
+    }
 
+
+    boolean checkValidActivity(){
+        if(!activityService.validActivity(this)){
+            if(userPrefs.isUrl().get()){
+                this.onInvalidInternetActivity();
+                return false;
+            }
+            else{
+                this.onInvalidLocalActivity();
+                return false;
+            }
+        }
+        return true;
+    }
+    @UiThread
+    void onInvalidInternetActivity(){
+        Utils.setAlertDialog("Initialize", "Cannot found Internet source. Please synchronize source from server.", this).setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                ////TODO SYnc activity
+                Intent intent = new Intent(MainActivity.this, SettingsActivity_.class);
+                startActivity(intent);
+                dialog.dismiss();
+            }
+        }).show();
+    }
+
+    @UiThread
+    void onInvalidLocalActivity(){
+        Utils.setAlertDialog("Initialize", "Cannot found local source. Please upload source from local file.", this).setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Intent intent = new Intent(MainActivity.this, UploadActivity_.class);
+                startActivity(intent);
+                ////TODO UPload activity
+                dialog.dismiss();
+            }
+        }).show();
+    }
     @UiThread
     void onLoading(){
         dialog = Utils.setProgressDialog(this);

@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 
+import com.project.zhi.tigerapp.Entities.Data;
 import com.project.zhi.tigerapp.Entities.Entities;
 import com.project.zhi.tigerapp.Entities.Person;
 import com.project.zhi.tigerapp.R;
@@ -43,17 +44,31 @@ public class PeopleAdapter extends BaseAdapter {
 
     @AfterInject
     void initAdapter() {
-        ArrayList<Entities> entities = dataSourceServices.getPeopleSource(context).getEntitiesList();
-        people = dataSourceServices.getPeopleFromEntities(entities);
+        entities = new ArrayList<Entities>();
+		Data data  = dataSourceServices.getPeopleSource(context);
+        if(data == null){
+            return;
+        }
 
+        entities = data.getEntitiesList();
+
+        if(data == null){
+            return;
+        }
+        entities = data.getEntitiesList();
         if(entities == null){
-            entities = new ArrayList<Entities>();
+            return;
+        }else {
+            people = dataSourceServices.getPeopleFromEntities(entities);
+            if (entities == null) {
+                entities = new ArrayList<Entities>();
+            }
+            if (scores == null) {
+                scores = new ArrayList<Float>();
+            }
+            screenHeight = ((Activity) context).getWindowManager()
+                    .getDefaultDisplay().getHeight();
         }
-        if(scores == null){
-            scores = new ArrayList<Float>();
-        }
-        screenHeight = ((Activity) context).getWindowManager()
-                .getDefaultDisplay().getHeight();
     }
     public void setDataList(ArrayList<Person> list, ArrayList<Float> scoreList){
         people = list;

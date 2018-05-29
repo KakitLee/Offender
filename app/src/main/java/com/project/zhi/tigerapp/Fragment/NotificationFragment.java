@@ -211,6 +211,7 @@ public class NotificationFragment extends PreferenceFragment {
                 // save the file at here!!!!!!!!!!!!!!!!!!!
                 String imagePath = this.getActivity().getFilesDir() + "/images/";
                 File imageFile = new File(this.getActivity().getFilesDir(),"images");
+                imageFile.mkdir();
                 deleteFile(imageFile);
                 File targetFile = new File(imagePath, "images.zip");
                 userPrefs.urlImagePath().put(imagePath);

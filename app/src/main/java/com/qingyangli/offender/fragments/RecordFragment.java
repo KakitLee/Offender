@@ -24,7 +24,12 @@ import android.view.WindowManager;
 import android.widget.Chronometer;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.google.gson.Gson;
+import com.project.zhi.tigerapp.Entities.Person;
 import com.project.zhi.tigerapp.MainActivity_;
+import com.project.zhi.tigerapp.Services.DataSourceServices;
+import com.project.zhi.tigerapp.Services.UserPrefs_;
 import com.qingyangli.offender.AudioDispatcher;
 import com.qingyangli.offender.DBHelper;
 import com.qingyangli.offender.GaussianMixture;
@@ -57,6 +62,9 @@ import be.tarsos.dsp.io.TarsosDSPAudioFormat;
 import be.tarsos.dsp.io.UniversalAudioInputStream;
 
 import android.os.Debug;
+
+import org.androidannotations.annotations.sharedpreferences.Pref;
+
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
@@ -156,8 +164,7 @@ public class RecordFragment extends Fragment {
     private long mElapsedMillis = 0;
     private long mStartingTimeMillis = 0;
     //*/
-
-
+    ArrayList<Person> voiceList= new ArrayList<Person>();
     private void startRecording() {
         recorder = new AudioRecord(MediaRecorder.AudioSource.MIC,
                 RECORDER_SAMPLERATE, RECORDER_CHANNELS,
@@ -469,6 +476,13 @@ public class RecordFragment extends Fragment {
                 String matchedModelName = tempParts[0];
                 mLikelihoodValuePrompt.setText(String.valueOf(max));
                 mMatchedNameValuePrompt.setText(matchedModelName);
+                double similarity;
+                if(max>-5){
+                    similarity=100;
+                }
+                else{
+                    similarity=(1-Math.sqrt((-5-max)/Math.abs(max)))*100;
+                }
                 Log.i(TAG, "likelihood is:" + String.valueOf(modelLikelihood[index]));
                 String id = "";
 
@@ -495,8 +509,23 @@ public class RecordFragment extends Fragment {
                     isMatched = false;
                 }
                 if (isMatched) {
+                    //add new
+                    Person voicePerson= new Person();
+                    DataSourceServices service = new DataSourceServices();
+                    voicePerson.setEntity(service.getEntityById(getActivity(),id).get(0));
+                    voicePerson.setVoiceSimilarity(similarity);
+                    voicePerson.setOverallSimilarity(similarity);
+                    voiceList.add(voicePerson);
+                    Gson gson = new Gson();
+                    String voicePersonString= gson.toJson(voiceList);
+                    SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
+                    SharedPreferences.Editor editor = sharedPref.edit();
+                    editor.putString("voiceEntities", voicePersonString);
+                    editor.commit();
+                    ////////////////////////////////////////////////////////////////
+
                     Intent newIntend = new Intent(this.getActivity(), MainActivity_.class);
-                    newIntend.putExtra("voice", id);
+                    //newIntend.putExtra("voice", id);
                     startActivity(newIntend);
                 }
             } catch (IOException e) {
