@@ -44,7 +44,7 @@ public class PeopleAdapter extends BaseAdapter {
 
     @AfterInject
     void initAdapter() {
-        entities = new ArrayList<Entities>();
+        ArrayList<Entities> entities = new ArrayList<Entities>();
 		Data data  = dataSourceServices.getPeopleSource(context);
         if(data == null){
             return;
