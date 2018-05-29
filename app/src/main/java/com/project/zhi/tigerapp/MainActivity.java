@@ -77,7 +77,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @AfterViews
     void bindAdapter() {
-        checkValidActivity();
+        boolean isValid =  checkValidActivity();
         setSupportActionBar(Toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(false);
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -92,8 +92,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             drawer.closeDrawer(GravityCompat.START);
         }
 
-
-        gridview.setAdapter(adapter);
+        if(isValid) {
+            gridview.setAdapter(adapter);
+        }
 
         selectMenuView.setOnFilteringBtnListener(new SelectMenuView.OnFilteringBtnListener() {
             @Override
