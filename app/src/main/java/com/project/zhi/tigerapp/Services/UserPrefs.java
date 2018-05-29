@@ -32,7 +32,7 @@ import org.androidannotations.annotations.sharedpreferences.SharedPref;
         String host();
         String username();
         String token();
-        String FacialEntities();
-        String VoiceEntities();
-
+        String facialEntities();
+        String voiceEntities();
+        String filteredEntites();
     }
