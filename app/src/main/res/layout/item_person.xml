@@ -28,5 +28,57 @@
         android:textSize="15dp"
         android:layout_marginTop="5dp" />
 
+    <TextView
+        android:id="@+id/tvFacialScoreTitle"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="15dp"
+        android:layout_marginTop="5dp" />
+
+    <TextView
+        android:id="@+id/tvFacialScore"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="15dp"
+        android:layout_marginTop="5dp" />
+    <TextView
+        android:id="@+id/tvVoiceScoreTitle"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="15dp"
+        android:layout_marginTop="5dp" />
+
+    <TextView
+        android:id="@+id/tvVoiceScore"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="15dp"
+        android:layout_marginTop="5dp" />
+    <TextView
+        android:id="@+id/tvOverallScoreTitle"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="15dp"
+        android:layout_marginTop="5dp" />
+
+    <TextView
+        android:id="@+id/tvOverallScore"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="15dp"
+        android:layout_marginTop="5dp" />
+
 
 </LinearLayout>
