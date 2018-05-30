@@ -233,7 +233,14 @@ public class DataSourceServices implements IDataSourceServices {
         if(menuService == null){
             menuService = new MenuService();
         }
-        ArrayList<ArrayList<MenuModel>> allMenus = menuService.getAllMenus(keys);
+        ArrayList<MenuModel> mainMenu = menuService.getMainMenus();
+        ArrayList<ArrayList<MenuModel>> allMenus = new ArrayList<ArrayList<MenuModel>>();
+        allMenus.add(mainMenu);
+        ArrayList<ArrayList<MenuModel>> allMenusRight = menuService.getAllMenus(keys);
+        allMenus.add(allMenusRight.get(0));
+        allMenus.add(allMenusRight.get(1));
+        allMenus.add(allMenusRight.get(2));
+
         if(userPrefs != null) {
             userPrefs.allMenu().put(Utils.gson.toJson(allMenus));
         }

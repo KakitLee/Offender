@@ -201,9 +201,9 @@ public class DataFilteringService {
         ArrayList<MenuModel> otherDemoMenu = new ArrayList<MenuModel>();
 
         if(allMenus != null && allMenus.size() > 0) {
-            nameMenu = allMenus.get(0);
-            mainDempMenu = allMenus.get(1);
-            otherDemoMenu = allMenus.get(2);
+            nameMenu = allMenus.get(1);
+            mainDempMenu = allMenus.get(2);
+            otherDemoMenu = allMenus.get(3);
         }
         ArrayList<Entities> updatedEntities = update(entities,nameMenu,mainDempMenu,otherDemoMenu);
         ArrayList<Person> people = dataSourceServices.getPeopleFromEntities(updatedEntities);

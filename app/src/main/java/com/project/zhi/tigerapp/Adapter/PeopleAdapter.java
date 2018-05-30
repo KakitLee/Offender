@@ -86,6 +86,9 @@ public class PeopleAdapter extends BaseAdapter {
 
     @Override
     public Person getItem(int position) {
+        if(people ==null || people.size() == 0){
+            return new Person();
+        }
         return people.get(position);
     }
 

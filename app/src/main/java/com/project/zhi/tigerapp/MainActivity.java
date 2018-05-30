@@ -188,12 +188,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         startActivity(intent);
     }
 
-    @Background
+    @UiThread
     void onFiltering(ArrayList<MenuModel> nameMenus, ArrayList<MenuModel> mainDemoMenu, ArrayList<MenuModel> otherDemoMenu){
         onLoading();
-        var newList = dataSourceServices.getPeopleFromEntities(dataFilteringService.update(dataSourceServices.getPeopleSource(context).getEntitiesList(), nameMenus, mainDemoMenu, otherDemoMenu));
+        //var newList = dataSourceServices.getPeopleFromEntities(dataFilteringService.update(dataSourceServices.getPeopleSource(context).getEntitiesList(), nameMenus, mainDemoMenu, otherDemoMenu));
+        var newList = dataFilteringService.mergeAll(this);
         adapter.setDataList(newList, null);
-        onAdapterDataChange();
+        adapter.notifyDataSetChanged();
         onDismiss();
     }
 

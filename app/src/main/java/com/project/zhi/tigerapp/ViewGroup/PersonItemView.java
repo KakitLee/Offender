@@ -70,7 +70,6 @@ public class PersonItemView extends LinearLayout {
         loadImage(entities);
     }
 
-    @Background
     void loadImage(Entities entities){
         Bitmap image = null;
         if(userPrefs.isUrl().get()){
@@ -82,7 +81,6 @@ public class PersonItemView extends LinearLayout {
         setImage(image, entities);
     }
 
-    @UiThread
     void setImage( Bitmap image, Entities entities){
         if(image != null) {
             imgPersonAvatar.setImageBitmap(image);

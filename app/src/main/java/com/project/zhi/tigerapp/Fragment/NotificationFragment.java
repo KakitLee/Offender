@@ -168,6 +168,7 @@ public class NotificationFragment extends PreferenceFragment {
                 IOUtils.closeQuietly(inputStream);
                 IOUtils.closeQuietly(outStream);
                 if(dataSourceServices.isValidDataSource(targetFile.getAbsolutePath())) {
+                    dataSourceServices.dataSourceChange(this.getActivity());
                     onFinishLoading();
                     return true;
                 }

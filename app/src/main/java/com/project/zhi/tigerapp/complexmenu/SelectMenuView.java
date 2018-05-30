@@ -128,10 +128,10 @@ public class SelectMenuView extends LinearLayout{
         ArrayList<ArrayList<MenuModel>> allMenus = Utils.gson.fromJson(gsonAllMenu, new TypeToken< ArrayList<ArrayList<MenuModel>>>(){}.getType());
 
 
-        mGroupList = menuService.getMainMenus();
-        mPrimaryList = allMenus.get(0);
-        mJuniorList = allMenus.get(1);
-        mHighList = allMenus.get(2);
+        mGroupList = allMenus.get(0);
+        mPrimaryList = allMenus.get(1);
+        mJuniorList = allMenus.get(2);
+        mHighList = allMenus.get(3);
 
         mSubjectDataList = new ArrayList<ArrayList<MenuModel>>();
         mSubjectDataList.add(mGroupList);
@@ -338,6 +338,11 @@ public class SelectMenuView extends LinearLayout{
     private void dismissPopupWindow(){
         mContentLayout.removeAllViews();
         setTabClose();
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mContext);
+        SharedPreferences.Editor editor = prefs.edit();
+
+        editor.putString("allMenu", (Utils.gson.toJson(mSubjectDataList)));
+        editor.commit();
     }
 
     public void setOnMenuSelectDataChangedListener(OnMenuSelectDataChangedListener onMenuSelectDataChangedListener){
