@@ -2,6 +2,7 @@ package com.qingyangli.offender.activities;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
@@ -17,11 +18,17 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 
 import com.astuetz.PagerSlidingTabStrip;
+import com.project.zhi.tigerapp.MainActivity;
 import com.project.zhi.tigerapp.MainActivity_;
 import com.project.zhi.tigerapp.R;
 
+import com.project.zhi.tigerapp.Services.ActivityService;
+import com.project.zhi.tigerapp.SettingsActivity_;
+import com.project.zhi.tigerapp.UploadActivity_;
+import com.project.zhi.tigerapp.Utils.Utils;
 import com.qingyangli.offender.fragments.FileViewerFragment;
 import com.qingyangli.offender.fragments.RecordFragment;
+
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,9 +40,11 @@ public class MainActivityVoice extends AppCompatActivity {
 
     private PagerSlidingTabStrip tabs;
     private ViewPager pager;
+    ActivityService activityService = new ActivityService();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        boolean isValid =  checkValidActivity();
         super.onCreate(savedInstanceState);
         checkPermissions();
         // checkRecordPermission();
@@ -160,5 +169,25 @@ public class MainActivityVoice extends AppCompatActivity {
     }
 
     public MainActivityVoice() {
+    }
+
+    boolean checkValidActivity(){
+        if(!activityService.validVoiceActivity(this)){
+                this.onInvalidInternetActivity();
+        }
+        return true;
+    }
+
+
+    void onInvalidInternetActivity(){
+        Utils.setAlertDialog("Initialize", "Cannot found voice model. Please upload voice model from local storage.", this).setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                ////TODO SYnc activity
+                Intent intent = new Intent(MainActivityVoice.this, UploadActivity_.class);
+                startActivity(intent);
+                dialog.dismiss();
+            }
+        }).show();
     }
 }

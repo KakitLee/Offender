@@ -512,20 +512,22 @@ public class RecordFragment extends Fragment {
                     //add new
                     Person voicePerson= new Person();
                     DataSourceServices service = new DataSourceServices();
-                    voicePerson.setEntity(service.getEntityById(getActivity(),id).get(0));
-                    voicePerson.setVoiceSimilarity(similarity);
-                    voicePerson.setOverallSimilarity(similarity);
-                    voiceList.add(voicePerson);
-                    Gson gson = new Gson();
-                    String voicePersonString= gson.toJson(voiceList);
-                    SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
-                    SharedPreferences.Editor editor = sharedPref.edit();
-                    editor.putString("voiceEntities", voicePersonString);
-                    editor.commit();
+                    if (service.getEntityById(getActivity(),id).size() != 0){
+                        voicePerson.setEntity(service.getEntityById(getActivity(),id).get(0));
+                        voicePerson.setVoiceSimilarity(similarity);
+                        voicePerson.setOverallSimilarity(similarity);
+                        voiceList.add(voicePerson);
+                        Gson gson = new Gson();
+                        String voicePersonString= gson.toJson(voiceList);
+                        SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
+                        SharedPreferences.Editor editor = sharedPref.edit();
+                        editor.putString("voiceEntities", voicePersonString);
+                        editor.commit();
+                    }
                     ////////////////////////////////////////////////////////////////
 
                     Intent newIntend = new Intent(this.getActivity(), MainActivity_.class);
-                    //newIntend.putExtra("voice", id);
+                    newIntend.putExtra("voice", id);
                     startActivity(newIntend);
                 }
             } catch (IOException e) {
