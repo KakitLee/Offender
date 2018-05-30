@@ -67,11 +67,6 @@ public class MenuService {
         return allMenuModels;
     }
 
-    public ArrayList<ArrayList<MenuModel>> getAllMenusFromPreference(Context context) {
-
-        return null;
-    }
-
     public ArrayList<MenuModel> getNameMenu(Context context){
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         String gsonNameMenu = prefs.getString("nameMenu",null);

@@ -478,10 +478,13 @@ public class RecordFragment extends Fragment {
                 mMatchedNameValuePrompt.setText(matchedModelName);
                 double similarity;
                 if(max>-5){
-                    similarity=100;
+                    //similarity=100;
+                    similarity=1;
+
                 }
                 else{
-                    similarity=(1-Math.sqrt((-5-max)/Math.abs(max)))*100;
+                    //similarity=(1-Math.sqrt((-5-max)/Math.abs(max)))*100;
+                    similarity=(1-Math.sqrt((-5-max)/Math.abs(max)));
                 }
                 Log.i(TAG, "likelihood is:" + String.valueOf(modelLikelihood[index]));
                 String id = "";
@@ -515,7 +518,7 @@ public class RecordFragment extends Fragment {
                     if (service.getEntityById(getActivity(),id).size() != 0){
                         voicePerson.setEntity(service.getEntityById(getActivity(),id).get(0));
                         voicePerson.setVoiceSimilarity(similarity);
-                        voicePerson.setOverallSimilarity(similarity);
+                        voicePerson.setOverallSimilarity(similarity*0.5);
                         voiceList.add(voicePerson);
                         Gson gson = new Gson();
                         String voicePersonString= gson.toJson(voiceList);

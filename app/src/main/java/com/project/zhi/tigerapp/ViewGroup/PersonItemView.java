@@ -81,7 +81,19 @@ public class PersonItemView extends LinearLayout {
         }
 
         loadImage(entities);
-        showScore(person);
+        if(person.getFacialSimilarity() != null || person.getVoiceSimilarity() != null || person.getOverallSimilarity() != null)
+        {
+            showScore(person);
+        }
+        else{
+            tvFacialScoreTitle.setVisibility(GONE);
+            tvFacialScore.setVisibility(GONE);
+            tvVoiceScoreTitle.setVisibility(GONE);
+            tvVoiceScore.setVisibility(GONE);
+            tvOverallScoreTitle.setVisibility(GONE);
+            tvOverallScore.setVisibility(GONE);
+
+        }
     }
 
     void loadImage(Entities entities){
@@ -98,32 +110,35 @@ public class PersonItemView extends LinearLayout {
     void showScore(Person person){
         if(person.getFacialSimilarity() != null){
             tvFacialScoreTitle.setVisibility(VISIBLE);
-            tvFacialScore.setText(person.getFacialSimilarity().toString());
+            tvFacialScore.setText(Utils.getSimilarityFormat().format(person.getFacialSimilarity() * 100) + " %");
             tvFacialScore.setVisibility(VISIBLE);
 
         }
         else{
-            tvFacialScoreTitle.setVisibility(GONE);
-            tvFacialScore.setVisibility(GONE);
+            tvFacialScoreTitle.setVisibility(VISIBLE);
+            tvFacialScore.setText("N/A");
+            tvFacialScore.setVisibility(VISIBLE);
         }
         if(person.getVoiceSimilarity() != null){
-            tvVoiceScore.setText(person.getVoiceSimilarity().toString());
+            tvVoiceScore.setText(Utils.getSimilarityFormat().format(person.getVoiceSimilarity() * 100) + " %");
             tvVoiceScoreTitle.setVisibility(VISIBLE);
             tvVoiceScore.setVisibility(VISIBLE);
 
         }
         else{
-            tvVoiceScore.setVisibility(GONE);
-            tvVoiceScoreTitle.setVisibility(GONE);
+            tvVoiceScore.setVisibility(VISIBLE);
+            tvVoiceScore.setText("N/A");
+            tvVoiceScoreTitle.setVisibility(VISIBLE);
         }
         if(person.getOverallSimilarity() != null){
-            tvOverallScore.setText(person.getOverallSimilarity().toString());
+            tvOverallScore.setText(Utils.getSimilarityFormat().format(person.getOverallSimilarity() * 100) + " %");
             tvOverallScoreTitle.setVisibility(VISIBLE);
             tvOverallScore.setVisibility(VISIBLE);
         }
         else{
-            tvOverallScoreTitle.setVisibility(GONE);
-            tvOverallScore.setVisibility(GONE);
+            tvOverallScoreTitle.setVisibility(VISIBLE);
+            tvOverallScore.setText("N/A");
+            tvOverallScore.setVisibility(VISIBLE);
         }
     }
 

@@ -19,6 +19,14 @@
             android:id="@+id/toolbar"
             layout="@layout/toolbar"
             />
+        <Button
+            android:id="@+id/btn_clear_all"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentTop="true"
+            android:text="Clear Recognition" />
 
         <com.project.zhi.tigerapp.complexmenu.SelectMenuView
             android:id="@+id/menu"

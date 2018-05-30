@@ -17,6 +17,7 @@ import com.google.gson.Gson;
 import com.project.zhi.tigerapp.Entities.Attachments;
 import com.project.zhi.tigerapp.Entities.Attributes;
 import com.project.zhi.tigerapp.Entities.Entities;
+import com.project.zhi.tigerapp.Entities.Person;
 import com.project.zhi.tigerapp.Enums.AttributeType;
 import com.project.zhi.tigerapp.FaceUtils.MatchedImage;
 import com.project.zhi.tigerapp.R;
@@ -25,10 +26,15 @@ import com.project.zhi.tigerapp.complexmenu.MenuModel;
 import org.apache.commons.text.WordUtils;
 
 import java.io.File;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Comparator;
 
 public class Utils {
+    public static DecimalFormat getSimilarityFormat(){
+        return new DecimalFormat("####0.00");
+    }
+
     public static Gson gson = new Gson();
     public static String displayKeyValue(String key){
         return WordUtils.capitalize(key);
@@ -46,7 +52,7 @@ public class Utils {
         };
         return comparator;
     }
-    public static Comparator<MatchedImage> getComparator(){
+    public static Comparator<MatchedImage> getMatchedImageComparator(){
         Comparator<MatchedImage> comparator = new Comparator<MatchedImage>() {
             @Override
             public int compare(MatchedImage o1, MatchedImage o2) {
@@ -56,6 +62,15 @@ public class Utils {
         return comparator;
     }
 
+    public static Comparator<Person> getPersonComparator(){
+        Comparator<Person> comparator = new Comparator<Person>() {
+            @Override
+            public int compare(Person o1, Person o2) {
+                return Double.compare(o2.getOverallSimilarity(),o1.getOverallSimilarity());
+            }
+        };
+        return comparator;
+    }
 
     public static String getAttributeValues(Attributes attribute){
         if(attribute.getType().equalsIgnoreCase(AttributeType.TEXT.name())){

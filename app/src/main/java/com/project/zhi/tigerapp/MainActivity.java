@@ -12,10 +12,13 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Button;
 import android.widget.GridView;
 
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.project.zhi.tigerapp.Adapter.PeopleAdapter;
 import com.project.zhi.tigerapp.Entities.Entities;
 import com.project.zhi.tigerapp.Entities.Person;
@@ -33,8 +36,10 @@ import com.project.zhi.tigerapp.complexmenu.holder.SubjectHolder;
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Background;
 import org.androidannotations.annotations.Bean;
+import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.ItemClick;
+import org.androidannotations.annotations.OptionsMenuItem;
 import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
 import org.androidannotations.annotations.sharedpreferences.Pref;
@@ -47,6 +52,9 @@ import lombok.experimental.var;
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     @ViewById(R.id.gridview)
     GridView gridview;
+
+    @ViewById(R.id.btn_clear_all)
+    Button btnClearAll;
 
     @ViewById(R.id.menu)
     SelectMenuView menu;
@@ -186,6 +194,31 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         Intent intent = new Intent(this, ProfileActivity_.class);
         intent.putExtra("Profile", objStr);
         startActivity(intent);
+    }
+    @Click(R.id.btn_clear_all)
+    void clearAll(){
+        userPrefs.voiceEntities().put(null);
+        userPrefs.facialEntities().put(null);
+//        String gsonAllMenu = userPrefs.allMenu().get();
+//        if(gsonAllMenu != null && gsonAllMenu.isEmpty()){
+//            ArrayList<ArrayList<MenuModel>> allMenus = Utils.gson.fromJson(gsonAllMenu, new TypeToken< ArrayList<ArrayList<MenuModel>>>(){}.getType());
+//            for (ArrayList<MenuModel> menu: allMenus
+//                 ) {
+//                menuService.clearMenuValue(menu);
+//            }
+//            userPrefs.allMenu().put(Utils.gson.toJson(allMenus));
+//        }
+        this.onClearAll();
+    }
+
+    @UiThread
+    void onClearAll(){
+        onLoading();
+        //var newList = dataSourceServices.getPeopleFromEntities(dataFilteringService.update(dataSourceServices.getPeopleSource(context).getEntitiesList(), nameMenus, mainDemoMenu, otherDemoMenu));
+        var newList = dataFilteringService.mergeAll(this);
+        adapter.setDataList(newList, null);
+        adapter.notifyDataSetChanged();
+        onDismiss();
     }
 
     @UiThread

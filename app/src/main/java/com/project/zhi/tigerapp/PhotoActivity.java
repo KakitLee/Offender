@@ -387,7 +387,7 @@ public class PhotoActivity extends AppCompatActivity implements NavigationView.O
         Data data1 = dataSourceServices.getPeopleSource(this);
 
 
-        Collections.sort(scores,Utils.getComparator());
+        Collections.sort(scores,Utils.getMatchedImageComparator());
 
         ArrayList<Person> people = new ArrayList<Person>();
         ArrayList<String> ids = new ArrayList<String>();
@@ -399,7 +399,7 @@ public class PhotoActivity extends AppCompatActivity implements NavigationView.O
                 Person person = new Person();
                 person.setEntity(entity);
                 person.setFacialSimilarity(new Double(currImage.getScore().toString()));
-                person.setOverallSimilarity(new Double(currImage.getScore().toString()));
+                person.setOverallSimilarity(new Double(String.valueOf(currImage.getScore()*0.5)));
                 people.add(person);
 
 //                passIds.add(entity.getId());

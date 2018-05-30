@@ -19,6 +19,7 @@ import org.apache.commons.collections4.Predicate;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import lombok.experimental.var;
@@ -212,8 +213,10 @@ public class DataFilteringService {
        // String jsonFilteredEntites = userPrefs.filteredEntites().get();////json filterd
         String jsonVoice = userPrefs.voiceEntities().get();/// json voice
         String jsonFace = userPrefs.facialEntities().get(); //// json face
+
         if((jsonVoice.isEmpty()||jsonVoice==null)&&(jsonFace.isEmpty()||jsonFace==null)){
-            filteredPersonList=people;
+            return people;
+            //filteredPersonList=people;
         }
         else if(jsonVoice.isEmpty()||jsonVoice==null){
             filteredPersonList=Utils.gson.fromJson(userPrefs.facialEntities().get(),new TypeToken<ArrayList<Person>>(){}.getType());
@@ -222,16 +225,15 @@ public class DataFilteringService {
             filteredPersonList=Utils.gson.fromJson(userPrefs.voiceEntities().get(),new TypeToken<ArrayList<Person>>(){}.getType());
         }
         else{
-            ArrayList<Person> faceAndVoiceList= new ArrayList<Person>();
-            faceAndVoiceList= Utils.gson.fromJson(userPrefs.facialEntities().get(),new TypeToken<ArrayList<Person>>(){}.getType());
+            filteredPersonList= Utils.gson.fromJson(userPrefs.facialEntities().get(),new TypeToken<ArrayList<Person>>(){}.getType());
             ArrayList<Person> voiceList= new ArrayList<Person>();
             voiceList= Utils.gson.fromJson(userPrefs.voiceEntities().get(),new TypeToken<ArrayList<Person>>(){}.getType());
             for(int i=0; i<voiceList.size();i++){
                 Person voiceItem=voiceList.get(i);
                 boolean flag= false;
-                for(int j=0; j<faceAndVoiceList.size();j++)
+                for(int j=0; j<filteredPersonList.size();j++)
                 {
-                    Person faceItem=faceAndVoiceList.get(j);
+                    Person faceItem=filteredPersonList.get(j);
                     String faceId= faceItem.getEntity().getId();
                     String voiceId= voiceItem.getEntity().getId();
                     if(faceId.equals(voiceId)){
@@ -241,21 +243,22 @@ public class DataFilteringService {
                     }
                 }
                 if(flag==false){
-                    faceAndVoiceList.add(voiceItem);
-                }
-            }
-            // Intersection
-            for(int i=0; i<faceAndVoiceList.size();i++){
-                Person faceAndVoiceItem=faceAndVoiceList.get(i);
-                for(int j=0; j<people.size();j++){
-                    String faceAndVoiceId=faceAndVoiceItem.getEntity().getId();
-                    String filterId=people.get(j).getEntity().getId();
-                    if(faceAndVoiceId.equals(filterId)){
-                        filteredPersonList.add(faceAndVoiceItem);
-                    }
+                    filteredPersonList.add(voiceItem);
                 }
             }
         }
-        return filteredPersonList;
+        ArrayList<Person> mergedPersonList = new ArrayList<Person>();
+        for(int i=0; i<filteredPersonList.size();i++){
+            Person faceAndVoiceItem=filteredPersonList.get(i);
+            for(int j=0; j<people.size();j++){
+                String faceAndVoiceId=faceAndVoiceItem.getEntity().getId();
+                String filterId=people.get(j).getEntity().getId();
+                if(faceAndVoiceId.equals(filterId)){
+                    mergedPersonList.add(faceAndVoiceItem);
+                }
+            }
+        }
+        Collections.sort(mergedPersonList,Utils.getPersonComparator());
+        return mergedPersonList;
     }
 }
