@@ -173,12 +173,19 @@ public class DataFilteringService {
                     return true;
                 }
             }
+            else if(attribute.getType().equalsIgnoreCase(AttributeType.LIST.name())){
+                value = attribute.getListKey();
+                if(criteria.getAttributeKey().equalsIgnoreCase(key) && value.toLowerCase().equalsIgnoreCase(criteria.getValue().toLowerCase())){
+                    return true;
+                }
+            }
             else{
                 value = attribute.getStringValue();
+                if(criteria.getAttributeKey().equalsIgnoreCase(key) && value.toLowerCase().contains(criteria.getValue().toLowerCase())){
+                    return true;
+                }
             }
-            if(criteria.getAttributeKey().equalsIgnoreCase(key) && value.toLowerCase().contains(criteria.getValue().toLowerCase())){
-                return true;
-            }
+
         }
         return false;
     }

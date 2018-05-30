@@ -31,6 +31,7 @@ import java.io.OutputStream;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
@@ -207,6 +208,8 @@ public class DataSourceServices implements IDataSourceServices {
     }
 
     public ArrayList<Person> getPeopleFromEntities(ArrayList<Entities> entities){
+        Timer timer = new Timer();
+        long startTime = System.nanoTime();
         ArrayList<Person> people = new ArrayList<Person>();
         if(entities == null || entities.size() == 0) return people;
         for (Entities entity: entities
@@ -215,10 +218,16 @@ public class DataSourceServices implements IDataSourceServices {
             person.setEntity(entity);
             people.add(person);
         }
+        long endTime = System.nanoTime();
+        long duration = (endTime - startTime)/1000000 ;
+        System.out.println("PEOPLE TO ENTITIES TOOK " + duration + " MILLISECONDS");
         return people;
     }
     public void dataSourceChange(Context context){
         Data data = this.getPeopleSource(context);
+        if(data == null) {
+            return;
+        }
         List<Entities> entities = data.getEntitiesList();
         ArrayList<Attributes> keys = getUniqueKeyAttributes(data);
         if(menuService == null){

@@ -18,6 +18,7 @@ import android.widget.GridView;
 import com.google.gson.Gson;
 import com.project.zhi.tigerapp.Adapter.PeopleAdapter;
 import com.project.zhi.tigerapp.Entities.Entities;
+import com.project.zhi.tigerapp.Entities.Person;
 import com.project.zhi.tigerapp.Services.ActivityService;
 import com.project.zhi.tigerapp.Services.DataFilteringService;
 import com.project.zhi.tigerapp.Services.DataSourceServices;
@@ -106,11 +107,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         selectMenuView.setOnFilteringBtnListener(new SelectMenuView.OnFilteringBtnListener() {
             @Override
             public void OnFiltering(ArrayList<MenuModel> nameMenus, ArrayList<MenuModel> mainDemoMenu, ArrayList<MenuModel> otherDemoMenu) {
-                onLoading();
-                var newList = dataSourceServices.getPeopleFromEntities(dataFilteringService.update(dataSourceServices.getPeopleSource(context).getEntitiesList(), nameMenus, mainDemoMenu, otherDemoMenu));
-                adapter.setDataList(newList, null);
-                adapter.notifyDataSetChanged();
-                onDismiss();
+                onFiltering(nameMenus,mainDemoMenu,otherDemoMenu);
             }
         });
 
@@ -204,16 +201,28 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     void onDismiss(){
         dialog.dismiss();
     }
+    @UiThread
+    void onAdapterDataChange(){
+        adapter.notifyDataSetChanged();
+    }
 
     @ItemClick(R.id.gridview)
-    void gridViewItemClicked(Entities entity) {
+    void gridViewItemClicked(Person person) {
         Gson gson = new Gson();
-        String objStr = gson.toJson(entity);
+        String objStr = gson.toJson(person.getEntity());
         Intent intent = new Intent(this, ProfileActivity_.class);
         intent.putExtra("Profile", objStr);
         startActivity(intent);
     }
 
+    @Background
+    void onFiltering(ArrayList<MenuModel> nameMenus, ArrayList<MenuModel> mainDemoMenu, ArrayList<MenuModel> otherDemoMenu){
+        onLoading();
+        var newList = dataSourceServices.getPeopleFromEntities(dataFilteringService.update(dataSourceServices.getPeopleSource(context).getEntitiesList(), nameMenus, mainDemoMenu, otherDemoMenu));
+        adapter.setDataList(newList, null);
+        onAdapterDataChange();
+        onDismiss();
+    }
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {

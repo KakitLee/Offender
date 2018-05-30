@@ -18,6 +18,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.project.zhi.tigerapp.Entities.Attributes;
 import com.project.zhi.tigerapp.Entities.Data;
 import com.project.zhi.tigerapp.R;
@@ -88,8 +90,8 @@ public class SelectMenuView extends LinearLayout{
     private ArrayList<MenuModel> mPrimaryList;
     private ArrayList<MenuModel> mJuniorList;
     private ArrayList<MenuModel> mHighList;
-    @Getter
-    private List<List<MenuModel>> mSubjectDataList;
+
+    private ArrayList<ArrayList<MenuModel>> mSubjectDataList;
 
     private OnFilteringBtnListener onFilteringListener;
 
@@ -116,27 +118,22 @@ public class SelectMenuView extends LinearLayout{
     }
 
     private void init(){
-        Data data = dataSourceServices.getPeopleSource(this.mContext);
-        if(data == null) return;
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mContext);
         String gsonAllMenu = prefs.getString("allMenu",null);
         if(gsonAllMenu == null || gsonAllMenu.isEmpty()) {
+            dataSourceServices.dataSourceChange(mContext);
             return;
         }
-       ArrayList<ArrayList<MenuModel>> allMenus = Utils.gson.fromJson(gsonAllMenu, ArrayList.class );
 
-        mGroupList = new ArrayList<MenuModel>();
+        ArrayList<ArrayList<MenuModel>> allMenus = Utils.gson.fromJson(gsonAllMenu, new TypeToken< ArrayList<ArrayList<MenuModel>>>(){}.getType());
+
+
         mGroupList = menuService.getMainMenus();
-
-        mPrimaryList = new ArrayList<MenuModel>();
         mPrimaryList = allMenus.get(0);
-
-        mJuniorList = new ArrayList<MenuModel>();
         mJuniorList = allMenus.get(1);
-        mHighList = new ArrayList<MenuModel>();
         mHighList = allMenus.get(2);
 
-        mSubjectDataList = new ArrayList<List<MenuModel>>();
+        mSubjectDataList = new ArrayList<ArrayList<MenuModel>>();
         mSubjectDataList.add(mGroupList);
         mSubjectDataList.add(mPrimaryList);
         mSubjectDataList.add(mJuniorList);

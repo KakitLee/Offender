@@ -108,11 +108,11 @@ public class PeopleAdapter extends BaseAdapter {
         }
         personItemView.bind(getItem(position),getScore(position));
         TypedValue tv = new TypedValue();
-        if (context.getTheme().resolveAttribute(R.attr.actionBarSize, tv, true)) {
-            personItemView.setMinimumHeight((screenHeight - TypedValue.complexToDimensionPixelSize(tv.data, context.getResources().getDisplayMetrics())) / 3);
-        } else {
-            personItemView.setMinimumHeight(screenHeight / 3);
-        }
+//        if (context.getTheme().resolveAttribute(R.attr.actionBarSize, tv, true)) {
+//            personItemView.setMinimumHeight((screenHeight - TypedValue.complexToDimensionPixelSize(tv.data, context.getResources().getDisplayMetrics())) / 3);
+//        } else {
+//            personItemView.setMinimumHeight(screenHeight / 3);
+//        }
         return personItemView;
     }
 }

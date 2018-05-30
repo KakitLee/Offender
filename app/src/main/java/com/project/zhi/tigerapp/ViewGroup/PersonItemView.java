@@ -1,6 +1,7 @@
 package com.project.zhi.tigerapp.ViewGroup;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.os.Build;
 import android.view.View;
 import android.widget.ImageView;
@@ -15,9 +16,11 @@ import com.project.zhi.tigerapp.Services.DataFilteringService;
 import com.project.zhi.tigerapp.Services.UserPrefs_;
 import com.project.zhi.tigerapp.Utils.Utils;
 
+import org.androidannotations.annotations.Background;
 import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.EBean;
 import org.androidannotations.annotations.EViewGroup;
+import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
 import org.androidannotations.annotations.sharedpreferences.Pref;
 
@@ -43,6 +46,7 @@ public class PersonItemView extends LinearLayout {
     DataFilteringService dataFilteringService;
     @Pref
     UserPrefs_ userPrefs;
+    Bitmap image;
 
     public PersonItemView(Context context) {
         super(context);
@@ -63,13 +67,27 @@ public class PersonItemView extends LinearLayout {
             scoreText.setText(String.valueOf(score*100)+"%");
         }
 
+        loadImage(entities);
+    }
+
+    @Background
+    void loadImage(Entities entities){
+        Bitmap image = null;
         if(userPrefs.isUrl().get()){
-            imgPersonAvatar.setImageBitmap(Utils.getImageExternal(entities,userPrefs.urlImagePath().get()));
+            image =  Utils.getImageExternal(entities,userPrefs.urlImagePath().get());
         }
         else if(userPrefs.isFolder().get() && userPrefs.folder().get() != null && !userPrefs.folder().get().isEmpty() && Utils.getImageExternal(entities,userPrefs.folder().get()) != null){
-            imgPersonAvatar.setImageBitmap(Utils.getImageExternal(entities,userPrefs.folder().get()));
+            image = Utils.getImageExternal(entities,userPrefs.folder().get());
         }
-        else {
+        setImage(image, entities);
+    }
+
+    @UiThread
+    void setImage( Bitmap image, Entities entities){
+        if(image != null) {
+            imgPersonAvatar.setImageBitmap(image);
+        }
+        else{
             imgPersonAvatar.setImageResource(Utils.getImageId(entities, getContext()));
         }
     }
