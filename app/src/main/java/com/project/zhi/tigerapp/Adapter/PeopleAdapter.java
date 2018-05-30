@@ -12,6 +12,7 @@ import com.project.zhi.tigerapp.Entities.Data;
 import com.project.zhi.tigerapp.Entities.Entities;
 import com.project.zhi.tigerapp.Entities.Person;
 import com.project.zhi.tigerapp.R;
+import com.project.zhi.tigerapp.Services.DataFilteringService;
 import com.project.zhi.tigerapp.Services.DataSourceServices;
 import com.project.zhi.tigerapp.Services.UserPrefs_;
 import com.project.zhi.tigerapp.ViewGroup.PersonItemView;
@@ -38,6 +39,9 @@ public class PeopleAdapter extends BaseAdapter {
     @Bean
     DataSourceServices dataSourceServices;
 
+    @Bean
+    DataFilteringService dataFilteringService;
+
     private ArrayList<Entities> entities;
     private ArrayList<Float> scores;
     private ArrayList<Person> people;
@@ -56,7 +60,7 @@ public class PeopleAdapter extends BaseAdapter {
         if(entities == null){
             return;
         }else {
-            people = dataSourceServices.getPeopleFromEntities(entities);
+            people = dataFilteringService.mergeAll(context);
             if (entities == null) {
                 entities = new ArrayList<Entities>();
             }
@@ -108,11 +112,11 @@ public class PeopleAdapter extends BaseAdapter {
         }
         personItemView.bind(getItem(position),getScore(position));
         TypedValue tv = new TypedValue();
-//        if (context.getTheme().resolveAttribute(R.attr.actionBarSize, tv, true)) {
-//            personItemView.setMinimumHeight((screenHeight - TypedValue.complexToDimensionPixelSize(tv.data, context.getResources().getDisplayMetrics())) / 3);
-//        } else {
-//            personItemView.setMinimumHeight(screenHeight / 3);
-//        }
+        if (context.getTheme().resolveAttribute(R.attr.actionBarSize, tv, true)) {
+            personItemView.setMinimumHeight((screenHeight - TypedValue.complexToDimensionPixelSize(tv.data, context.getResources().getDisplayMetrics())) / 3);
+        } else {
+            personItemView.setMinimumHeight(screenHeight / 3);
+        }
         return personItemView;
     }
 }

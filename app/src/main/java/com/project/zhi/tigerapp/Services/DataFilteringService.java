@@ -3,6 +3,7 @@ package com.project.zhi.tigerapp.Services;
 import android.content.Context;
 
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.project.zhi.tigerapp.Entities.Attributes;
 import com.project.zhi.tigerapp.Entities.Entities;
 import com.project.zhi.tigerapp.Entities.Person;
@@ -192,10 +193,20 @@ public class DataFilteringService {
 
     public ArrayList<Person> mergeAll(Context context){
         ArrayList<Person> filteredPersonList = new ArrayList<Person>();
-
         ArrayList<Entities> entities = dataSourceServices.getPeopleSource(context).getEntitiesList();
-        ArrayList<Person> people = dataSourceServices.getPeopleFromEntities(entities);
-        Gson gson = new Gson();
+        String gsonAllMenu = userPrefs.allMenu().get();
+        ArrayList<ArrayList<MenuModel>> allMenus = Utils.gson.fromJson(gsonAllMenu, new TypeToken< ArrayList<ArrayList<MenuModel>>>(){}.getType());
+        ArrayList<MenuModel> nameMenu = new ArrayList<MenuModel>();
+        ArrayList<MenuModel> mainDempMenu = new ArrayList<MenuModel>();
+        ArrayList<MenuModel> otherDemoMenu = new ArrayList<MenuModel>();
+
+        if(allMenus != null && allMenus.size() > 0) {
+            nameMenu = allMenus.get(0);
+            mainDempMenu = allMenus.get(1);
+            otherDemoMenu = allMenus.get(2);
+        }
+        ArrayList<Entities> updatedEntities = update(entities,nameMenu,mainDempMenu,otherDemoMenu);
+        ArrayList<Person> people = dataSourceServices.getPeopleFromEntities(updatedEntities);
         //ArrayList<Entities> filterList= new ArrayList<Entities>();
         //Union
        // String jsonFilteredEntites = userPrefs.filteredEntites().get();////json filterd
@@ -205,16 +216,16 @@ public class DataFilteringService {
             filteredPersonList=people;
         }
         else if(jsonVoice.isEmpty()||jsonVoice==null){
-            filteredPersonList=gson.fromJson(userPrefs.facialEntities().get(),ArrayList.class);
+            filteredPersonList=Utils.gson.fromJson(userPrefs.facialEntities().get(),ArrayList.class);
         }
         else if(jsonFace.isEmpty()||jsonFace==null){
-            filteredPersonList=gson.fromJson(userPrefs.voiceEntities().get(),ArrayList.class);
+            filteredPersonList=Utils.gson.fromJson(userPrefs.voiceEntities().get(),ArrayList.class);
         }
         else{
             ArrayList<Person> faceAndVoiceList= new ArrayList<Person>();
-            faceAndVoiceList= gson.fromJson(userPrefs.facialEntities().get(),ArrayList.class);
+            faceAndVoiceList= Utils.gson.fromJson(userPrefs.facialEntities().get(),ArrayList.class);
             ArrayList<Person> voiceList= new ArrayList<Person>();
-            voiceList= gson.fromJson(userPrefs.voiceEntities().get(),ArrayList.class);
+            voiceList= Utils.gson.fromJson(userPrefs.voiceEntities().get(),ArrayList.class);
             for(int i=0; i<voiceList.size();i++){
                 Person voiceItem=voiceList.get(i);
                 boolean flag= false;

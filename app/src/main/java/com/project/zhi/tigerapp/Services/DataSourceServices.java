@@ -234,7 +234,15 @@ public class DataSourceServices implements IDataSourceServices {
             menuService = new MenuService();
         }
         ArrayList<ArrayList<MenuModel>> allMenus = menuService.getAllMenus(keys);
-        userPrefs.allMenu().put(Utils.gson.toJson(allMenus));
+        if(userPrefs != null) {
+            userPrefs.allMenu().put(Utils.gson.toJson(allMenus));
+        }
+        else{
+            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+            SharedPreferences.Editor editor = prefs.edit();
+            editor.putString("allMenu", (Utils.gson.toJson(allMenus)));
+            editor.commit();
+        }
     }
 }
 

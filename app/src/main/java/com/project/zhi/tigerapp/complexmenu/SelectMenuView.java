@@ -121,7 +121,7 @@ public class SelectMenuView extends LinearLayout{
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mContext);
         String gsonAllMenu = prefs.getString("allMenu",null);
         if(gsonAllMenu == null || gsonAllMenu.isEmpty()) {
-            dataSourceServices.dataSourceChange(mContext);
+            //dataSourceServices.dataSourceChange(mContext);
             return;
         }
 
