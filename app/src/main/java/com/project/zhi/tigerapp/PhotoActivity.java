@@ -3,6 +3,7 @@ package com.project.zhi.tigerapp;
 import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
@@ -150,9 +151,11 @@ public class PhotoActivity extends AppCompatActivity implements NavigationView.O
         Button b1 = this.findViewById(R.id.button1);
         b1.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                onLoading();
 
+                onLoading();
                 faceRegister();
+
+
             }
         });
 
@@ -193,20 +196,22 @@ public class PhotoActivity extends AppCompatActivity implements NavigationView.O
         return file;
     }
 
+    @UiThread
     public void display(Context context, String text){
         Toast toast = Toast.makeText(context, text, Toast.LENGTH_LONG);
-        //toast.setGravity(Gravity.CENTER_HORIZONTAL,0,0);
         toast.show();
     }
 
+    @Background
     public void faceRegister(){
 
         path = dataSourceServices.getSourceFolder();
-        if(path.isEmpty() || path==""){
+        if(path.isEmpty() || path==null){
+            onDismiss();
             display(context,"No image source selected.");
             return;
         }
-        onLoading(context);
+
         engine1 = new AFR_FSDKEngine();
         error1 = engine1.AFR_FSDK_InitialEngine(FaceDB.appid, FaceDB.fr_key);
 
@@ -340,15 +345,13 @@ public class PhotoActivity extends AppCompatActivity implements NavigationView.O
         }
         if(face2==null){
             onDismiss();
-            display(context,"No face detected.");
+            display(context,"No face detected. Please retake a photo.");
             return;
         }
-        onLoading();
+
         engine1 = new AFR_FSDKEngine();
         error1 = engine1.AFR_FSDK_InitialEngine(FaceDB.appid, FaceDB.fr_key);
 
-        ArrayList<String> passIds = new ArrayList<String>();
-        ArrayList<Float> passScores = new ArrayList<Float>();
 
         ArrayList<MatchedImage> scores = new ArrayList<MatchedImage>();
 
@@ -361,7 +364,6 @@ public class PhotoActivity extends AppCompatActivity implements NavigationView.O
 
 
                 Float score = 0.0f;
-                //score = compare(b1, b2);
                 score = compare(face, face2);
                 if (score == -2) {
                     Log.d("Photo", "No face detected in the taken photo");
@@ -388,14 +390,18 @@ public class PhotoActivity extends AppCompatActivity implements NavigationView.O
         Collections.sort(scores,Utils.getComparator());
 
         ArrayList<Person> people = new ArrayList<Person>();
+        ArrayList<String> ids = new ArrayList<String>();
         for (MatchedImage currImage : scores) {
             String imageName = currImage.getImage();
             Entities entity = dataSourceServices.getEntityByImageName(imageName, this, data1);
-            if (entity != null && !passIds.contains(entity.getId())) {
+            if (entity != null && !ids.contains(entity.getId())) {
+                ids.add(entity.getId());
                 Person person = new Person();
                 person.setEntity(entity);
                 person.setFacialSimilarity(new Double(currImage.getScore().toString()));
+                person.setOverallSimilarity(new Double(currImage.getScore().toString()));
                 people.add(person);
+
 //                passIds.add(entity.getId());
 //                passScores.add(currImage.getScore());
 
@@ -406,14 +412,12 @@ public class PhotoActivity extends AppCompatActivity implements NavigationView.O
 
         Gson gson = new Gson();
         String peopleObj = gson.toJson(people);
-        userPrefs.FacialEntities().put(peopleObj);
+        userPrefs.facialEntities().put(peopleObj);
 
-        Bundle bundle = new Bundle();
+        onDismiss();
+
 
         Intent result = new Intent(this,MainActivity_.class);
-        result.putExtra("passId",passIds);
-        result.putExtra("passScore",passScores);
-        onDismiss();
         startActivity(result);
     }
 
@@ -441,8 +445,10 @@ public class PhotoActivity extends AppCompatActivity implements NavigationView.O
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        onLoading(PhotoActivity.this);
-        faceRecognition(requestCode,resultCode);
+        if (requestCode == REQUEST_CODE_IMAGE_CAMERA && resultCode == RESULT_OK) {
+            onLoading();
+            faceRecognition(requestCode, resultCode);
+        }
 
 
 
@@ -630,9 +636,10 @@ public class PhotoActivity extends AppCompatActivity implements NavigationView.O
 
 
     @UiThread
-    void onLoading(Context context){
-        //dialog = Utils.setProgressDialog(PhotoActivity.this);
-        dialog = Utils.setProgressDialog(context);
+    void onLoading(){
+        dialog = Utils.setProgressDialog(PhotoActivity.this);
+        //dialog = Utils.setProgressDialog(context);
+
     }
     @UiThread
     void onDismiss(){
