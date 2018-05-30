@@ -1,6 +1,7 @@
 package com.project.zhi.tigerapp;
 
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.project.zhi.tigerapp.Entities.Attributes;
 import com.project.zhi.tigerapp.Entities.Data;
 import com.project.zhi.tigerapp.Entities.Entities;
@@ -252,7 +253,7 @@ public class localTest {
         Gson gson = new Gson();
         String peopleObj = gson.toJson(people);
 
-        ArrayList<Person> people2 = gson.fromJson(peopleObj, ArrayList.class);
+        ArrayList<Person> people2 = gson.fromJson(peopleObj,new TypeToken<ArrayList<Person>>(){}.getType());
         assertEquals(2,people2.size());
 
     }

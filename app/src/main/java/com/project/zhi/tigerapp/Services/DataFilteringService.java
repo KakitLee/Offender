@@ -216,16 +216,16 @@ public class DataFilteringService {
             filteredPersonList=people;
         }
         else if(jsonVoice.isEmpty()||jsonVoice==null){
-            filteredPersonList=Utils.gson.fromJson(userPrefs.facialEntities().get(),ArrayList.class);
+            filteredPersonList=Utils.gson.fromJson(userPrefs.facialEntities().get(),new TypeToken<ArrayList<Person>>(){}.getType());
         }
         else if(jsonFace.isEmpty()||jsonFace==null){
-            filteredPersonList=Utils.gson.fromJson(userPrefs.voiceEntities().get(),ArrayList.class);
+            filteredPersonList=Utils.gson.fromJson(userPrefs.voiceEntities().get(),new TypeToken<ArrayList<Person>>(){}.getType());
         }
         else{
             ArrayList<Person> faceAndVoiceList= new ArrayList<Person>();
-            faceAndVoiceList= Utils.gson.fromJson(userPrefs.facialEntities().get(),ArrayList.class);
+            faceAndVoiceList= Utils.gson.fromJson(userPrefs.facialEntities().get(),new TypeToken<ArrayList<Person>>(){}.getType());
             ArrayList<Person> voiceList= new ArrayList<Person>();
-            voiceList= Utils.gson.fromJson(userPrefs.voiceEntities().get(),ArrayList.class);
+            voiceList= Utils.gson.fromJson(userPrefs.voiceEntities().get(),new TypeToken<ArrayList<Person>>(){}.getType());
             for(int i=0; i<voiceList.size();i++){
                 Person voiceItem=voiceList.get(i);
                 boolean flag= false;

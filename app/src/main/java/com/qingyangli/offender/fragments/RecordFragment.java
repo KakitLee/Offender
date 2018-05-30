@@ -519,7 +519,7 @@ public class RecordFragment extends Fragment {
                         voiceList.add(voicePerson);
                         Gson gson = new Gson();
                         String voicePersonString= gson.toJson(voiceList);
-                        SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
+                        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getContext());
                         SharedPreferences.Editor editor = sharedPref.edit();
                         editor.putString("voiceEntities", voicePersonString);
                         editor.commit();
@@ -527,7 +527,6 @@ public class RecordFragment extends Fragment {
                     ////////////////////////////////////////////////////////////////
 
                     Intent newIntend = new Intent(this.getActivity(), MainActivity_.class);
-                    newIntend.putExtra("voice", id);
                     startActivity(newIntend);
                 }
             } catch (IOException e) {

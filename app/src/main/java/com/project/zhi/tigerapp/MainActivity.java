@@ -122,34 +122,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
         });
 
-        if (getIntent().getStringExtra("voice") != null && !getIntent().getStringExtra("voice").isEmpty()) {
-            onLoading();
-            adapter.setDataList(dataSourceServices.getPeopleFromEntities(dataSourceServices.getEntityById(this, getIntent().getStringExtra("voice"))), null);
-            adapter.notifyDataSetChanged();
-            onDismiss();
-        }
 
-
-        Bundle bundle = getIntent().getExtras();
-        if (bundle != null) {
-            if (getIntent().getSerializableExtra("passId") != null && getIntent().getSerializableExtra("passScore") != null) {
-                onLoading();
-                ArrayList<Entities> list = new ArrayList<Entities>();
-                //ArrayList<String> ids = getIntent().getStringArrayListExtra("pass");
-                ArrayList<String> ids = (ArrayList<String>) getIntent().getExtras().get("passId");
-
-                ArrayList<Float> scores = (ArrayList<Float>) getIntent().getExtras().get("passScore");
-
-                DataSourceServices service = new DataSourceServices();
-                for (String currId : ids) {
-                    Entities currEntity = service.getEntityById(currId, this);
-                    list.add(currEntity);
-                }
-                adapter.setDataList(dataSourceServices.getPeopleFromEntities(list), scores);
-                adapter.notifyDataSetChanged();
-                onDismiss();
-            }
-        }
 
 
     }
