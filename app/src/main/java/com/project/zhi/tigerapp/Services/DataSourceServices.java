@@ -9,9 +9,13 @@ import com.project.zhi.tigerapp.Entities.Attributes;
 import com.project.zhi.tigerapp.Entities.Data;
 import com.project.zhi.tigerapp.Entities.Entities;
 import com.project.zhi.tigerapp.Entities.Person;
+import com.project.zhi.tigerapp.FaceUtils.Application;
 import com.project.zhi.tigerapp.R;
 import com.project.zhi.tigerapp.Utils.Utils;
+import com.project.zhi.tigerapp.complexmenu.MenuModel;
 
+import org.androidannotations.annotations.App;
+import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.EBean;
 import org.androidannotations.annotations.sharedpreferences.Pref;
 import org.androidannotations.annotations.sharedpreferences.SharedPref;
@@ -27,6 +31,7 @@ import java.io.OutputStream;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
@@ -41,6 +46,9 @@ public class DataSourceServices implements IDataSourceServices {
 
     @Pref
     UserPrefs_ userPrefs;
+
+    @Bean
+    MenuService menuService;
 
     public boolean isValidDataSource(String filePath){
         if(filePath == null || filePath.isEmpty()){
@@ -200,6 +208,8 @@ public class DataSourceServices implements IDataSourceServices {
     }
 
     public ArrayList<Person> getPeopleFromEntities(ArrayList<Entities> entities){
+        Timer timer = new Timer();
+        long startTime = System.nanoTime();
         ArrayList<Person> people = new ArrayList<Person>();
         if(entities == null || entities.size() == 0) return people;
         for (Entities entity: entities
@@ -208,7 +218,31 @@ public class DataSourceServices implements IDataSourceServices {
             person.setEntity(entity);
             people.add(person);
         }
+        long endTime = System.nanoTime();
+        long duration = (endTime - startTime)/1000000 ;
+        System.out.println("PEOPLE TO ENTITIES TOOK " + duration + " MILLISECONDS");
         return people;
+    }
+    public void dataSourceChange(Context context){
+        Data data = this.getPeopleSource(context);
+        if(data == null) {
+            return;
+        }
+        List<Entities> entities = data.getEntitiesList();
+        ArrayList<Attributes> keys = getUniqueKeyAttributes(data);
+        if(menuService == null){
+            menuService = new MenuService();
+        }
+        ArrayList<ArrayList<MenuModel>> allMenus = menuService.getAllMenus(keys);
+        if(userPrefs != null) {
+            userPrefs.allMenu().put(Utils.gson.toJson(allMenus));
+        }
+        else{
+            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+            SharedPreferences.Editor editor = prefs.edit();
+            editor.putString("allMenu", (Utils.gson.toJson(allMenus)));
+            editor.commit();
+        }
     }
 }
 

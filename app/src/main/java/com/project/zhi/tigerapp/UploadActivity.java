@@ -269,6 +269,7 @@ public class UploadActivity extends AppCompatActivity
                 tv_filePath.setText(folderLocation);
                 userPrefs.isFile().put(true);
                 userPrefs.file().put(folderLocation);
+                dataSourceServices.dataSourceChange(this);
                 dialog.dismiss();
                 onValid();
             }

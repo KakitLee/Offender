@@ -13,6 +13,7 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
 import com.project.zhi.tigerapp.Entities.Attachments;
 import com.project.zhi.tigerapp.Entities.Attributes;
 import com.project.zhi.tigerapp.Entities.Entities;
@@ -28,6 +29,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 
 public class Utils {
+    public static Gson gson = new Gson();
     public static String displayKeyValue(String key){
         return WordUtils.capitalize(key);
     }

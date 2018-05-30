@@ -8,9 +8,12 @@ import android.net.Uri;
 import android.os.Environment;
 import android.util.Log;
 
+import com.google.gson.Gson;
 import com.project.zhi.tigerapp.FaceUtils.FaceDB;
 
+import org.androidannotations.annotations.EApplication;
 
+@EApplication
 public class Application extends android.app.Application {
 	private final String TAG = this.getClass().toString();
 	public FaceDB mFaceDB;

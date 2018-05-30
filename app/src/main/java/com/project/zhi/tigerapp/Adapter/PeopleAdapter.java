@@ -12,6 +12,7 @@ import com.project.zhi.tigerapp.Entities.Data;
 import com.project.zhi.tigerapp.Entities.Entities;
 import com.project.zhi.tigerapp.Entities.Person;
 import com.project.zhi.tigerapp.R;
+import com.project.zhi.tigerapp.Services.DataFilteringService;
 import com.project.zhi.tigerapp.Services.DataSourceServices;
 import com.project.zhi.tigerapp.Services.UserPrefs_;
 import com.project.zhi.tigerapp.ViewGroup.PersonItemView;
@@ -38,6 +39,9 @@ public class PeopleAdapter extends BaseAdapter {
     @Bean
     DataSourceServices dataSourceServices;
 
+    @Bean
+    DataFilteringService dataFilteringService;
+
     private ArrayList<Entities> entities;
     private ArrayList<Float> scores;
     private ArrayList<Person> people;
@@ -56,7 +60,7 @@ public class PeopleAdapter extends BaseAdapter {
         if(entities == null){
             return;
         }else {
-            people = dataSourceServices.getPeopleFromEntities(entities);
+            people = dataFilteringService.mergeAll(context);
             if (entities == null) {
                 entities = new ArrayList<Entities>();
             }
@@ -67,8 +71,8 @@ public class PeopleAdapter extends BaseAdapter {
                     .getDefaultDisplay().getHeight();
         }
     }
-    public void setDataList(ArrayList<Entities> list, ArrayList<Float> scoreList){
-        entities = list;
+    public void setDataList(ArrayList<Person> list, ArrayList<Float> scoreList){
+        people = list;
         if(scoreList!=null){
             scores = scoreList;
         }
@@ -77,12 +81,12 @@ public class PeopleAdapter extends BaseAdapter {
 
     @Override
     public int getCount() {
-        return entities.size();
+        return people.size();
     }
 
     @Override
-    public Entities getItem(int position) {
-        return entities.get(position);
+    public Person getItem(int position) {
+        return people.get(position);
     }
 
     @Override

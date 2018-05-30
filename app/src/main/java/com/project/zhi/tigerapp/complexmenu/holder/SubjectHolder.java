@@ -25,15 +25,16 @@ import com.project.zhi.tigerapp.complexmenu.MenuModel;
 
 import org.florescu.android.rangeseekbar.RangeSeekBar;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * 科目
  * Created by vonchenchen on 2016/4/5 0005.
  */
-public class SubjectHolder extends BaseWidgetHolder<List<List<MenuModel>>> {
+public class SubjectHolder extends BaseWidgetHolder<ArrayList<ArrayList<MenuModel>>> {
 
-    private List<List<MenuModel>> mDataList;
+    private ArrayList<ArrayList<MenuModel>> mDataList;
 
     private ListView mLeftListView;
     private ListView mRightListView;
@@ -109,12 +110,12 @@ public class SubjectHolder extends BaseWidgetHolder<List<List<MenuModel>>> {
 
                 if(mOnRightListViewItemSelectedListener != null){
 
-                    List<MenuModel> dataList = mDataList.get(mLeftSelectedIndex+1);
+                    ArrayList<MenuModel> dataList = mDataList.get(mLeftSelectedIndex+1);
                     String text = dataList.get(mRightSelectedIndex).getAttributeDisplayText();
 
                     mOnRightListViewItemSelectedListener.OnRightListViewItemSelected(mLeftSelectedIndex, mRightSelectedIndex, text);
                 }
-                List<MenuModel> dataList2 = mDataList.get(mLeftSelectedIndex+1);
+                ArrayList<MenuModel> dataList2 = mDataList.get(mLeftSelectedIndex+1);
                 MenuModel menuModel =  dataList2.get(mRightSelectedIndex);
                 dialog(textView, menuModel,imageView);
             }
@@ -221,11 +222,11 @@ public class SubjectHolder extends BaseWidgetHolder<List<List<MenuModel>>> {
     }
 
 
-    public void refreshView(List<List<MenuModel>> data) {
+    public void refreshView(ArrayList<ArrayList<MenuModel>> data) {
 
     }
 
-    public void refreshData(List<List<MenuModel>> data, int leftSelectedIndex, int rightSelectedIndex){
+    public void refreshData(ArrayList<ArrayList<MenuModel>> data, int leftSelectedIndex, int rightSelectedIndex){
 
         this.mDataList = data;
 
@@ -240,13 +241,14 @@ public class SubjectHolder extends BaseWidgetHolder<List<List<MenuModel>>> {
 
         mLeftListView.setAdapter(mLeftAdapter);
         mRightListView.setAdapter(mRightAdapter);
+
     }
 
     private class LeftAdapter extends BaseAdapter{
 
-        private List<MenuModel> mLeftDataList;
+        private ArrayList<MenuModel> mLeftDataList;
 
-        public LeftAdapter(List<MenuModel> list, int leftIndex){
+        public LeftAdapter(ArrayList<MenuModel> list, int leftIndex){
             this.mLeftDataList = list;
             mLeftSelectedIndex = leftIndex;
         }
@@ -301,14 +303,14 @@ public class SubjectHolder extends BaseWidgetHolder<List<List<MenuModel>>> {
 
     private class RightAdapter extends BaseAdapter{
 
-        private List<MenuModel> mRightDataList;
+        private ArrayList<MenuModel> mRightDataList;
 
-        public RightAdapter(List<MenuModel> list, int rightSelectedIndex){
+        public RightAdapter(ArrayList<MenuModel> list, int rightSelectedIndex){
             this.mRightDataList = list;
             mRightSelectedIndex = rightSelectedIndex;
         }
 
-        public void setDataList(List<MenuModel> list, int rightSelectedIndex){
+        public void setDataList(ArrayList<MenuModel> list, int rightSelectedIndex){
             this.mRightDataList = list;
             mRightSelectedIndex = rightSelectedIndex;
         }

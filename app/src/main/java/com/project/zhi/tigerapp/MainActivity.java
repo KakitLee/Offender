@@ -18,9 +18,11 @@ import android.widget.GridView;
 import com.google.gson.Gson;
 import com.project.zhi.tigerapp.Adapter.PeopleAdapter;
 import com.project.zhi.tigerapp.Entities.Entities;
+import com.project.zhi.tigerapp.Entities.Person;
 import com.project.zhi.tigerapp.Services.ActivityService;
 import com.project.zhi.tigerapp.Services.DataFilteringService;
 import com.project.zhi.tigerapp.Services.DataSourceServices;
+import com.project.zhi.tigerapp.Services.MenuService;
 import com.project.zhi.tigerapp.Services.NavigationService;
 import com.project.zhi.tigerapp.Services.UserPrefs_;
 import com.project.zhi.tigerapp.Utils.Utils;
@@ -65,6 +67,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     NavigationService navigationService;
     @Bean
     ActivityService activityService;
+    @Bean
+    MenuService menuService;
 
     android.app.AlertDialog dialog;
 
@@ -78,6 +82,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @AfterViews
     void bindAdapter() {
         boolean isValid =  checkValidActivity();
+        boolean isMenuValid = activityService.validInitMenu(this);
+        if(isValid && !isMenuValid){
+            dataSourceServices.dataSourceChange(this);
+        }
         setSupportActionBar(Toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(false);
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -99,11 +107,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         selectMenuView.setOnFilteringBtnListener(new SelectMenuView.OnFilteringBtnListener() {
             @Override
             public void OnFiltering(ArrayList<MenuModel> nameMenus, ArrayList<MenuModel> mainDemoMenu, ArrayList<MenuModel> otherDemoMenu) {
-                onLoading();
-                var newList = dataFilteringService.update(dataSourceServices.getPeopleSource(context).getEntitiesList(), nameMenus, mainDemoMenu, otherDemoMenu);
-                adapter.setDataList(newList, null);
-                adapter.notifyDataSetChanged();
-                onDismiss();
+                onFiltering(nameMenus,mainDemoMenu,otherDemoMenu);
             }
         });
 
@@ -111,7 +115,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             @Override
             public void OnSearching(String query) {
                 onLoading();
-                var newList = dataFilteringService.search(dataSourceServices.getPeopleSource(context).getEntitiesList(), query);
+                var newList = dataSourceServices.getPeopleFromEntities(dataFilteringService.search(dataSourceServices.getPeopleSource(context).getEntitiesList(), query));
                 adapter.setDataList(newList, null);
                 adapter.notifyDataSetChanged();
                 onDismiss();
@@ -120,7 +124,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         if (getIntent().getStringExtra("voice") != null && !getIntent().getStringExtra("voice").isEmpty()) {
             onLoading();
-            adapter.setDataList(dataSourceServices.getEntityById(this, getIntent().getStringExtra("voice")), null);
+            adapter.setDataList(dataSourceServices.getPeopleFromEntities(dataSourceServices.getEntityById(this, getIntent().getStringExtra("voice"))), null);
             adapter.notifyDataSetChanged();
             onDismiss();
         }
@@ -141,7 +145,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     Entities currEntity = service.getEntityById(currId, this);
                     list.add(currEntity);
                 }
-                adapter.setDataList(list, scores);
+                adapter.setDataList(dataSourceServices.getPeopleFromEntities(list), scores);
                 adapter.notifyDataSetChanged();
                 onDismiss();
             }
@@ -197,16 +201,28 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     void onDismiss(){
         dialog.dismiss();
     }
+    @UiThread
+    void onAdapterDataChange(){
+        adapter.notifyDataSetChanged();
+    }
 
     @ItemClick(R.id.gridview)
-    void gridViewItemClicked(Entities entity) {
+    void gridViewItemClicked(Person person) {
         Gson gson = new Gson();
-        String objStr = gson.toJson(entity);
+        String objStr = gson.toJson(person.getEntity());
         Intent intent = new Intent(this, ProfileActivity_.class);
         intent.putExtra("Profile", objStr);
         startActivity(intent);
     }
 
+    @Background
+    void onFiltering(ArrayList<MenuModel> nameMenus, ArrayList<MenuModel> mainDemoMenu, ArrayList<MenuModel> otherDemoMenu){
+        onLoading();
+        var newList = dataSourceServices.getPeopleFromEntities(dataFilteringService.update(dataSourceServices.getPeopleSource(context).getEntitiesList(), nameMenus, mainDemoMenu, otherDemoMenu));
+        adapter.setDataList(newList, null);
+        onAdapterDataChange();
+        onDismiss();
+    }
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {

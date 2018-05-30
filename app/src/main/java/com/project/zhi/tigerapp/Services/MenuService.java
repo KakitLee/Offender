@@ -1,11 +1,17 @@
 package com.project.zhi.tigerapp.Services;
 
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
+
 import com.project.zhi.tigerapp.Entities.Attributes;
+import com.project.zhi.tigerapp.Entities.Data;
 import com.project.zhi.tigerapp.Enums.AttributeType;
 import com.project.zhi.tigerapp.Utils.Utils;
 import com.project.zhi.tigerapp.complexmenu.MenuModel;
 import com.project.zhi.tigerapp.complexmenu.MenuTuple;
 
+import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.EBean;
 
 import java.util.ArrayList;
@@ -17,6 +23,7 @@ import lombok.experimental.var;
 
 @EBean
 public class MenuService {
+
     public ArrayList<MenuModel> getMainMenus (){
         ArrayList<MenuModel> newListModel = new ArrayList<>();
         MenuModel name= new MenuModel();
@@ -59,6 +66,39 @@ public class MenuService {
         allMenuModels.add(otherMenu);
         return allMenuModels;
     }
+
+    public ArrayList<ArrayList<MenuModel>> getAllMenusFromPreference(Context context) {
+
+        return null;
+    }
+
+    public ArrayList<MenuModel> getNameMenu(Context context){
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        String gsonNameMenu = prefs.getString("nameMenu",null);
+        ArrayList<MenuModel> nameMenu = new ArrayList<MenuModel>();
+        if(gsonNameMenu != null && !gsonNameMenu.isEmpty()) {
+            return Utils.gson.fromJson(gsonNameMenu, ArrayList.class);
+        }
+        return nameMenu;
+    }
+    public ArrayList<MenuModel> getMainDemoMenu(Context context){
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        String gsonMainDemoMenu = prefs.getString("mainDemoMenu",null);
+        ArrayList<MenuModel> mainDemoMenu = new ArrayList<MenuModel>();
+        if(gsonMainDemoMenu != null && !gsonMainDemoMenu.isEmpty()) {
+            return Utils.gson.fromJson(gsonMainDemoMenu, ArrayList.class);
+        }
+        return mainDemoMenu;
+    }
+
+
+    public ArrayList<MenuModel> getOtherDemoMenu(Context context){
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        String otherDemoMenu = prefs.getString("otherDemoMenu",null);
+        ArrayList<MenuModel> nameMenu = Utils.gson.fromJson(otherDemoMenu, ArrayList.class);
+        return nameMenu;
+    }
+
 
     public ArrayList<MenuModel> getNamesMenus (ArrayList<String> keys){
         ArrayList<MenuModel> newListModel = new ArrayList<>();
