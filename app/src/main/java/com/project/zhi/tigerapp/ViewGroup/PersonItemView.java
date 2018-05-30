@@ -42,6 +42,19 @@ public class PersonItemView extends LinearLayout {
     ImageView imgPersonAvatar;
     @ViewById(R.id.score)
     TextView scoreText;
+    @ViewById(R.id.tvFacialScore)
+    TextView tvFacialScore;
+    @ViewById(R.id.tvFacialScoreTitle)
+    TextView tvFacialScoreTitle;
+    @ViewById(R.id.tvVoiceScore)
+    TextView tvVoiceScore;
+    @ViewById(R.id.tvVoiceScoreTitle)
+    TextView tvVoiceScoreTitle;
+    @ViewById(R.id.tvOverallScore)
+    TextView tvOverallScore;
+    @ViewById(R.id.tvOverallScoreTitle)
+    TextView tvOverallScoreTitle;
+
     @Bean
     DataFilteringService dataFilteringService;
     @Pref
@@ -68,6 +81,7 @@ public class PersonItemView extends LinearLayout {
         }
 
         loadImage(entities);
+        showScore(person);
     }
 
     void loadImage(Entities entities){
@@ -79,6 +93,38 @@ public class PersonItemView extends LinearLayout {
             image = Utils.getImageExternal(entities,userPrefs.folder().get());
         }
         setImage(image, entities);
+    }
+    @UiThread
+    void showScore(Person person){
+        if(person.getFacialSimilarity() != null){
+            tvFacialScoreTitle.setVisibility(VISIBLE);
+            tvFacialScore.setText(person.getFacialSimilarity().toString());
+            tvFacialScore.setVisibility(VISIBLE);
+
+        }
+        else{
+            tvFacialScoreTitle.setVisibility(GONE);
+            tvFacialScore.setVisibility(GONE);
+        }
+        if(person.getVoiceSimilarity() != null){
+            tvVoiceScore.setText(person.getVoiceSimilarity().toString());
+            tvVoiceScoreTitle.setVisibility(VISIBLE);
+            tvVoiceScore.setVisibility(VISIBLE);
+
+        }
+        else{
+            tvVoiceScore.setVisibility(GONE);
+            tvVoiceScoreTitle.setVisibility(GONE);
+        }
+        if(person.getOverallSimilarity() != null){
+            tvOverallScore.setText(person.getOverallSimilarity().toString());
+            tvOverallScoreTitle.setVisibility(VISIBLE);
+            tvOverallScore.setVisibility(VISIBLE);
+        }
+        else{
+            tvOverallScoreTitle.setVisibility(GONE);
+            tvOverallScore.setVisibility(GONE);
+        }
     }
 
     void setImage( Bitmap image, Entities entities){
