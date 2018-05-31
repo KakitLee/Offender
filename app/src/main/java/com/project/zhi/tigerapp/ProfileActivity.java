@@ -14,6 +14,7 @@ import com.google.gson.Gson;
 import com.project.zhi.tigerapp.Adapter.ProfileAdapter;
 import com.project.zhi.tigerapp.Entities.Attributes;
 import com.project.zhi.tigerapp.Entities.Entities;
+import com.project.zhi.tigerapp.Entities.Name;
 import com.project.zhi.tigerapp.Services.DataFilteringService;
 import com.project.zhi.tigerapp.Services.DataSortService;
 import com.project.zhi.tigerapp.Services.DataSourceServices;
@@ -84,7 +85,8 @@ public class ProfileActivity extends AppCompatActivity {
 //            Toolbar.setTitleTextColor(Color.WHITE);
         }
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        setTitle(dataFilteringService.getPersonName(entity));
+        Name profileName = dataFilteringService.getPersonName(entity);
+        setTitle(profileName.getFirstName() + " " + profileName.getLastName());
     }
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

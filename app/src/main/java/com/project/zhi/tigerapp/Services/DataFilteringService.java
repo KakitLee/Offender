@@ -6,6 +6,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.project.zhi.tigerapp.Entities.Attributes;
 import com.project.zhi.tigerapp.Entities.Entities;
+import com.project.zhi.tigerapp.Entities.Name;
 import com.project.zhi.tigerapp.Entities.Person;
 import com.project.zhi.tigerapp.Enums.AttributeType;
 import com.project.zhi.tigerapp.Utils.Utils;
@@ -31,7 +32,7 @@ public class DataFilteringService {
     UserPrefs_ userPrefs;
     @Bean
     DataSourceServices dataSourceServices;
-    public String getPersonName(Entities entities){
+    public Name getPersonName(Entities entities){
         String firstName = "";
         String middleName = "";
         String lastName = "";
@@ -46,7 +47,11 @@ public class DataFilteringService {
                 lastName = attribute.getStringValue();
             }
         }
-        return firstName + (middleName.isEmpty() ? "" : " " + middleName) + (lastName.isEmpty() ? "" : " " + lastName);
+        Name newName = new Name();
+        newName.setFirstName(firstName);
+        newName.setMiddleName(middleName);
+        newName.setLastName(lastName);
+        return newName;
     }
 
     public ArrayList<Entities> search(ArrayList<Entities> entities, String query){
@@ -201,7 +206,7 @@ public class DataFilteringService {
         ArrayList<MenuModel> mainDempMenu = new ArrayList<MenuModel>();
         ArrayList<MenuModel> otherDemoMenu = new ArrayList<MenuModel>();
 
-        if(allMenus != null && allMenus.size() > 0) {
+        if(allMenus != null && allMenus.size() > 3) {
             nameMenu = allMenus.get(1);
             mainDempMenu = allMenus.get(2);
             otherDemoMenu = allMenus.get(3);

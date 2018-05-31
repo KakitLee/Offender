@@ -127,7 +127,7 @@ public class Utils {
         return alertDialogBuilder;
     }
 
-    public static AlertDialog setProgressDialog(Context context){
+    public static AlertDialog   setProgressDialog(Context context){
 
         int llPadding = 30;
         LinearLayout ll = new LinearLayout(context);
@@ -158,7 +158,7 @@ public class Utils {
         builder.setView(ll);
 
         AlertDialog dialog = builder.create();
-        dialog.show();
+        //dialog.show();
         Window window = dialog.getWindow();
         if(window != null){
             WindowManager.LayoutParams layoutParams = new WindowManager.LayoutParams();
