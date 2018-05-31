@@ -9,23 +9,19 @@ tools:context=".MainActivity">
     android:id="@+id/toolbar"
     layout="@layout/toolbar" />
 
-    <ImageView
-        android:id="@+id/imgProfilePic"
-        android:layout_width="137dp"
-        android:layout_height="135dp"
-        android:layout_below="@+id/toolbar"
-        android:layout_centerHorizontal="true"
-        android:adjustViewBounds="true"
-        android:scaleType="fitXY"
-        android:layout_marginTop="8dp"
-        android:src="@drawable/place_holder" />
+    <com.daimajia.slider.library.SliderLayout
+        android:layout_marginTop="5dp"
+        android:id="@+id/slider"
+        android:layout_below="@id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="200dp" />
 
     <include
         android:id="@+id/profile_divider"
         layout="@layout/profile_divider"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:layout_below="@id/imgProfilePic"
+        android:layout_below="@id/slider"
         android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp"/>
 
@@ -35,4 +31,5 @@ tools:context=".MainActivity">
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@android:color/white"></ListView>
+
 </RelativeLayout>

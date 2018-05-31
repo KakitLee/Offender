@@ -82,4 +82,8 @@ dependencies {
     implementation 'com.melnykov:floatingactionbutton:1.1.0'
     implementation 'com.jpardogo.materialtabstrip:library:1.0.6'
     implementation files('libs/TarsosDSP-Android-latest.jar')
+    implementation 'com.squareup.picasso:picasso:2.3.2'
+    implementation 'com.nineoldandroids:library:2.4.0'
+    implementation 'com.daimajia.slider:library:1.1.5@aar'
+    implementation 'com.github.chrisbanes:PhotoView:2.0.0'
 }

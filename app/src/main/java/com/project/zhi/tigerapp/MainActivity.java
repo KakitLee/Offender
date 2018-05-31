@@ -3,7 +3,6 @@ package com.project.zhi.tigerapp;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -11,17 +10,12 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
-import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Adapter;
 import android.widget.Button;
 import android.widget.GridView;
 
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import com.project.zhi.tigerapp.Adapter.PeopleAdapter;
-import com.project.zhi.tigerapp.Entities.Entities;
 import com.project.zhi.tigerapp.Entities.Person;
 import com.project.zhi.tigerapp.Services.ActivityService;
 import com.project.zhi.tigerapp.Services.DataFilteringService;
@@ -40,7 +34,6 @@ import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.ItemClick;
-import org.androidannotations.annotations.OptionsMenuItem;
 import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
 import org.androidannotations.annotations.sharedpreferences.Pref;
@@ -86,12 +79,25 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @AfterViews
     void bindAdapter() {
-        boolean isValid =  checkValidActivity();
+        onLoading();
+        boolean isValid = onActivityValidation();
+        onSetView();
+        if (isValid) {
+            onInitGridView();
+        }
+        onSetMenu();
+    }
+
+    private boolean onActivityValidation() {
+        boolean isValid = checkValidActivity();
         boolean isMenuValid = activityService.validInitMenu(this);
-        if(isValid && !isMenuValid){
+        if (isValid && !isMenuValid) {
             dataSourceServices.dataSourceChange(this);
         }
-        onLoading();
+        return isValid;
+    }
+
+    private void onSetView() {
         setSupportActionBar(Toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(false);
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -105,13 +111,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         }
+    }
 
-        if(isValid) {
-            ArrayList<Person> people = new ArrayList<Person>();
-            setGridview(people);
-            updateAdapter();
-        }
+    void onInitGridView(){
+        ArrayList<Person> people = new ArrayList<Person>();
+        setGridview(people);
+        updateAdapter();
+    }
 
+    void onSetMenu(){
         selectMenuView.setOnFilteringBtnListener(new SelectMenuView.OnFilteringBtnListener() {
             @Override
             public void OnFiltering(ArrayList<MenuModel> nameMenus, ArrayList<MenuModel> mainDemoMenu, ArrayList<MenuModel> otherDemoMenu) {
@@ -124,22 +132,26 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             @Override
             public void OnSearching(String query) {
                 onLoading();
-                var newList = dataSourceServices.getPeopleFromEntities(dataFilteringService.search(dataSourceServices.getPeopleSource(context).getEntitiesList(), query));
-                adapter.setDataList(newList, null);
-                adapter.notifyDataSetChanged();
-                onDismiss();
+                onSearching(query);
             }
         });
     }
 
+    @Background
+    void onSearching(String query){
+        var newList = dataSourceServices.getPeopleFromEntities(dataFilteringService.search(dataSourceServices.getPeopleSource(context).getEntitiesList(), query));
+        setAdapterUi(newList);
+    }
 
     boolean checkValidActivity(){
         if(!activityService.validActivity(this)){
             if(userPrefs.isUrl().get()){
+                onDismiss();
                 this.onInvalidInternetActivity();
                 return false;
             }
             else{
+                onDismiss();
                 this.onInvalidLocalActivity();
                 return false;
             }
@@ -158,7 +170,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         Utils.setAlertDialog("Initialize", "Cannot found Internet source. Please synchronize source from server.", this).setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                ////TODO SYnc activity
                 Intent intent = new Intent(MainActivity.this, SettingsActivity_.class);
                 startActivity(intent);
                 dialog.dismiss();
@@ -173,7 +184,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             public void onClick(DialogInterface dialog, int which) {
                 Intent intent = new Intent(MainActivity.this, UploadActivity_.class);
                 startActivity(intent);
-                ////TODO UPload activity
                 dialog.dismiss();
             }
         }).show();
@@ -218,6 +228,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @UiThread
     void setAdapterUi(ArrayList<Person> people){
         adapter.updatePeople(people);
+        onDismiss();
     }
     @Background
     void updateAdapter(){

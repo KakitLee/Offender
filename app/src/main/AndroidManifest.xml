@@ -8,7 +8,7 @@
     <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS" />
     <!--<uses-permission android:name="android.permission.WRITE_MEDIA_STORAGE" />-->
     <uses-permission android:name="android.permission.CAMERA"/>
-
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:name="com.project.zhi.tigerapp.FaceUtils.Application_"
@@ -31,13 +31,6 @@
             android:name=".ProfileActivity_"
             android:label="@string/title_activity_profile"
             android:theme="@style/AppTheme">
-
-            <!-- <intent-filter> -->
-            <!-- <action android:name="android.intent.action.MAIN" /> -->
-
-
-            <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
-            <!-- </intent-filter> -->
         </activity>
         <activity android:name="com.qingyangli.offender.activities.MainActivityVoice"
             android:label="@string/app_name" >
@@ -56,18 +49,7 @@
             android:name=".UploadActivity_"
             android:label="@string/title_activity_upload"
             android:theme="@style/AppTheme">
-
-            <!-- <intent-filter> -->
-            <!-- <action android:name="android.intent.action.MAIN" /> -->
-
-
-            <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
-            <!-- </intent-filter> -->
         </activity>
-        <activity
-            android:name=".SynActivity_"
-            android:label="@string/title_activity_upload"
-            android:theme="@style/AppTheme" />
         <activity
             android:name=".SoundActivity_"
             android:label="@string/SoundActivity"
@@ -85,11 +67,6 @@
             android:name=".LoginActivity_"
             android:label="@string/LoginActivity"
             android:theme="@style/AppTheme">
-            <!--<intent-filter>-->
-                <!--<action android:name="android.intent.action.MAIN" />-->
-
-                <!--<category android:name="android.intent.category.LAUNCHER" />-->
-            <!--</intent-filter>-->
         </activity>
     </application>
 

@@ -62,6 +62,8 @@ public class DataFilteringService {
         ArrayList<Entities> filteredEntities = new ArrayList<>();
         for (String oneQuery: queries
              ) {
+            String cleanQuery = oneQuery.trim();
+
             for (Entities entity: entities){
                 if(isSatisySingleQuery(oneQuery.trim(),entity.getList())){
                     filteredEntities.add(entity);
@@ -116,29 +118,31 @@ public class DataFilteringService {
         return true;
     }
 
-    public boolean isSatisySingleQuery(String query, ArrayList<Attributes> attributes){
-        for(var i =0; i< attributes.size(); i++){
-            var attribute= attributes.get(i);
+    public boolean isSatisySingleQuery(String query, ArrayList<Attributes> attributes) {
+        for (var i = 0; i < attributes.size(); i++) {
+            var attribute = attributes.get(i);
             var key = attribute.getAttributeKey();
             var isFuzzy = true;
             var value = "";
-            if(attribute.getType().equalsIgnoreCase("TEXT")){
+            if (attribute.getType().equalsIgnoreCase("TEXT")) {
                 value = attribute.getStringValue();
-            }
-            else if(attribute.getType().equalsIgnoreCase(AttributeType.LIST.name())){
+            } else if (attribute.getType().equalsIgnoreCase(AttributeType.LIST.name())) {
                 value = attribute.getListKey();
                 isFuzzy = false;
-            }
-            else if (attribute.getDoubleValue()!=null){
+            } else if (attribute.getDoubleValue() != null) {
                 value = attribute.getDoubleValue().toString();
             }
-            if(isFuzzy) {
-                if (value.toLowerCase().contains(query.toLowerCase())) {
+            if (isFuzzy) {
+                if ((wildCardMatch(value,query))){
+                    return true;
+                } else if(value.toLowerCase().contains(query.toLowerCase())) {
                     return true;
                 }
-            }
-            else{
-                if (value.toLowerCase().equalsIgnoreCase(query.toLowerCase())) {
+            } else {
+                if (wildCardMatch(value,query)){
+                    return true;
+                }
+                else if (value.toLowerCase().equalsIgnoreCase(query.toLowerCase())) {
                     return true;
                 }
             }
@@ -146,6 +150,15 @@ public class DataFilteringService {
         return false;
     }
 
+    boolean wildCardMatch(String value, String query){
+        if (query.contains("*")){
+            String tempQuery = query.replaceAll("\\*", "\\\\w*");
+            if(value.matches(tempQuery)){
+                return true;
+            }
+        }
+        return false;
+    }
 
     public boolean isSatisySignleCriteria(MenuModel criteria, ArrayList<Attributes> attributes){
         for(var i =0; i< attributes.size(); i++){
