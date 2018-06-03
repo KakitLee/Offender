@@ -603,8 +603,9 @@ public class RecordFragment extends Fragment {
     }
 
     private double audioFeatureClassifyNew(ArrayList<float[]> mfccFeatureInput, String trainedFileName) throws IOException {
-        String traindModelStoragePath = Environment.getExternalStorageDirectory()
-                + File.separator + trainedModelPath + File.separator + trainedFileName;
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getContext());
+        String trainedModelPath=sharedPref.getString("voiceFolder","");
+        String traindModelStoragePath = trainedModelPath + File.separator + trainedFileName;
         GaussianMixture gmmModel = GaussianMixture.readGMM(traindModelStoragePath);
         //mfcc feature for collected audio sample
         PointList mfccFeature = new PointList(FeatureLength);

@@ -2,6 +2,8 @@ package com.project.zhi.tigerapp;
 
 import android.app.Dialog;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -94,19 +96,6 @@ public class ProfileActivity extends AppCompatActivity implements BaseSliderView
         setTitle(profileName.getFirstName() + " " + profileName.getLastName());
 
         String imagePaths = "";
-        if(userPrefs.isUrl().get()) {
-            imageView.setImageBitmap(Utils.getImageExternal(entity,userPrefs.urlImagePath().get()));
-            imageView.setImageBitmap(image);
-            image.recycle();
-        }
-        else if(userPrefs.isFolder().get() & userPrefs.folder().get() != null && !userPrefs.folder().get().isEmpty()){
-            Bitmap image = Utils.getImageExternal(entity,userPrefs.urlImagePath().get());
-            imageView.setImageBitmap(image);
-            image.recycle();
-        }
-        else {
-            imageView.setImageResource(Utils.getImageId(entity, this));
-        }
 
         ArrayList<File> files = Utils.getAllAttachmentsPath(entity,imagePaths);
         for(File file : files){
@@ -123,6 +112,7 @@ public class ProfileActivity extends AppCompatActivity implements BaseSliderView
             });
             mDemoSlider.addSlider(textSliderView);
         }
+
         mDemoSlider.setPresetTransformer(SliderLayout.Transformer.Accordion);
         mDemoSlider.setPresetIndicator(SliderLayout.PresetIndicators.Center_Bottom);
         mDemoSlider.setCustomAnimation(new DescriptionAnimation());
