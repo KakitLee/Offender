@@ -1,6 +1,7 @@
 package com.project.zhi.tigerapp;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -64,10 +65,14 @@ public class ProfileActivity extends AppCompatActivity {
         ArrayList<Attributes> attributes = entity.getList();
         attributes = dataSortService.sortAttributesGeneral(attributes);
         if(userPrefs.isUrl().get()) {
-            imageView.setImageBitmap(Utils.getImageExternal(entity,userPrefs.urlImagePath().get()));
+            Bitmap image = Utils.getImageExternal(entity,userPrefs.urlImagePath().get());
+            imageView.setImageBitmap(image);
+            image.recycle();
         }
         else if(userPrefs.isFolder().get() & userPrefs.folder().get() != null && !userPrefs.folder().get().isEmpty()){
+            Bitmap image = Utils.getImageExternal(entity, userPrefs.folder().get());
             imageView.setImageBitmap(Utils.getImageExternal(entity, userPrefs.folder().get()));
+            image.recycle();
         }
         else {
             imageView.setImageResource(Utils.getImageId(entity, this));

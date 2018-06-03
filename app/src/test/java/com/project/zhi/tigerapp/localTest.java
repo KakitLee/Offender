@@ -284,7 +284,8 @@ public class localTest {
 //        assertEquals(faces.get(0).getImage(),"a1a");
 //        assertEquals(faces.get(1).getImage(),"aa");
 //        assertEquals(faces.get(2).getImage(),"ddd");
-        Collections.sort(faces,Utils.getComparator());
+        //Collections.sort(faces,Utils.getComparator());
+
 
 
 

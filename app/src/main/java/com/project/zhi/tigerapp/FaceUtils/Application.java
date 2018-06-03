@@ -46,7 +46,8 @@ public class Application extends android.app.Application {
 			int orientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
 
 			BitmapFactory.Options op = new BitmapFactory.Options();
-			op.inSampleSize = 1;
+			//return 1/2 the width/height of the original, and 1/4 the number of pixels, save memory
+			op.inSampleSize = 2;
 			op.inJustDecodeBounds = false;
 			//op.inMutable = true;
 			res = BitmapFactory.decodeFile(path, op);
@@ -70,6 +71,7 @@ public class Application extends android.app.Application {
 			return temp;
 		} catch (Exception e) {
 			e.printStackTrace();
+			System.gc();
 		}
 		return null;
 	}

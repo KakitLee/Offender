@@ -3,9 +3,9 @@ package com.project.zhi.tigerapp;
 import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.ProgressDialog;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -14,26 +14,22 @@ import android.graphics.Matrix;
 import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Build;
-import android.os.Bundle;
 import android.os.Environment;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
-import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.arcsoft.facerecognition.AFR_FSDKError;
@@ -45,12 +41,10 @@ import com.arcsoft.facerecognition.AFR_FSDKFace;
 import com.arcsoft.facerecognition.AFR_FSDKMatching;
 import com.google.gson.Gson;
 import com.guo.android_extend.image.ImageConverter;
-import com.project.zhi.tigerapp.Entities.Data;
 import com.project.zhi.tigerapp.Entities.Entities;
 import com.project.zhi.tigerapp.Entities.Person;
 import com.project.zhi.tigerapp.FaceUtils.Application;
 import com.project.zhi.tigerapp.FaceUtils.FaceDB;
-import com.project.zhi.tigerapp.FaceUtils.MatchedImage;
 import com.project.zhi.tigerapp.Services.DataSourceServices;
 
 import org.androidannotations.annotations.AfterViews;
@@ -61,7 +55,6 @@ import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.sharedpreferences.Pref;
 
 import com.project.zhi.tigerapp.Services.NavigationService;
-import com.project.zhi.tigerapp.Services.UserPrefs;
 import com.project.zhi.tigerapp.Services.UserPrefs_;
 import com.project.zhi.tigerapp.Utils.Utils;
 
@@ -69,7 +62,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -85,6 +77,7 @@ public class PhotoActivity extends AppCompatActivity implements NavigationView.O
     private static final int MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE = 11;
     private static final int MY_PERMISSIONS_REQUEST_CAMERA = 12;
     private static final int MY_PERMISSIONS_REQUEST_CODE = 123;
+    private final String TAG = this.getClass().toString();
     String path;
     private Uri mPath;
     AFR_FSDKEngine engine1;
@@ -151,11 +144,19 @@ public class PhotoActivity extends AppCompatActivity implements NavigationView.O
         Button b1 = this.findViewById(R.id.button1);
         b1.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-
-                onLoading();
-                faceRegister();
-
-
+                Utils.setAlertDialog("Register Face Data", "Are you sure you want to register new face data from image source? Only when source is changed, you need to perform this operation.", context).setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                        onLoading();
+                        faceRegister();
+                    }
+                }).setNegativeButton(android.R.string.no,new DialogInterface.OnClickListener(){
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                }).show();
             }
         });
 
@@ -175,9 +176,6 @@ public class PhotoActivity extends AppCompatActivity implements NavigationView.O
                 values.put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg");
                 mPath = getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
                 getImageByCamera.putExtra(MediaStore.EXTRA_OUTPUT, mPath);
-
-
-
                 startActivityForResult(getImageByCamera, REQUEST_CODE_IMAGE_CAMERA);
             }
         });
@@ -191,7 +189,7 @@ public class PhotoActivity extends AppCompatActivity implements NavigationView.O
         File file = new File(Environment.getExternalStoragePublicDirectory(
                 Environment.DIRECTORY_PICTURES), albumName);
         if (!file.mkdirs()) {
-            Log.e("Photo", "Directory not created");
+            Log.d(TAG, "Directory not created");
         }
         return file;
     }
@@ -205,10 +203,12 @@ public class PhotoActivity extends AppCompatActivity implements NavigationView.O
     @Background
     public void faceRegister(){
 
+        //get image source path
         path = dataSourceServices.getSourceFolder();
-        if(path.isEmpty() || path==null){
+        //if path does't exist or local xml file isn't selected
+        if(path.isEmpty() || path==null || (!userPrefs.isUrl().get() && !userPrefs.isFile().get())){
             onDismiss();
-            display(context,"No image source selected.");
+            display(context,"No image source selected. Please go to Upload page to select.");
             return;
         }
 
@@ -221,36 +221,70 @@ public class PhotoActivity extends AppCompatActivity implements NavigationView.O
 
        // path = userPrefs.urlImagePath().get();
 
+
         File[] files = new File(path).listFiles();
 
+        int faceNum = 0;
+        int count = 0;
+        ArrayList<String> noFaceFiles = new ArrayList<String>();
         if(files.length>0) {
             for (File file : files) {
                 String imageName = file.getName();
-
+                if(imageName.length()<4){
+                    continue;
+                }
                 //Check if the file is a image file
                 String end = imageName.substring(imageName.length() - 4);
-                if (end.compareToIgnoreCase(".jpg") != 0 && end.compareToIgnoreCase(".png") != 0) {
+                if (end.equalsIgnoreCase(".jpg") && end.equalsIgnoreCase(".png")) {
                     continue;
                 }
 
                 //match test data
                 //imageName = imageName.replace(".jpg", "");
 
-                Bitmap b1 = Application.decodeImage(file.getPath());
-                register(imageName,b1);
+                Entities entity = dataSourceServices.getEntityByImageName(imageName, this);
+                if(entity!=null){
+                    Bitmap b1 = Application.decodeImage(file.getPath());
+                    if(register(entity.getId(),b1)){
+                        faceNum++;
+                    }
+                    else{
+                        noFaceFiles.add(imageName);
+                    }
+
+                }
+
+
+                count ++;
             }
         }
 
         error1 = engine1.AFR_FSDK_UninitialEngine();
         onDismiss();
-        display(PhotoActivity.this, "Register Successfully.");
+        if(count>0){
+            //display(PhotoActivity.this, "Register Successfully. Scan " + count + " images, " + mRegist.size() + " entities' face information is added into database.");
+            displayAlert(count,noFaceFiles);
+        }
+        else{
+            display(PhotoActivity.this, "No face registered. Please check image source.");
+        }
+
 
 }
 
-
-    public static Bitmap getImageFromResult(Context context, int resultCode,
+    @UiThread
+    public void displayAlert(int count, ArrayList<String> noFaceFiles){
+        Utils.setAlertDialog("Register Successfully", "Scan " + count + " images, " + mRegist.size() +
+                " entities' face information is added into database. No face detected in " + TextUtils.join(",", noFaceFiles), context).setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+    }
+    public Bitmap getImageFromResult(Context context, int resultCode,
                                             Intent imageReturnedIntent) {
-        Log.d("photo", "getImageFromResult, resultCode: " + resultCode);
+        Log.d(TAG, "getImageFromResult, resultCode: " + resultCode);
         Bitmap bm = null;
         File imageFile = new File(context.getExternalCacheDir(), "tempImage");
         imageFile.getParentFile().mkdirs();
@@ -264,7 +298,7 @@ public class PhotoActivity extends AppCompatActivity implements NavigationView.O
             } else {
                 selectedImage = imageReturnedIntent.getData();
             }
-            Log.d("photo", "selectedImage: " + selectedImage);
+            Log.d(TAG, "selectedImage: " + selectedImage);
 
 
         }
@@ -335,10 +369,15 @@ public class PhotoActivity extends AppCompatActivity implements NavigationView.O
     @Background
     protected void faceRecognition(int requestCode, int resultCode ){
         Bitmap b2 = null;
-        AFR_FSDKFace face2 = new AFR_FSDKFace();
+        ArrayList<AFR_FSDKFace> face2 = new ArrayList<AFR_FSDKFace>();
         if (requestCode == REQUEST_CODE_IMAGE_CAMERA && resultCode == RESULT_OK) {
             String file = getPath(mPath);
             b2 = Application.decodeImage(file);
+            if(b2==null){
+                onDismiss();
+                display(context,"Photo is not saved correctly.");
+                return;
+            }
             face2 = convertToFace(b2);
             savePhoto(b2);
 
@@ -348,32 +387,46 @@ public class PhotoActivity extends AppCompatActivity implements NavigationView.O
             display(context,"No face detected. Please retake a photo.");
             return;
         }
+        if(face2.size()>1){
+            onDismiss();
+            display(context,"More than one face detected. Please make sure only one person is captured.");
+            return;
+        }
 
         engine1 = new AFR_FSDKEngine();
         error1 = engine1.AFR_FSDK_InitialEngine(FaceDB.appid, FaceDB.fr_key);
 
 
-        ArrayList<MatchedImage> scores = new ArrayList<MatchedImage>();
 
+        ArrayList<Person> people = new ArrayList<Person>();
 
-
+        // compare(Application.decodeImage(dataSourceServices.getSourceFolder()+"/img_2585.jpg"),Application.decodeImage(dataSourceServices.getSourceFolder()+"/IMG_2582.jpg"));
 
         for (FaceDB.FaceRegist fr : mRegist) {
-            String matchedName = fr.mName;
+            String id = fr.mId;
+            Entities entity = dataSourceServices.getEntityById(id, this);
+
+
             for (AFR_FSDKFace face : fr.mFaceList) {
-
-
+                compare(face,face);
+                Person person = new Person();
                 Float score = 0.0f;
-                score = compare(face, face2);
+                score = compare(face, face2.get(0));
                 if (score == -2) {
-                    Log.d("Photo", "No face detected in the taken photo");
+                    Log.d(TAG, "No face detected in the taken photo");
                 }
                 if (score == -1) {
-                    Log.d("Photo", "No face detected in the photo file");
+                    Log.d(TAG, "No face detected in the photo file");
                 }
                 if (score > 0.35) {
-                    Log.d("Photo result-------- ", String.valueOf(score));
-                    scores.add(new MatchedImage(score, matchedName));
+                    Log.d(TAG, String.valueOf(score));
+                    if(entity != null){
+                        person.setEntity(entity);
+                        person.setFacialSimilarity(new Double(String.valueOf(score)));
+                        person.setOverallSimilarity(new Double(String.valueOf(score*0.5)));
+                        people.add(person);
+                    }
+
 
                 }
 
@@ -383,35 +436,32 @@ public class PhotoActivity extends AppCompatActivity implements NavigationView.O
         error1 = engine1.AFR_FSDK_UninitialEngine();
 
 
-        Log.d("Photo 001",String.valueOf(scores.size()));
-        Data data1 = dataSourceServices.getPeopleSource(this);
+        Log.d(TAG ,String.valueOf(people.size()));
 
 
-        Collections.sort(scores,Utils.getMatchedImageComparator());
 
-        ArrayList<Person> people = new ArrayList<Person>();
+        Collections.sort(people,Utils.getPersonComparator());
+
         ArrayList<String> ids = new ArrayList<String>();
-        for (MatchedImage currImage : scores) {
-            String imageName = currImage.getImage();
-            Entities entity = dataSourceServices.getEntityByImageName(imageName, this, data1);
-            if (entity != null && !ids.contains(entity.getId())) {
-                ids.add(entity.getId());
-                Person person = new Person();
-                person.setEntity(entity);
-                person.setFacialSimilarity(new Double(currImage.getScore().toString()));
-                person.setOverallSimilarity(new Double(String.valueOf(currImage.getScore()*0.5)));
-                people.add(person);
-
+        ArrayList<Person> peopleResult = new ArrayList<Person>();
+        for (Person person : people) {
+            Entities entity = person.getEntity();
+            String id = entity.getId();
+            if (!ids.contains(id)) {
+                peopleResult.add(person);
+                ids.add(id);
 //                passIds.add(entity.getId());
 //                passScores.add(currImage.getScore());
 
 
             }
 
+
         }
+        Log.d(TAG ,String.valueOf(peopleResult.size()));
 
         Gson gson = new Gson();
-        String peopleObj = gson.toJson(people);
+        String peopleObj = gson.toJson(peopleResult);
         userPrefs.facialEntities().put(peopleObj);
 
         onDismiss();
@@ -461,13 +511,13 @@ public class PhotoActivity extends AppCompatActivity implements NavigationView.O
 
         AFR_FSDKMatching score = new AFR_FSDKMatching();
         error1 = engine1.AFR_FSDK_FacePairMatching(face1, face2, score);
-        Log.d("com.arcsoft", "AFR_FSDK_FacePairMatching=" + error1.getCode());
-        Log.d("com.arcsoft", "Score:" + score.getScore());
+        Log.d(TAG, "AFR_FSDK_FacePairMatching=" + error1.getCode());
+        Log.d(TAG, "Score:" + score.getScore());
 
         return score.getScore();
     }
 
-    public AFR_FSDKFace convertToFace(Bitmap mBitmap){
+    public ArrayList<AFR_FSDKFace> convertToFace(Bitmap mBitmap){
         if (isOdd(mBitmap.getWidth())) {
             mBitmap = scaleBitmap(mBitmap, mBitmap.getWidth() + 1, mBitmap.getHeight());
         }
@@ -475,19 +525,26 @@ public class PhotoActivity extends AppCompatActivity implements NavigationView.O
             mBitmap = scaleBitmap(mBitmap, mBitmap.getWidth(), mBitmap.getHeight() + 1);
         }
         AFR_FSDKEngine engine = new AFR_FSDKEngine();
-        AFR_FSDKFace face = new AFR_FSDKFace();
-        byte[] faceData = Bitmap2Byte(mBitmap);
+        ArrayList<AFR_FSDKFace> faces = new ArrayList<AFR_FSDKFace>();
+        byte[] faceData = BitmapToByte(mBitmap);
         AFR_FSDKError error = engine.AFR_FSDK_InitialEngine(FaceDB.appid, FaceDB.fr_key);
-        if(getFace(faceData, mBitmap)==null){
+        ArrayList<AFD_FSDKFace> mFace = getFace(faceData, mBitmap);
+        if(mFace.size()==0){
             return null;
         }
-        error = engine.AFR_FSDK_ExtractFRFeature(faceData, mBitmap.getWidth(), mBitmap.getHeight(), AFR_FSDKEngine.CP_PAF_NV21, getFace(faceData, mBitmap).getRect(), AFR_FSDKEngine.AFR_FOC_0, face);
+
+        for(AFD_FSDKFace curFace:mFace) {
+            AFR_FSDKFace face = new AFR_FSDKFace();
+            error = engine.AFR_FSDK_ExtractFRFeature(faceData, mBitmap.getWidth(), mBitmap.getHeight(), AFR_FSDKEngine.CP_PAF_NV21, curFace.getRect(), AFR_FSDKEngine.AFR_FOC_0, face);
+            Log.d(TAG, face.toString());
+            faces.add(face);
+
+        }
         error = engine.AFR_FSDK_UninitialEngine();
-        Log.d("photo ",face.toString());
-        return face;
+        return faces;
     }
 
-    public void register(String id, Bitmap aBitmap){
+    public boolean register(String id, Bitmap aBitmap){
         if (isOdd(aBitmap.getWidth())) {
             aBitmap = scaleBitmap(aBitmap, aBitmap.getWidth() + 1, aBitmap.getHeight());
         }
@@ -496,15 +553,24 @@ public class PhotoActivity extends AppCompatActivity implements NavigationView.O
         }
 
 
-        AFR_FSDKFace face1 = new AFR_FSDKFace();
 
-        byte[] faceData1 = Bitmap2Byte(aBitmap);
 
-        if (getFace(faceData1, aBitmap) != null){
-            error1 = engine1.AFR_FSDK_ExtractFRFeature(faceData1, aBitmap.getWidth(), aBitmap.getHeight(), AFR_FSDKEngine.CP_PAF_NV21, getFace(faceData1, aBitmap).getRect(), AFR_FSDKEngine.AFR_FOC_0, face1);
-            ((Application) PhotoActivity.this.getApplicationContext()).mFaceDB.addFace(id, face1);
-            Log.d("photo ","add face data "+ id + " - " + face1);
+        byte[] faceData1 = BitmapToByte(aBitmap);
+
+        ArrayList<AFD_FSDKFace> mFace = getFace(faceData1, aBitmap);
+        if ( mFace.size()>0){
+            for(AFD_FSDKFace curFace:mFace) {
+                AFR_FSDKFace face1 = new AFR_FSDKFace();
+                error1 = engine1.AFR_FSDK_ExtractFRFeature(faceData1, aBitmap.getWidth(), aBitmap.getHeight(), AFR_FSDKEngine.CP_PAF_NV21, curFace.getRect(), AFR_FSDKEngine.AFR_FOC_0, face1);
+                ((Application) PhotoActivity.this.getApplicationContext()).mFaceDB.addFace(id, face1);
+                Log.d(TAG, "add face data " + id + " - " + face1);
+
+            }
+
+            return true;
         }
+
+        return false;
     }
 
     public float compare(Bitmap aBitmap, AFR_FSDKFace face2) {
@@ -519,18 +585,18 @@ public class PhotoActivity extends AppCompatActivity implements NavigationView.O
 
         AFR_FSDKFace face1 = new AFR_FSDKFace();
 
-        byte[] faceData1 = Bitmap2Byte(aBitmap);
+        byte[] faceData1 = BitmapToByte(aBitmap);
 
         if (getFace(faceData1, aBitmap) == null) {
             return -1;
 
         } else {
-            error1 = engine1.AFR_FSDK_ExtractFRFeature(faceData1, aBitmap.getWidth(), aBitmap.getHeight(), AFR_FSDKEngine.CP_PAF_NV21, getFace(faceData1, aBitmap).getRect(), AFR_FSDKEngine.AFR_FOC_0, face1);
-            Log.d("com.arcsoft", "1Face=" + face1.getFeatureData()[0] + "," + face1.getFeatureData()[1] + "," + face1.getFeatureData()[2] + "," + error1.getCode());
+            error1 = engine1.AFR_FSDK_ExtractFRFeature(faceData1, aBitmap.getWidth(), aBitmap.getHeight(), AFR_FSDKEngine.CP_PAF_NV21, getFace(faceData1, aBitmap).get(0).getRect(), AFR_FSDKEngine.AFR_FOC_0, face1);
+            Log.d(TAG, "1Face=" + face1.getFeatureData()[0] + "," + face1.getFeatureData()[1] + "," + face1.getFeatureData()[2] + "," + error1.getCode());
             AFR_FSDKMatching score = new AFR_FSDKMatching();
             error1 = engine1.AFR_FSDK_FacePairMatching(face1, face2, score);
-            Log.d("com.arcsoft", "AFR_FSDK_FacePairMatching=" + error1.getCode());
-            Log.d("com.arcsoft", "Score:" + score.getScore());
+            Log.d(TAG, "AFR_FSDK_FacePairMatching=" + error1.getCode());
+            Log.d(TAG, "Score:" + score.getScore());
 
             return score.getScore();
         }
@@ -555,31 +621,34 @@ public class PhotoActivity extends AppCompatActivity implements NavigationView.O
         AFR_FSDKFace face1 = new AFR_FSDKFace();
         AFR_FSDKFace face2 = new AFR_FSDKFace();
         AFR_FSDKError error = engine.AFR_FSDK_InitialEngine(FaceDB.appid, FaceDB.fr_key);
-        Log.d("com.arcsoft", "AFR_FSDK_InitialEngine = " + error.getCode());
+        Log.d(TAG, "AFR_FSDK_InitialEngine = " + error.getCode());
 
-        byte[] faceData1 = Bitmap2Byte(aBitmap);
-        byte[] faceData2 = Bitmap2Byte(bBitmap);
+        byte[] faceData1 = BitmapToByte(aBitmap);
+        byte[] faceData2 = BitmapToByte(bBitmap);
 
-        if (getFace(faceData1, aBitmap) == null) {
+        ArrayList<AFD_FSDKFace> faces1 = getFace(faceData1, aBitmap);
+        ArrayList<AFD_FSDKFace> faces2 = getFace(faceData2, bBitmap);
+        if (faces1.size() == 0) {
             return -1;
-        } else if (getFace(faceData2, bBitmap) == null) {
+        } else if (faces2.size() == 0) {
             return -2;
         } else {
-            error = engine.AFR_FSDK_ExtractFRFeature(faceData1, aBitmap.getWidth(), aBitmap.getHeight(), AFR_FSDKEngine.CP_PAF_NV21, getFace(faceData1, aBitmap).getRect(), AFR_FSDKEngine.AFR_FOC_0, face1);
-            Log.d("com.arcsoft", "1Face=" + face1.getFeatureData()[0] + "," + face1.getFeatureData()[1] + "," + face1.getFeatureData()[2] + "," + error.getCode());
-            error = engine.AFR_FSDK_ExtractFRFeature(faceData2, bBitmap.getWidth(), bBitmap.getHeight(), AFR_FSDKEngine.CP_PAF_NV21, getFace(faceData2, bBitmap).getRect(), AFR_FSDKEngine.AFR_FOC_0, face2);
-            Log.d("com.arcsoft", "2Face=" + face2.getFeatureData()[0] + "," + face2.getFeatureData()[1] + "," + face2.getFeatureData()[2] + "," + error.getCode());
+
+            error = engine.AFR_FSDK_ExtractFRFeature(faceData1, aBitmap.getWidth(), aBitmap.getHeight(), AFR_FSDKEngine.CP_PAF_NV21, faces1.get(0).getRect(), AFR_FSDKEngine.AFR_FOC_0, face1);
+            Log.d(TAG, "1Face=" + face1.getFeatureData()[0] + "," + face1.getFeatureData()[1] + "," + face1.getFeatureData()[2] + "," + error.getCode());
+            error = engine.AFR_FSDK_ExtractFRFeature(faceData2, bBitmap.getWidth(), bBitmap.getHeight(), AFR_FSDKEngine.CP_PAF_NV21, faces2.get(0).getRect(), AFR_FSDKEngine.AFR_FOC_0, face2);
+            Log.d(TAG, "2Face=" + face2.getFeatureData()[0] + "," + face2.getFeatureData()[1] + "," + face2.getFeatureData()[2] + "," + error.getCode());
             AFR_FSDKMatching score = new AFR_FSDKMatching();
             error = engine.AFR_FSDK_FacePairMatching(face1, face2, score);
-            Log.d("com.arcsoft", "AFR_FSDK_FacePairMatching=" + error.getCode());
-            Log.d("com.arcsoft", "Score:" + score.getScore());
+            Log.d(TAG, "AFR_FSDK_FacePairMatching=" + error.getCode());
+            Log.d(TAG, "Score:" + score.getScore());
             error = engine.AFR_FSDK_UninitialEngine();
-            Log.d("com.arcsoft", "AFR_FSDK_UninitialEngine : " + error.getCode());
+            Log.d(TAG, "AFR_FSDK_UninitialEngine : " + error.getCode());
             return score.getScore();
         }
     }
 
-    private static byte[] Bitmap2Byte(Bitmap mBitmap) {
+    private static byte[] BitmapToByte(Bitmap mBitmap) {
         Rect src = new Rect();
         src.set(0, 0, mBitmap.getWidth(), mBitmap.getHeight());
         byte[] data = new byte[mBitmap.getWidth() * mBitmap.getHeight() * 3 / 2];
@@ -592,22 +661,22 @@ public class PhotoActivity extends AppCompatActivity implements NavigationView.O
         return data;
     }
 
-    private AFD_FSDKFace getFace(byte[] data, Bitmap bitmap) {
+    private ArrayList<AFD_FSDKFace> getFace(byte[] data, Bitmap bitmap) {
 
         AFD_FSDKEngine engine = new AFD_FSDKEngine();
         List<AFD_FSDKFace> result = new ArrayList<AFD_FSDKFace>();
         AFD_FSDKError err = engine.AFD_FSDK_InitialFaceEngine(FaceDB.appid, FaceDB.fd_key, AFD_FSDKEngine.AFD_OPF_0_HIGHER_EXT, 16, 5);
-        Log.d("com.arcsoft", "AFD_FSDK_InitialFaceEngine = " + err.getCode());
+        Log.d(TAG, "AFD_FSDK_InitialFaceEngine = " + err.getCode());
         err = engine.AFD_FSDK_StillImageFaceDetection(data, bitmap.getWidth(), bitmap.getHeight(), AFD_FSDKEngine.CP_PAF_NV21, result);
-        Log.d("com.arcsoft", "AFD_FSDK_StillImageFaceDetection =" + err.getCode());
-        Log.d("com.arcsoft", "Face=" + result.size());
-        AFD_FSDKFace mFace = null;
+        Log.d(TAG, "AFD_FSDK_StillImageFaceDetection =" + err.getCode());
+        Log.d(TAG, "Face=" + result.size());
+        ArrayList<AFD_FSDKFace> mFace = new ArrayList<AFD_FSDKFace>();
         for (AFD_FSDKFace face : result) {
-            Log.d("com.arcsoft", "Face:" + face.toString());
-            mFace = face;
+            Log.d(TAG, "Face:" + face.toString());
+            mFace.add(face);
         }
         err = engine.AFD_FSDK_UninitialFaceEngine();
-        Log.d("com.arcsoft", "AFD_FSDK_UninitialFaceEngine =" + err.getCode());
+        Log.d(TAG, "AFD_FSDK_UninitialFaceEngine =" + err.getCode());
         return mFace;
     }
 

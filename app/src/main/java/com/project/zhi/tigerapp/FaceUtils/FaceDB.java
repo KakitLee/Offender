@@ -39,10 +39,12 @@ public class FaceDB {
 
 	public class FaceRegist {
 		public String mName;
+		public String mId;
 		public List<AFR_FSDKFace> mFaceList;
 
 		public FaceRegist(String name) {
-			mName = name;
+			mId = name;
+			mName = idConvertToName(name);
 			mFaceList = new ArrayList<>();
 		}
 	}
@@ -100,7 +102,7 @@ public class FaceDB {
 			if (version_saved != null) {
 				for (String name = bos.readString(); name != null; name = bos.readString()){
 					if (new File(mDBPath + "/" + name + ".data").exists()) {
-						mRegister.add(new FaceRegist(new String(name)));
+						mRegister.add(new FaceRegist(new String(nameConvertToId(name))));
 					}
 				}
 			}
@@ -151,7 +153,7 @@ public class FaceDB {
 			//check if already registered.
 			boolean add = true;
 			for (FaceRegist frface : mRegister) {
-				if (frface.mName.equals(name)) {
+				if (frface.mName.equals(idConvertToName(name))) {
 					frface.mFaceList.add(face);
 					add = false;
 					break;
@@ -174,7 +176,7 @@ public class FaceDB {
 				fs.close();
 
 				//save new feature
-				fs = new FileOutputStream(mDBPath + "/" + name + ".data", true);
+				fs = new FileOutputStream(mDBPath + "/" + idConvertToName(name) + ".data", true);
 				bos = new ExtOutputStream(fs);
 				bos.writeBytes(face.getFeatureData());
 				bos.close();
@@ -191,6 +193,7 @@ public class FaceDB {
 		try {
 			//check if already registered.
 			boolean find = false;
+			name = idConvertToName(name);
 			for (FaceRegist frface : mRegister) {
 				if (frface.mName.equals(name)) {
 					File delfile = new File(mDBPath + "/" + name + ".data");
@@ -222,6 +225,14 @@ public class FaceDB {
 			e.printStackTrace();
 		}
 		return false;
+	}
+
+	public String nameConvertToId(String name){
+		return name.replace(".","/");
+	}
+
+	public String idConvertToName(String id){
+		return id.replace("/",".");
 	}
 
 	public boolean upgrade() {
