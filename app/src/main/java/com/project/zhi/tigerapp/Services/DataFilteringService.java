@@ -6,6 +6,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.project.zhi.tigerapp.Entities.Attributes;
 import com.project.zhi.tigerapp.Entities.Entities;
+import com.project.zhi.tigerapp.Entities.Name;
 import com.project.zhi.tigerapp.Entities.Person;
 import com.project.zhi.tigerapp.Enums.AttributeType;
 import com.project.zhi.tigerapp.Utils.Utils;
@@ -31,7 +32,7 @@ public class DataFilteringService {
     UserPrefs_ userPrefs;
     @Bean
     DataSourceServices dataSourceServices;
-    public String getPersonName(Entities entities){
+    public Name getPersonName(Entities entities){
         String firstName = "";
         String middleName = "";
         String lastName = "";
@@ -46,7 +47,11 @@ public class DataFilteringService {
                 lastName = attribute.getStringValue();
             }
         }
-        return firstName + (middleName.isEmpty() ? "" : " " + middleName) + (lastName.isEmpty() ? "" : " " + lastName);
+        Name newName = new Name();
+        newName.setFirstName(firstName);
+        newName.setMiddleName(middleName);
+        newName.setLastName(lastName);
+        return newName;
     }
 
     public ArrayList<Entities> search(ArrayList<Entities> entities, String query){
@@ -57,6 +62,8 @@ public class DataFilteringService {
         ArrayList<Entities> filteredEntities = new ArrayList<>();
         for (String oneQuery: queries
              ) {
+            String cleanQuery = oneQuery.trim();
+
             for (Entities entity: entities){
                 if(isSatisySingleQuery(oneQuery.trim(),entity.getList())){
                     filteredEntities.add(entity);
@@ -111,29 +118,31 @@ public class DataFilteringService {
         return true;
     }
 
-    public boolean isSatisySingleQuery(String query, ArrayList<Attributes> attributes){
-        for(var i =0; i< attributes.size(); i++){
-            var attribute= attributes.get(i);
+    public boolean isSatisySingleQuery(String query, ArrayList<Attributes> attributes) {
+        for (var i = 0; i < attributes.size(); i++) {
+            var attribute = attributes.get(i);
             var key = attribute.getAttributeKey();
             var isFuzzy = true;
             var value = "";
-            if(attribute.getType().equalsIgnoreCase("TEXT")){
+            if (attribute.getType().equalsIgnoreCase("TEXT")) {
                 value = attribute.getStringValue();
-            }
-            else if(attribute.getType().equalsIgnoreCase(AttributeType.LIST.name())){
+            } else if (attribute.getType().equalsIgnoreCase(AttributeType.LIST.name())) {
                 value = attribute.getListKey();
                 isFuzzy = false;
-            }
-            else if (attribute.getDoubleValue()!=null){
+            } else if (attribute.getDoubleValue() != null) {
                 value = attribute.getDoubleValue().toString();
             }
-            if(isFuzzy) {
-                if (value.toLowerCase().contains(query.toLowerCase())) {
+            if (isFuzzy) {
+                if ((wildCardMatch(value,query))){
+                    return true;
+                } else if(value.toLowerCase().contains(query.toLowerCase())) {
                     return true;
                 }
-            }
-            else{
-                if (value.toLowerCase().equalsIgnoreCase(query.toLowerCase())) {
+            } else {
+                if (wildCardMatch(value,query)){
+                    return true;
+                }
+                else if (value.toLowerCase().equalsIgnoreCase(query.toLowerCase())) {
                     return true;
                 }
             }
@@ -141,6 +150,15 @@ public class DataFilteringService {
         return false;
     }
 
+    boolean wildCardMatch(String value, String query){
+        if (query.contains("*")){
+            String tempQuery = query.replaceAll("\\*", "\\\\w*");
+            if(value.matches(tempQuery)){
+                return true;
+            }
+        }
+        return false;
+    }
 
     public boolean isSatisySignleCriteria(MenuModel criteria, ArrayList<Attributes> attributes){
         for(var i =0; i< attributes.size(); i++){
@@ -201,7 +219,7 @@ public class DataFilteringService {
         ArrayList<MenuModel> mainDempMenu = new ArrayList<MenuModel>();
         ArrayList<MenuModel> otherDemoMenu = new ArrayList<MenuModel>();
 
-        if(allMenus != null && allMenus.size() > 0) {
+        if(allMenus != null && allMenus.size() > 3) {
             nameMenu = allMenus.get(1);
             mainDempMenu = allMenus.get(2);
             otherDemoMenu = allMenus.get(3);

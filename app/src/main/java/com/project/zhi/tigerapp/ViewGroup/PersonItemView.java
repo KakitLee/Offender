@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.project.zhi.tigerapp.Entities.Attributes;
 import com.project.zhi.tigerapp.Entities.Entities;
+import com.project.zhi.tigerapp.Entities.Name;
 import com.project.zhi.tigerapp.Entities.Person;
 import com.project.zhi.tigerapp.R;
 import com.project.zhi.tigerapp.Services.DataFilteringService;
@@ -36,12 +37,12 @@ import java.util.stream.Stream;
  */
 @EViewGroup(R.layout.item_person)
 public class PersonItemView extends LinearLayout {
-    @ViewById(R.id.tvPersonName)
-    TextView tvPersonName;
+    @ViewById(R.id.tvPersonFirstName)
+    TextView tvPersonFirstName;
+    @ViewById(R.id.tvPersonLastName)
+    TextView tvPersonLastName;
     @ViewById(R.id.imgPerson)
     ImageView imgPersonAvatar;
-    @ViewById(R.id.score)
-    TextView scoreText;
     @ViewById(R.id.tvFacialScore)
     TextView tvFacialScore;
     @ViewById(R.id.tvFacialScoreTitle)
@@ -65,20 +66,16 @@ public class PersonItemView extends LinearLayout {
         super(context);
     }
 
-    public void bind(Person person, Float score) {
+    public void bind(Person person) {
         if(person == null){
-            tvPersonName.setText("");
+            tvPersonFirstName.setText("");
+            tvPersonLastName.setText("");
             return;
         }
         Entities entities = person.getEntity();
-
-        tvPersonName.setText(dataFilteringService.getPersonName(entities));
-        if(score == null){
-            scoreText.setVisibility(View.INVISIBLE);
-        }
-        else{
-            scoreText.setText(String.valueOf(score*100)+"%");
-        }
+        Name name = dataFilteringService.getPersonName(entities);
+        tvPersonFirstName.setText(name.getFirstName());
+        tvPersonLastName.setText(name.getLastName());
 
         loadImage(entities);
         if(person.getFacialSimilarity() != null || person.getVoiceSimilarity() != null || person.getOverallSimilarity() != null)

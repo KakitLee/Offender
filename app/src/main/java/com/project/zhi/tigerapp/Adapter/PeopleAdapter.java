@@ -6,70 +6,40 @@ import android.content.Context;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
+import android.widget.ArrayAdapter;
 
-import com.project.zhi.tigerapp.Entities.Data;
-import com.project.zhi.tigerapp.Entities.Entities;
 import com.project.zhi.tigerapp.Entities.Person;
 import com.project.zhi.tigerapp.R;
-import com.project.zhi.tigerapp.Services.DataFilteringService;
-import com.project.zhi.tigerapp.Services.DataSourceServices;
-import com.project.zhi.tigerapp.Services.UserPrefs_;
 import com.project.zhi.tigerapp.ViewGroup.PersonItemView;
 import com.project.zhi.tigerapp.ViewGroup.PersonItemView_;
-import com.project.zhi.tigerapp.complexmenu.MenuModel;
 
 import org.androidannotations.annotations.AfterInject;
 import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.EBean;
-import org.androidannotations.annotations.RootContext;
 import org.androidannotations.annotations.sharedpreferences.Pref;
 
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by zhi on 30/09/2015.
- */
-@EBean
-public class PeopleAdapter extends BaseAdapter {
-    @RootContext
-    Context context;
+public class PeopleAdapter extends ArrayAdapter<Person> {
+    private Context context;
 
-    @Bean
-    DataSourceServices dataSourceServices;
-
-    @Bean
-    DataFilteringService dataFilteringService;
-
-    private ArrayList<Entities> entities;
     private ArrayList<Float> scores;
     private ArrayList<Person> people;
     int screenHeight;
 
-    @AfterInject
-    void initAdapter() {
-        entities = new ArrayList<Entities>();
 
-        Data data  = dataSourceServices.getPeopleSource(context);
-
-        if(data == null){
-            return;
-        }
-        entities = data.getEntitiesList();
-        if(entities == null){
-            return;
-        }else {
-            people = dataFilteringService.mergeAll(context);
-            if (entities == null) {
-                entities = new ArrayList<Entities>();
-            }
-            if (scores == null) {
-                scores = new ArrayList<Float>();
-            }
+    public PeopleAdapter(Context context,ArrayList<Person> people) {
+        super(context, R.layout.item_person ,people);
+        this.context = context;
+        this.people = people;
             screenHeight = ((Activity) context).getWindowManager()
                     .getDefaultDisplay().getHeight();
-        }
+    }
+    public void updatePeople(ArrayList<Person> newPeople){
+        people = newPeople;
+        notifyDataSetInvalidated();
+        notifyDataSetChanged();
     }
     public void setDataList(ArrayList<Person> list, ArrayList<Float> scoreList){
         people = list;
@@ -86,9 +56,6 @@ public class PeopleAdapter extends BaseAdapter {
 
     @Override
     public Person getItem(int position) {
-        if(people ==null || people.size() == 0){
-            return new Person();
-        }
         return people.get(position);
     }
 
@@ -113,7 +80,7 @@ public class PeopleAdapter extends BaseAdapter {
         } else {
             personItemView = (PersonItemView) convertView;
         }
-        personItemView.bind(getItem(position),getScore(position));
+        personItemView.bind(getItem(position));
         TypedValue tv = new TypedValue();
         if (context.getTheme().resolveAttribute(R.attr.actionBarSize, tv, true)) {
             personItemView.setMinimumHeight((screenHeight - TypedValue.complexToDimensionPixelSize(tv.data, context.getResources().getDisplayMetrics())) / 3);

@@ -707,6 +707,7 @@ public class PhotoActivity extends AppCompatActivity implements NavigationView.O
     @UiThread
     void onLoading(){
         dialog = Utils.setProgressDialog(PhotoActivity.this);
+        dialog.show();
         //dialog = Utils.setProgressDialog(context);
 
     }

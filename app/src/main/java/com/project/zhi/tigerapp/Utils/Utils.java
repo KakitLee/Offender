@@ -29,6 +29,7 @@ import java.io.File;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.List;
 
 public class Utils {
     public static DecimalFormat getSimilarityFormat(){
@@ -119,6 +120,21 @@ public class Utils {
         }
         return null;
     }
+
+    public static ArrayList<File> getAllAttachmentsPath(Entities entity, String imagePath){
+        ArrayList<File> files = new ArrayList<File>();
+        if(hasAttachments(entity)){
+            for (Attachments attachment: entity.getAttachments()
+                 ) {
+                String fullImagePath = (imagePath + "/" + attachment.getFilename());
+                File newFile = new File(fullImagePath);
+                if(newFile.exists()){
+                    files.add(newFile);
+                }
+            }
+        }
+        return files;
+    }
     public static AlertDialog.Builder setAlertDialog(String title, String message, Context context) {
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context)
                 .setTitle(title)
@@ -127,7 +143,7 @@ public class Utils {
         return alertDialogBuilder;
     }
 
-    public static AlertDialog setProgressDialog(Context context){
+    public static AlertDialog   setProgressDialog(Context context){
 
         int llPadding = 30;
         LinearLayout ll = new LinearLayout(context);
@@ -158,7 +174,7 @@ public class Utils {
         builder.setView(ll);
 
         AlertDialog dialog = builder.create();
-        dialog.show();
+        //dialog.show();
         Window window = dialog.getWindow();
         if(window != null){
             WindowManager.LayoutParams layoutParams = new WindowManager.LayoutParams();

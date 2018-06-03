@@ -24,6 +24,8 @@ import org.simpleframework.xml.core.Persister;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -105,8 +107,28 @@ public class localTest {
         assertEquals(4,attributes.size());
 
     }
-
     @Test
+    public void wildCard(){
+        List<String> values = Arrays.asList("test","best","crest","zest","testy","tether","temper","teat","tempest");
+        String queryStr="te*t";
+        System.out.println(queryStr.contains("*"));
+        queryStr= queryStr.replaceAll("\\*", "\\\\w*");
+        System.out.println(queryStr);
+        System.out.println(query(queryStr,values));
+    }
+    public Collection<String> query(String queryStr, List<String> values ) {
+        List<String> list = new ArrayList<String>();
+        for (String str : values) {
+            if (str.matches(queryStr))
+                list.add(str);
+        }
+        if (list.isEmpty())
+            return null;
+        else
+            return list;
+
+    }
+        @Test
     public void DataSourceUniqueKeyTest(){
         DataSourceServices dataSourceServices = new DataSourceServices();
         Data data = getData();
@@ -272,24 +294,4 @@ public class localTest {
 //        assertEquals("patrol_alpha__0087_image_1",dataSourceServices.setImagePath(data).getEntitiesList().get(5).getAttachments().getFilename());
     }
 
-    @Test
-    public void FaceScoreTest(){
-
-
-        ArrayList<MatchedImage> faces = new ArrayList<MatchedImage>();
-        faces.add(new MatchedImage((float)2,"ddd"));
-        faces.add(new MatchedImage((float)1,"ss"));
-        faces.add(new MatchedImage((float)3,"aa"));
-//        Collections.sort(faces,Comparator<>);
-//        assertEquals(faces.get(0).getImage(),"a1a");
-//        assertEquals(faces.get(1).getImage(),"aa");
-//        assertEquals(faces.get(2).getImage(),"ddd");
-        //Collections.sort(faces,Utils.getComparator());
-
-
-
-
-
-
-    }
 }

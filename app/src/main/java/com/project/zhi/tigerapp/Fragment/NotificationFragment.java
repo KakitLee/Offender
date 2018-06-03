@@ -81,6 +81,7 @@ public class NotificationFragment extends PreferenceFragment {
     @UiThread
     void onLoading(){
         dialog = Utils.setProgressDialog(this.getActivity());
+        dialog.show();
     }
 
     @UiThread
