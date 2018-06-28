@@ -30,7 +30,7 @@
             android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true"
             android:layout_alignParentTop="true"
-            android:text="Resgister Face Database" />
+            android:text="Register Face Database" />
 
         <Button
             android:id="@+id/button2"

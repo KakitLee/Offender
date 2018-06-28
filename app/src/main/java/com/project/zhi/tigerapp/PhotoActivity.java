@@ -228,6 +228,7 @@ public class PhotoActivity extends AppCompatActivity implements NavigationView.O
         int count = 0;
         ArrayList<String> noFaceFiles = new ArrayList<String>();
         if(files.length>0) {
+            ArrayList<Entities> entities = dataSourceServices.getPeopleSource(this).getEntitiesList();
             for (File file : files) {
                 String imageName = file.getName();
                 if(imageName.length()<4){
@@ -242,7 +243,7 @@ public class PhotoActivity extends AppCompatActivity implements NavigationView.O
                 //match test data
                 //imageName = imageName.replace(".jpg", "");
 
-                Entities entity = dataSourceServices.getEntityByImageName(imageName, this);
+                Entities entity = dataSourceServices.getEntityByImageName(entities,imageName, this);
                 if(entity!=null){
                     Bitmap b1 = Application.decodeImage(file.getPath());
                     if(register(entity.getId(),b1)){
@@ -280,7 +281,7 @@ public class PhotoActivity extends AppCompatActivity implements NavigationView.O
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
             }
-        });
+        }).show();
     }
     public Bitmap getImageFromResult(Context context, int resultCode,
                                             Intent imageReturnedIntent) {
@@ -366,6 +367,16 @@ public class PhotoActivity extends AppCompatActivity implements NavigationView.O
         return null;
     }
 
+    @UiThread
+    void alertDialog(String title, String content){
+        Utils.setAlertDialog(title, content, context).setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        }).show();
+    }
+
     @Background
     protected void faceRecognition(int requestCode, int resultCode ){
         Bitmap b2 = null;
@@ -376,6 +387,7 @@ public class PhotoActivity extends AppCompatActivity implements NavigationView.O
             if(b2==null){
                 onDismiss();
                 display(context,"Photo is not saved correctly.");
+                alertDialog("Error","Photo is not saved correctly.");
                 return;
             }
             face2 = convertToFace(b2);
@@ -385,11 +397,13 @@ public class PhotoActivity extends AppCompatActivity implements NavigationView.O
         if(face2==null){
             onDismiss();
             display(context,"No face detected. Please retake a photo.");
+            alertDialog("Error","No face detected. Please retake a photo.");
             return;
         }
         if(face2.size()>1){
             onDismiss();
             display(context,"More than one face detected. Please make sure only one person is captured.");
+            alertDialog("Error","More than one face detected. Please make sure only one person is captured.");
             return;
         }
 

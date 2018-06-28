@@ -180,6 +180,19 @@ public class DataSourceServices implements IDataSourceServices {
         }
         return null;
     }
+    public Entities getEntityByImageName( ArrayList<Entities> entitiesList, String imageName, Context context){
+        for (Entities entity: entitiesList
+                ) {
+            if (entity.getAttachments() != null){
+                for(Attachments attachment:entity.getAttachments()) {
+                    if (attachment.getFilename().equalsIgnoreCase(imageName)) {
+                        return entity;
+                    }
+                }
+            }
+        }
+        return null;
+    }
 
     public Entities getEntityById(String id, Context context){
         Data data = this.getPeopleSource(context);
