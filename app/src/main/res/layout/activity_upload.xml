@@ -24,38 +24,77 @@
             layout="@layout/toolbar"
             />
 
-        <Button
-            android:id="@+id/btn_voice"
-            android:layout_above="@id/tv_folder_voice"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_centerVertical="true"
-            android:onClick="pickVoiceFolder"
-            android:text="@string/select_folder_voice" />
-
         <TextView
-            android:id="@+id/tv_folder_voice"
-            android:layout_above="@id/btn_folder"
+            android:id="@+id/tv_subscribe"
+            android:layout_below="@id/toolbar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="5dp"
-            android:text="@string/folder_not_selected" />
+            android:text="@string/file_not_selected" />
 
         <Button
-            android:id="@+id/btn_folder"
-            android:layout_above="@id/tv_folder"
+            android:id="@+id/btn_subscribe"
+            android:layout_below="@id/tv_subscribe"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
-            android:layout_centerVertical="true"
+            android:padding="20dp"
+            android:layout_marginTop="25dp"
+            android:onClick="subscribe"
+            android:text="@string/subscribe" />
+
+        <TextView
+            android:id="@+id/tv_unsubscribe"
+            android:layout_below="@id/btn_subscribe"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="5dp"
+            android:text="@string/file_not_selected" />
+
+        <Button
+            android:id="@+id/btn_unsubscribe"
+            android:layout_below="@id/tv_unsubscribe"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:padding="20dp"
+            android:layout_marginTop="25dp"
+            android:onClick="unsubscribe"
+            android:text="@string/unsubscribe" />
+
+        <!--<Button-->
+            <!--android:id="@+id/btn_voice"-->
+            <!--android:layout_above="@id/tv_folder_voice"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_centerHorizontal="true"-->
+            <!--android:layout_centerVertical="true"-->
+            <!--android:onClick="pickVoiceFolder"-->
+            <!--android:text="@string/select_folder_voice" />-->
+
+        <!--<TextView-->
+            <!--android:id="@+id/tv_folder_voice"-->
+            <!--android:layout_above="@id/btn_folder"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_centerHorizontal="true"-->
+            <!--android:layout_marginTop="5dp"-->
+            <!--android:text="@string/folder_not_selected" />-->
+
+        <Button
+            android:id="@+id/btn_folder"
+            android:layout_below="@id/btn_unsubscribe"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
             android:onClick="pickFolder"
             android:text="@string/select_folder_image" />
 
         <TextView
             android:id="@+id/tv_folder"
-            android:layout_above="@id/btn_file"
+            android:layout_below="@id/btn_folder"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
@@ -64,10 +103,10 @@
 
         <Button
             android:id="@+id/btn_file"
+            android:layout_below="@id/tv_folder"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
-            android:layout_centerVertical="true"
             android:onClick="pickFile"
             android:padding="20dp"
             android:layout_marginTop="25dp"
@@ -89,7 +128,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
-            android:layout_centerVertical="true"
             android:padding="20dp"
             android:layout_marginTop="25dp"
             android:text="@string/comfirm_upload" />

@@ -21,6 +21,7 @@ import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.project.zhi.tigerapp.Services.DataSourceServices;
 import com.project.zhi.tigerapp.Services.NavigationService;
 import com.project.zhi.tigerapp.Services.UserPrefs_;
@@ -57,11 +58,17 @@ public class UploadActivity extends AppCompatActivity
     @ViewById(R.id.tv_file)
     TextView tv_filePath;
 
-    @ViewById(R.id.tv_folder_voice)
-    TextView tv_folder_voice;
+//    @ViewById(R.id.tv_folder_voice)
+//    TextView tv_folder_voice;
 
     @ViewById(R.id.btn_confirm)
     Button btn_comfirm;
+
+    @ViewById(R.id.btn_subscribe)
+    Button btn_subscribe;
+
+    @ViewById(R.id.btn_unsubscribe)
+    Button btn_unsubscribe;
 
     @Pref
     UserPrefs_ userPrefs;
@@ -133,6 +140,14 @@ public class UploadActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    public void subscribe(View v){
+        FirebaseMessaging.getInstance().subscribeToTopic("JavaSampleApproach");
+    }
+
+    public void unsubscribe(View v){
+        FirebaseMessaging.getInstance().unsubscribeFromTopic("JavaSampleApproach");
     }
 
     public void pickFolder(View v) {
@@ -259,7 +274,7 @@ public class UploadActivity extends AppCompatActivity
         }
         else if(requestCode == FOLDER_VOICE_PICKER_CODE && resultCode == Activity.RESULT_OK){
             String folderLocation = intent.getExtras().getString("data");
-            tv_folder_voice.setText(folderLocation);
+            //tv_folder_voice.setText(folderLocation);
             userPrefs.voiceFolder().put(folderLocation);
         }
         else if (requestCode == FILE_PICKER_CODE && resultCode == Activity.RESULT_OK) {
