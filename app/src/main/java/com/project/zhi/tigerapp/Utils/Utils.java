@@ -26,10 +26,16 @@ import com.project.zhi.tigerapp.complexmenu.MenuModel;
 import org.apache.commons.text.WordUtils;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.RandomAccessFile;
+import java.security.SecureRandom;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
+import java.util.Stack;
 
 public class Utils {
     public static DecimalFormat getSimilarityFormat(){
@@ -143,7 +149,7 @@ public class Utils {
         return alertDialogBuilder;
     }
 
-    public static AlertDialog   setProgressDialog(Context context){
+    public static AlertDialog setProgressDialog(Context context){
 
         int llPadding = 30;
         LinearLayout ll = new LinearLayout(context);
@@ -185,4 +191,61 @@ public class Utils {
         }
         return dialog;
     }
+
+    public static boolean isExpiredFile(File file){
+        if(file.exists()){
+            Calendar time = Calendar.getInstance();
+            time.add(Calendar.DAY_OF_YEAR,- 28);
+
+            Date lastModified = new Date(file.lastModified());
+            if(lastModified.before(time.getTime())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static void secureDelete(File file) throws IOException {
+        if (file.exists()) {
+            long length = file.length();
+            SecureRandom random = new SecureRandom();
+            RandomAccessFile raf = new RandomAccessFile(file, "rws");
+            raf.seek(0);
+            raf.getFilePointer();
+            byte[] data = new byte[64];
+            int pos = 0;
+            while (pos < length) {
+                random.nextBytes(data);
+                raf.write(data);
+                pos += data.length;
+            }
+            raf.close();
+            file.delete();
+        }
+    }
+    public static ArrayList<File> getAllFilesInDir(File dir) {
+        if (dir == null)
+            return null;
+
+        ArrayList<File> files = new ArrayList<File>();
+
+        Stack<File> dirlist = new Stack<File>();
+        dirlist.clear();
+        dirlist.push(dir);
+
+        while (!dirlist.isEmpty()) {
+            File dirCurrent = dirlist.pop();
+
+            File[] fileList = dirCurrent.listFiles();
+            for (File aFileList : fileList) {
+                if (aFileList.isDirectory())
+                    dirlist.push(aFileList);
+                else
+                    files.add(aFileList);
+            }
+        }
+
+        return files;
+    }
+
 }

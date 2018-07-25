@@ -38,6 +38,8 @@ import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
 import org.androidannotations.annotations.sharedpreferences.Pref;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 
 import lombok.experimental.var;
@@ -88,13 +90,64 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         onSetMenu();
     }
 
-    private boolean onActivityValidation() {
-        boolean isValid = checkValidActivity();
-        boolean isMenuValid = activityService.validInitMenu(this);
-        if (isValid && !isMenuValid) {
-            dataSourceServices.dataSourceChange(this);
+    public void onStart() {
+        super.onStart();
+    }
+
+    private boolean isDataSourceExpired(){
+        boolean isExpired = false;
+        if(userPrefs.isFile().get()){
+            File file = new File(userPrefs.file().get());
+            if(Utils.isExpiredFile(file)){
+                isExpired = true;
+                try {
+                    Utils.secureDelete(file);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    file.delete();
+                }
+                finally {
+                    if(userPrefs.isFolder().get()) {
+                        File folder = new File(userPrefs.folder().get());
+                        ArrayList<File> files = Utils.getAllFilesInDir(folder);
+                        if (files != null) {
+                            for (File folderFile : files
+                                    ) {
+                                if (Utils.isExpiredFile(folderFile)) {
+                                    folderFile.delete();
+                                }
+                            }
+                        }
+                    }
+                    userPrefs.file().put(null);
+                    dataSourceServices.dataSourceChange(this);
+                }
+            }
         }
-        return isValid;
+        return isExpired;
+    }
+
+
+    private boolean onActivityValidation() {
+        boolean isDataSourceValid = isDataSourceExpired();
+        if(isDataSourceValid){
+            Utils.setAlertDialog("Warning", "Data source had expired, please re-upload", this).setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    onInvalidLocalActivity();
+                }
+            }).show();
+            onDismiss();
+            return false;
+        }
+        else {
+            boolean isValid = checkValidActivity();
+            boolean isMenuValid = activityService.validInitMenu(this);
+            if (isValid && !isMenuValid) {
+                dataSourceServices.dataSourceChange(this);
+            }
+            return isValid;
+        }
     }
 
     private void onSetView() {

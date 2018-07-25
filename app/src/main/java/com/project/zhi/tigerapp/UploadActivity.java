@@ -135,6 +135,10 @@ public class UploadActivity extends AppCompatActivity
         return true;
     }
 
+    public void deleteFiles(View v) {
+
+    }
+
     public void pickFolder(View v) {
         pickFolderOrFile(true,false);
     }

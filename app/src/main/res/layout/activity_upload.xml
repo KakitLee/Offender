@@ -23,6 +23,15 @@
             android:id="@+id/toolbar"
             layout="@layout/toolbar"
             />
+        <Button
+            android:id="@+id/btn_delete"
+            android:layout_above="@id/btn_voice"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:onClick="deleteFiles"
+            android:text="@string/delete_files" />
 
         <Button
             android:id="@+id/btn_voice"

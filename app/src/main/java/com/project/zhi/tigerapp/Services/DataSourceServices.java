@@ -99,11 +99,6 @@ public class DataSourceServices implements IDataSourceServices {
                 File source = new File(filePath);
                 data = serializer.read(Data.class, source);
             }
-            else {
-                InputStream input = context.getResources().openRawResource(R.raw.entities);
-                data = serializer.read(Data.class, input);
-                data = setImagePath(data);
-            }
         } catch (Exception e) {
             SharedPreferences.Editor editor = prefs.edit();
             editor.putString("file", "");
