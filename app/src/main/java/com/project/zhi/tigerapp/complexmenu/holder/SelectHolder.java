@@ -57,8 +57,8 @@ public class SelectHolder extends BaseWidgetHolder<List<String>> {
         View view = View.inflate(mContext, R.layout.layout_holder_select, null);
 
 //        mNoRuleView = view.findViewById(R.id.zhbx);
-        mTeacherGenderView = view.findViewById(R.id.jsxb);
-        mCourseTypeView = view.findViewById(R.id.skfs);
+//        mTeacherGenderView = view.findViewById(R.id.jsxb);
+//        mCourseTypeView = view.findViewById(R.id.skfs);
 
         //列表标题控件
 //        mGenderView = view.findViewById(R.id.ll_gender);
@@ -85,7 +85,7 @@ public class SelectHolder extends BaseWidgetHolder<List<String>> {
 //        mTypeTeacherToHomeRIView.setTitleText("rule1");
 //        mTypeStudentToSchoolRIView.setTitleText("rule2");
 
-        mSureBtn = (TextView) view.findViewById(R.id.tv_button);
+        mSureBtn = (TextView) view.findViewById(R.id.btn_search_Search);
 
         mSureBtn.setOnClickListener(new View.OnClickListener() {
             @Override
