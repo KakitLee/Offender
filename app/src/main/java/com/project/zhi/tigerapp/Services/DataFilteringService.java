@@ -8,6 +8,7 @@ import com.project.zhi.tigerapp.Entities.Attributes;
 import com.project.zhi.tigerapp.Entities.Entities;
 import com.project.zhi.tigerapp.Entities.Name;
 import com.project.zhi.tigerapp.Entities.Person;
+import com.project.zhi.tigerapp.Entities.Record.IntelRecord;
 import com.project.zhi.tigerapp.Enums.AttributeType;
 import com.project.zhi.tigerapp.Utils.Utils;
 import com.project.zhi.tigerapp.complexmenu.MenuModel;
@@ -17,6 +18,11 @@ import org.androidannotations.annotations.EBean;
 import org.androidannotations.annotations.sharedpreferences.Pref;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.Predicate;
+import org.locationtech.spatial4j.context.SpatialContext;
+import org.locationtech.spatial4j.distance.CartesianDistCalc;
+import org.locationtech.spatial4j.distance.DistanceUtils;
+import org.locationtech.spatial4j.shape.impl.CircleImpl;
+import org.locationtech.spatial4j.shape.impl.PointImpl;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
@@ -73,6 +79,32 @@ public class DataFilteringService {
             filteredEntities.clear();
         }
         return entities;
+    }
+
+    public ArrayList<Entities> searchLocation(ArrayList<Entities> entities, Double longitude, Double latitude, Double radius){
+        if(entities == null ||entities.size() == 1) {
+            return entities;
+        }
+        SpatialContext ctx = SpatialContext.GEO;
+        Double degree = DistanceUtils.dist2Degrees(radius,DistanceUtils.EARTH_EQUATORIAL_RADIUS_KM);
+        PointImpl point = new PointImpl(longitude,latitude,ctx);
+        CartesianDistCalc cdc = new CartesianDistCalc();
+        ArrayList<Entities> searchedEntites = new ArrayList<Entities>();
+        for (Entities entity: entities
+             ) {
+            if(entity.getRecordLocations() != null && entity.getRecordLocations().size() > 0) {
+                for (IntelRecord record : entity.getRecordLocations()) {
+                    Double recordLongitude = record.getLocationAttribute().getNumberValue1();
+                    Double recordLatitude = record.getLocationAttribute().getNumberValue2();
+                    boolean isWithin = cdc.within(point, recordLongitude, recordLatitude, degree);
+                    if (isWithin) searchedEntites.add(entity);
+                    break;
+                }
+            }
+        }
+
+
+        return searchedEntites;
     }
 
     public ArrayList<Entities> update(ArrayList<Entities> entities, ArrayList<MenuModel> nameMenu, ArrayList<MenuModel> mainDemoMenu, ArrayList<MenuModel> otherDemoMenu) {

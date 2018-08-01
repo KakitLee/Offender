@@ -10,6 +10,8 @@ import lombok.Data;
 public class Attributes{
     @Attribute
     protected String attributeKey;
+    @Attribute(required=false)
+    protected String label;
     @Attribute
     protected String type;
     @Attribute(required=false)

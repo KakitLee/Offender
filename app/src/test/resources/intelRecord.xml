@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<IntelRecord xmlns="http://www.smartconservationsoftware.org/xml/1.0/org.wcs.smart.i2.record">
+    <title>MP_20170923_03_Foraging</title>
+    <attributes type="SINGLE_ATTRIBUTE">
+        <record_attribute>
+            <name>gpslocation1</name>
+            <uuid>e7b5b98f67e0463e9949e1c7a2b61b6a</uuid>
+        </record_attribute>
+        <number_value_1>103.35471041746172</number_value_1>
+        <number_value_2>3.050261916758624</number_value_2>
+    </attributes>
+    <attributes type="SINGLE_ATTRIBUTE">
+        <record_attribute>
+            <name>date</name>
+            <uuid>65fa122a84f34cdea4c1a26927723703</uuid>
+        </record_attribute>
+        <string_value>2017-09-23</string_value>
+    </attributes>
+    <attributes type="SINGLE_ATTRIBUTE">
+        <record_attribute>
+            <name>place</name>
+            <uuid>1a61f713ba2c48bc99e0d9e32b7ef7e8</uuid>
+        </record_attribute>
+        <string_value>Eastern Muadzam Park</string_value>
+    </attributes>
+    <attributes type="SINGLE_ATTRIBUTE">
+        <record_attribute>
+            <name>patrolleader</name>
+            <uuid>8c51edc40e37432798fdf65e900cbc72</uuid>
+        </record_attribute>
+        <string_value>Suriani bin Heryati</string_value>
+    </attributes>
+    <attributes type="SINGLE_ATTRIBUTE">
+        <record_attribute>
+            <name>actiontaken</name>
+            <uuid>b2f9c361a7d9429f9fb4103513f3dbd5</uuid>
+        </record_attribute>
+        <string_value>Warning</string_value>
+    </attributes>
+    <attributes type="SINGLE_ATTRIBUTE">
+        <record_attribute>
+            <name>patrolid</name>
+            <uuid>5cd19e5380194812ba8c87023762a1d8</uuid>
+        </record_attribute>
+        <string_value>MP_20170923_GR</string_value>
+    </attributes>
+    <attributes type="SINGLE_ATTRIBUTE">
+        <record_attribute>
+            <name>offence</name>
+            <uuid>2ccdee65145f44218fd13620a4cdade4</uuid>
+        </record_attribute>
+        <string_value>Potential illegal foraging</string_value>
+    </attributes>
+</IntelRecord>

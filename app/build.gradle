@@ -86,4 +86,5 @@ dependencies {
     implementation 'com.nineoldandroids:library:2.4.0'
     implementation 'com.daimajia.slider:library:1.1.5@aar'
     implementation 'com.github.chrisbanes:PhotoView:2.0.0'
+    implementation 'org.locationtech.spatial4j:spatial4j:0.7'
 }

@@ -8,7 +8,10 @@ import com.project.zhi.tigerapp.Entities.Attachments;
 import com.project.zhi.tigerapp.Entities.Attributes;
 import com.project.zhi.tigerapp.Entities.Data;
 import com.project.zhi.tigerapp.Entities.Entities;
+import com.project.zhi.tigerapp.Entities.Locations;
 import com.project.zhi.tigerapp.Entities.Person;
+import com.project.zhi.tigerapp.Entities.Record.IntelAttributes;
+import com.project.zhi.tigerapp.Entities.Record.IntelRecord;
 import com.project.zhi.tigerapp.FaceUtils.Application;
 import com.project.zhi.tigerapp.R;
 import com.project.zhi.tigerapp.Utils.Utils;
@@ -110,6 +113,7 @@ public class DataSourceServices implements IDataSourceServices {
             return data;
         }
     }{}
+
 
     public ArrayList<String> getUniqueKey(Data data){
         ArrayList<String> attributesList = new ArrayList<String>();
@@ -218,7 +222,6 @@ public class DataSourceServices implements IDataSourceServices {
 
     public ArrayList<Person> getPeopleFromEntities(ArrayList<Entities> entities){
         Timer timer = new Timer();
-        long startTime = System.nanoTime();
         ArrayList<Person> people = new ArrayList<Person>();
         if(entities == null || entities.size() == 0) return people;
         for (Entities entity: entities
@@ -228,8 +231,6 @@ public class DataSourceServices implements IDataSourceServices {
             people.add(person);
         }
         long endTime = System.nanoTime();
-        long duration = (endTime - startTime)/1000000 ;
-        System.out.println("PEOPLE TO ENTITIES TOOK " + duration + " MILLISECONDS");
         return people;
     }
     public void dataSourceChange(Context context){
@@ -260,5 +261,70 @@ public class DataSourceServices implements IDataSourceServices {
             editor.commit();
         }
     }
+    public Data mergeEntitiesAndRecords(Data data, ArrayList<IntelRecord> records){
+        for (Entities entity: data.getEntitiesList()
+                ) {
+            ArrayList<Locations> locations = entity.getLocations();
+            if(locations == null || locations.size() == 0){
+                continue;
+            }
+            for (Locations location: locations
+                    ) {
+                for (IntelRecord record: records
+                        ) {
+                    if(location.getId().equals(record.getLocations().getId())){
+                        if(entity.getRecordLocations() == null){
+                            entity.setRecordLocations(new ArrayList<IntelRecord>());
+                        }
+                        entity.getRecordLocations().add(record);
+                    }
+                }
+            }
+        }
+        return data;
+    }
+
+    public IntelAttributes getLocationAttribute(IntelRecord record){
+        if(record.getLocations() == null ) return null;
+        for (IntelAttributes attribute: record.getIntelAttributes()
+                ) {
+            if(attribute.getRecordAttribute().getName().toLowerCase().contains("location")){
+                return attribute;
+            }
+        }
+        return null;
+    }
+
+    public ArrayList<IntelRecord> getIntelRecordsSource(Context context) {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        Serializer serializer = new Persister();
+        ArrayList<IntelRecord> records = new ArrayList<IntelRecord>();
+
+        try {
+
+            String filePath = prefs.getString("recordFolder", "");
+//            if(prefs.getBoolean("isUrl",false)){
+//                filePath = context.getFilesDir() + "/source.xml";
+//            }
+            if(filePath != null && !filePath.isEmpty()){
+                File directory = new File(filePath);
+                File[] files = directory.listFiles();
+                for (File file: files) {
+                    if(FilenameUtils.getExtension(file.getName()).toLowerCase().contains("xml")){
+                        IntelRecord recordSingle = serializer.read(IntelRecord.class, file);
+                        records.add(recordSingle);
+                    }
+                }
+            }
+        } catch (Exception e) {
+            SharedPreferences.Editor editor = prefs.edit();
+            editor.putString("recordFolder", "");
+            editor.commit();
+            //Likely to the issue with the data parser.
+
+        } finally {
+            return records;
+        }
+    }{}
 }
 

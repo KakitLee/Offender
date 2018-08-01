@@ -1,5 +1,7 @@
 package com.project.zhi.tigerapp.Entities;
 
+import com.project.zhi.tigerapp.Entities.Record.IntelRecord;
+
 import org.simpleframework.xml.Attribute;
 import org.simpleframework.xml.Element;
 import org.simpleframework.xml.ElementList;
@@ -23,5 +25,9 @@ public class Entities{
     private ArrayList<Attributes> list;
     @ElementList(inline=true, required=false)
     protected ArrayList<Attachments> attachments;
+    @ElementList(inline=true, required=false, entry = "locations")
+    protected ArrayList<Locations> locations;
+
+    protected ArrayList<IntelRecord> recordLocations;
 }
 

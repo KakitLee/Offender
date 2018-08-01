@@ -39,4 +39,5 @@ import org.androidannotations.annotations.sharedpreferences.SharedPref;
         String nameMenu();
         String mainDemoMenu();
         String otherDemoMenu();
+        String recordFolder();
     }

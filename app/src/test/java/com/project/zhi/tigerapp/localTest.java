@@ -6,6 +6,7 @@ import com.project.zhi.tigerapp.Entities.Attributes;
 import com.project.zhi.tigerapp.Entities.Data;
 import com.project.zhi.tigerapp.Entities.Entities;
 import com.project.zhi.tigerapp.Entities.Person;
+import com.project.zhi.tigerapp.Entities.Record.IntelRecord;
 import com.project.zhi.tigerapp.Enums.AttributeType;
 import com.project.zhi.tigerapp.FaceUtils.MatchedImage;
 import com.project.zhi.tigerapp.Services.DataFilteringService;
@@ -18,6 +19,11 @@ import com.project.zhi.tigerapp.complexmenu.MenuTuple;
 import com.wutka.dtd.EntityExpansion;
 
 import org.junit.Test;
+import org.locationtech.spatial4j.context.SpatialContext;
+import org.locationtech.spatial4j.distance.CartesianDistCalc;
+import org.locationtech.spatial4j.distance.DistanceUtils;
+import org.locationtech.spatial4j.shape.impl.CircleImpl;
+import org.locationtech.spatial4j.shape.impl.PointImpl;
 import org.mockito.cglib.core.Local;
 import org.simpleframework.xml.Serializer;
 import org.simpleframework.xml.core.Persister;
@@ -293,5 +299,78 @@ public class localTest {
 //        assertEquals("pbm",dataSourceServices.setImagePath(data).getEntitiesList().get(4).getAttachments().getFilename());
 //        assertEquals("patrol_alpha__0087_image_1",dataSourceServices.setImagePath(data).getEntitiesList().get(5).getAttachments().getFilename());
     }
+    @Test
+    public void testIntelRecord() {
+        String input = getClass().getClassLoader().getResource("record.xml").getPath();
+        Serializer serializer = new Persister();
+        File source = new File(input);
+        assertEquals(true, source.exists());
+        try {
+            IntelRecord record = serializer.read(IntelRecord.class, source);
+            assertEquals("MP_20170923_03_Foraging",record.getTitle());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+    @Test
+    public void testEntities() {
+        String input = getClass().getClassLoader().getResource("entities.xml").getPath();
+        Serializer serializer = new Persister();
+        File source = new File(input);
+        assertEquals(true, source.exists());
+        try {
+            Data record = serializer.read(Data.class, source);
+            assertEquals(null,record.getEntitiesList().get(0).getList().get(0).getLabel());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    @Test
+    public void testEntitiesAndRecords() {
+        String input = getClass().getClassLoader().getResource("entities.xml").getPath();
+        Serializer serializer = new Persister();
+        File data = new File(input);
+        File record = new File(getClass().getClassLoader().getResource("record.xml").getPath());
+        assertEquals(true, data.exists());
+        assertEquals(true, record.exists());
+        try {
+            Data entities = serializer.read(Data.class, data);
+            IntelRecord recordSingle = serializer.read(IntelRecord.class, record);
+            ArrayList<IntelRecord> records = new ArrayList<IntelRecord>();
+            records.add(recordSingle);
+
+            DataSourceServices dataSourceService = new DataSourceServices();
+            entities = dataSourceService.mergeEntitiesAndRecords(entities,records);
+
+            assertEquals("Intercept #01",entities.getEntitiesList().get(4).getLocations().get(0).getId());
+            assertEquals(103.35471041746172,entities.getEntitiesList().get(4).getRecordLocations().get(0).getLocationAttribute().getNumberValue1(),0.01);
+            assertEquals(3.050261916758624,entities.getEntitiesList().get(4).getRecordLocations().get(0).getLocationAttribute().getNumberValue2(),0.01);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    @Test
+    public void testGeo() {
+        SpatialContext ctx = SpatialContext.GEO;
+        Double degree = DistanceUtils.dist2Degrees(6.76,DistanceUtils.EARTH_EQUATORIAL_RADIUS_KM);
+        PointImpl pp = new PointImpl(103.35471041746172,3.050261916758624,ctx);
+        CircleImpl cc = new CircleImpl(pp, degree,ctx);
+        CartesianDistCalc dc = new CartesianDistCalc();
+        boolean isWhitn = dc.within(pp,103.306411,3.013046,degree);
+        boolean iswhitn2 = cc.contains(103.306411,3.013046);
+        assertEquals(isWhitn,iswhitn2);
+        cc.getArea(ctx);
+
+
+
+    }
+
+
+
 
 }

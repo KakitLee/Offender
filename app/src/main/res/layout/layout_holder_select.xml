@@ -42,8 +42,7 @@
             android:inputType="numberDecimal"
             android:hint="Radius in KM"/>
         <Button
-            android:id="@+id/btn_search_Clear"
-            android:layout_below="@id/search_view_search"
+            android:id="@+id/btn_location_Clear"
             android:layout_marginTop="@dimen/px_20"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
@@ -54,10 +53,9 @@
             android:scrollbars="none" />
 
         <Button
-            android:id="@+id/btn_search_Search"
+            android:id="@+id/btn_location_Search"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/btn_search_Clear"
             android:layout_marginLeft="@dimen/px_44"
             android:layout_marginRight="@dimen/px_44"
             android:text="Search"

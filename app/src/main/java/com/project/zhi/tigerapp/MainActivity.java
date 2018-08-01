@@ -16,7 +16,9 @@ import android.widget.GridView;
 
 import com.google.gson.Gson;
 import com.project.zhi.tigerapp.Adapter.PeopleAdapter;
+import com.project.zhi.tigerapp.Entities.Data;
 import com.project.zhi.tigerapp.Entities.Person;
+import com.project.zhi.tigerapp.Entities.Record.IntelRecord;
 import com.project.zhi.tigerapp.Services.ActivityService;
 import com.project.zhi.tigerapp.Services.DataFilteringService;
 import com.project.zhi.tigerapp.Services.DataSourceServices;
@@ -188,6 +190,25 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 onSearching(query);
             }
         });
+        selectMenuView.setOnLocationSearchingBtnListener(new SelectMenuView.OnLocationSearchingBtnListener() {
+            @Override
+            public void OnLocationSearching(Double longitude, Double latitude, Double radius) {
+                onLoading();
+                onLocationSearching(longitude,latitude,radius);
+            }
+        });
+
+    }
+
+    @Background
+    void onLocationSearching(Double longitude, Double latitude, Double radius) {
+        Data data = dataSourceServices.getPeopleSource(context);
+        ArrayList<IntelRecord> intelRecords =dataSourceServices.getIntelRecordsSource(context);
+        data = dataSourceServices.mergeEntitiesAndRecords(data,intelRecords);
+
+
+        var newList = dataSourceServices.getPeopleFromEntities(dataFilteringService.searchLocation(data.getEntitiesList(), longitude,latitude,radius));
+        setAdapterUi(newList);
     }
 
     @Background

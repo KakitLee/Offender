@@ -2,10 +2,14 @@ package com.project.zhi.tigerapp.complexmenu.holder;
 
 import android.content.Context;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.SearchView;
 import android.widget.TextView;
 
 import com.project.zhi.tigerapp.R;
+
+import org.apache.commons.lang3.math.NumberUtils;
 
 import java.util.List;
 
@@ -46,6 +50,11 @@ public class SelectHolder extends BaseWidgetHolder<List<String>> {
     private String mRetType = "";
     private ImageView mTeacherGenderArrorImage;
     private ImageView mTypeArrorImage;
+    private EditText mLongitudeView;
+    private EditText mLatitudeView;
+    private EditText mRadiusView;
+
+    private OnLocationSearchBtnListener onLocationSearchBtnListener;
 
     public SelectHolder(Context context) {
         super(context);
@@ -55,44 +64,20 @@ public class SelectHolder extends BaseWidgetHolder<List<String>> {
     public View initView() {
 
         View view = View.inflate(mContext, R.layout.layout_holder_select, null);
+        mLongitudeView = view.findViewById(R.id.tv_longitude);
+        mLatitudeView = view.findViewById(R.id.tv_latitude);
+        mRadiusView = view.findViewById(R.id.tv_radius);
 
-//        mNoRuleView = view.findViewById(R.id.zhbx);
-//        mTeacherGenderView = view.findViewById(R.id.jsxb);
-//        mCourseTypeView = view.findViewById(R.id.skfs);
-
-        //列表标题控件
-//        mGenderView = view.findViewById(R.id.ll_gender);
-//        mTypeView = view.findViewById(R.id.ll_type);
-
-//        mTeacherGenderText = (TextView) view.findViewById(R.id.tv_jsxb);
-//        mTypeText = (TextView) view.findViewById(R.id.tv_skfs);
-
-//        mTeacherGenderArrorImage = (ImageView) view.findViewById(R.id.img_jsxb);
-//        mTypeArrorImage = (ImageView) view.findViewById(R.id.img_skfs);
-
-//        mGenderNoRuleRIView = (RadioItemView) view.findViewById(R.id.riv_gender_norule);
-//        mGenderMaleRIView = (RadioItemView) view.findViewById(R.id.riv_gender_boy);
-//        mGenderFemaleRIView = (RadioItemView) view.findViewById(R.id.riv_gender_girl);
-//
-//        mTypeNoRuleRIView = (RadioItemView) view.findViewById(R.id.riv_type_norule);
-//        mTypeTeacherToHomeRIView = (RadioItemView) view.findViewById(R.id.riv_type_teacherToHome);
-//        mTypeStudentToSchoolRIView = (RadioItemView) view.findViewById(R.id.riv_type_studentToSchool);
-
-//        mGenderNoRuleRIView.setTitleText("no rule");
-//        mGenderMaleRIView.setTitleText("male");
-//        mGenderFemaleRIView.setTitleText("female");
-//        mTypeNoRuleRIView.setTitleText("no rule");
-//        mTypeTeacherToHomeRIView.setTitleText("rule1");
-//        mTypeStudentToSchoolRIView.setTitleText("rule2");
-
-        mSureBtn = (TextView) view.findViewById(R.id.btn_search_Search);
+        mSureBtn = (TextView) view.findViewById(R.id.btn_location_Search);
 
         mSureBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(mOnSelectedInfoListener != null){
-                    mOnSelectedInfoListener.OnselectedInfo(mRetGender, mRetType);
-                }
+
+                Double longitude = NumberUtils.toDouble(mLongitudeView.getText().toString());
+                Double latitude = NumberUtils.toDouble(mLatitudeView.getText().toString());
+                Double radius = NumberUtils.toDouble(mRadiusView.getText().toString());
+                onLocationSearchBtnListener.OnLocationSearchBtnListener(longitude, latitude, radius);
             }
         });
 
@@ -108,73 +93,6 @@ public class SelectHolder extends BaseWidgetHolder<List<String>> {
     }
 
     private void initViewListners(){
-
-//        mNoRuleView.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//
-//                if(mGenderRecorder != null){
-//                    mGenderRecorder.setSelected(false);
-//                }
-//
-//                if(mTypeRecorder != null){
-//                    mTypeRecorder.setSelected(false);
-//                }
-//
-//                mGenderView.setVisibility(View.GONE);
-//                mTypeView.setVisibility(View.GONE);
-//
-//                //默认不限
-//                mGenderNoRuleRIView.setSelected(true);
-//                mTypeNoRuleRIView.setSelected(true);
-//
-//                mIsFirstExtendGender = true;
-//                mIsFirstExtendType = true;
-//
-//                mRetGender = "";
-//                mRetType = "";
-//            }
-//        });
-//
-//        mTeacherGenderView.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                if (View.GONE == mGenderView.getVisibility()) {
-//                    mGenderView.setVisibility(View.VISIBLE);
-//                    mTeacherGenderText.setTextColor(mContext.getResources().getColor(R.color.blue));
-//                    mTeacherGenderArrorImage.setImageResource(R.mipmap.ic_up_blue);
-//
-//                } else {
-//                    mGenderView.setVisibility(View.GONE);
-//                    mTeacherGenderText.setTextColor(mContext.getResources().getColor(R.color.text_color_gey));
-//                    mTeacherGenderArrorImage.setImageResource(R.mipmap.ic_down);
-//                }
-//
-//                mTypeView.setVisibility(View.GONE);
-//                mTypeText.setTextColor(mContext.getResources().getColor(R.color.text_color_gey));
-//                mTypeArrorImage.setImageResource(R.mipmap.ic_down);
-//            }
-//        });
-//
-//        mCourseTypeView.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                if (View.GONE == mTypeView.getVisibility()) {
-//                    mTypeView.setVisibility(View.VISIBLE);
-//
-//                    mTypeText.setTextColor(mContext.getResources().getColor(R.color.blue));
-//                    mTypeArrorImage.setImageResource(R.mipmap.ic_up_blue);
-//
-//                } else {
-//                    mTypeView.setVisibility(View.GONE);
-//                    mTypeText.setTextColor(mContext.getResources().getColor(R.color.text_color_gey));
-//                    mTypeArrorImage.setImageResource(R.mipmap.ic_down);
-//                }
-//                mGenderView.setVisibility(View.GONE);
-//                mTeacherGenderText.setTextColor(mContext.getResources().getColor(R.color.text_color_gey));
-//                mTeacherGenderArrorImage.setImageResource(R.mipmap.ic_down);
-//            }
-//        });
     }
 
     public String getRetGender(){
@@ -186,27 +104,6 @@ public class SelectHolder extends BaseWidgetHolder<List<String>> {
     }
 
     private void initGenderListener(){
-//        mGenderNoRuleRIView.setOnStatusChangedListener(new RadioItemView.OnStatusChangedListener() {
-//            @Override
-//            public void onStatusChange(boolean bool, String text) {
-//                clearGenderInfo(mGenderNoRuleRIView, text);
-//                mRetGender = "";
-//            }
-//        });
-//        mGenderMaleRIView.setOnStatusChangedListener(new RadioItemView.OnStatusChangedListener() {
-//            @Override
-//            public void onStatusChange(boolean bool, String text) {
-//                clearGenderInfo(mGenderMaleRIView, text);
-//                mRetGender = "1";
-//            }
-//        });
-//        mGenderFemaleRIView.setOnStatusChangedListener(new RadioItemView.OnStatusChangedListener() {
-//            @Override
-//            public void onStatusChange(boolean bool, String text) {
-//                clearGenderInfo(mGenderFemaleRIView, text);
-//                mRetGender = "0";
-//            }
-//        });
     }
 
     private void clearGenderInfo(RadioItemView radioItemView, String text){
@@ -228,27 +125,6 @@ public class SelectHolder extends BaseWidgetHolder<List<String>> {
     }
 
     private void initTypeListener(){
-//        mTypeNoRuleRIView.setOnStatusChangedListener(new RadioItemView.OnStatusChangedListener() {
-//            @Override
-//            public void onStatusChange(boolean bool, String text) {
-//                clearTypeInfo(mTypeNoRuleRIView, text);
-//                mRetType = "";
-//            }
-//        });
-//        mTypeTeacherToHomeRIView.setOnStatusChangedListener(new RadioItemView.OnStatusChangedListener() {
-//            @Override
-//            public void onStatusChange(boolean bool, String text) {
-//                clearTypeInfo(mTypeTeacherToHomeRIView, text);
-//                mRetType = "1";     //教师到家
-//            }
-//        });
-//        mTypeStudentToSchoolRIView.setOnStatusChangedListener(new RadioItemView.OnStatusChangedListener() {
-//            @Override
-//            public void onStatusChange(boolean bool, String text) {
-//                clearTypeInfo(mTypeStudentToSchoolRIView, text);
-//                mRetType = "2";    //校区上课
-//            }
-//        });
     }
 
     private void clearTypeInfo(RadioItemView radioItemView, String text){
@@ -283,5 +159,11 @@ public class SelectHolder extends BaseWidgetHolder<List<String>> {
 
     public interface OnSelectedInfoListener{
         void OnselectedInfo(String gender, String type);
+    }
+    public interface OnLocationSearchBtnListener{
+        void OnLocationSearchBtnListener(Double longitude, Double latitude, Double radius);
+    }
+    public void setOnLocationSearchBtnListner(OnLocationSearchBtnListener onSearchBtnListener){
+        this.onLocationSearchBtnListener = onSearchBtnListener;
     }
 }

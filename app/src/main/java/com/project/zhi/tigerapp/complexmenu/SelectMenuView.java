@@ -103,6 +103,7 @@ public class SelectMenuView extends LinearLayout{
     DataSourceServices dataSourceServices = new DataSourceServices();
 
     private int mTabRecorder = -1;
+    private OnLocationSearchingBtnListener onLocationSearchingBtnListener;
 
     public SelectMenuView(Context context) {
         super(context);
@@ -202,17 +203,13 @@ public class SelectMenuView extends LinearLayout{
 
         //筛选
         mSelectHolder = new SelectHolder(mContext);
-        mSelectHolder.setOnSelectedInfoListener(new SelectHolder.OnSelectedInfoListener() {
+        mSelectHolder.setOnLocationSearchBtnListner(new SelectHolder.OnLocationSearchBtnListener() {
             @Override
-            public void OnselectedInfo(String gender, String type) {
-
-                if(mOnMenuSelectDataChangedListener != null){
-                    mOnMenuSelectDataChangedListener.onSelectedChanged(gender, type);
-                }
-
+            public void OnLocationSearchBtnListener(Double longitude, Double latitude, Double radius) {
                 dismissPopupWindow();
-                //Toast.makeText(UIUtils.getContext(), gender+" "+type, Toast.LENGTH_SHORT).show();
+                onLocationSearchingBtnListener.OnLocationSearching(longitude,latitude,radius);
             }
+
         });
     }
 
@@ -441,5 +438,12 @@ public class SelectMenuView extends LinearLayout{
     }
     public interface OnSearchingBtnListener{
         void OnSearching(String query);
+    }
+
+    public void setOnLocationSearchingBtnListener(OnLocationSearchingBtnListener onLocationSearchingBtnListener){
+        this.onLocationSearchingBtnListener = onLocationSearchingBtnListener;
+    }
+    public interface OnLocationSearchingBtnListener{
+        void OnLocationSearching(Double longitude, Double latitude, Double radius);
     }
 }

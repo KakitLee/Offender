@@ -48,6 +48,7 @@ public class UploadActivity extends AppCompatActivity
     private static final int SDCARD_PERMISSION_FOLDER = 12,
             SDCARD_PERMISSION_FILE = 123,
             FOLDER_VOICE_PICKER_CODE = 788,
+            FOLDER_RECORD_PICKER_CODE = 789,
             FOLDER_PICKER_CODE = 78,
             FILE_PICKER_CODE = 786;
 
@@ -57,8 +58,8 @@ public class UploadActivity extends AppCompatActivity
     @ViewById(R.id.tv_file)
     TextView tv_filePath;
 
-    @ViewById(R.id.tv_folder_voice)
-    TextView tv_folder_voice;
+    @ViewById(R.id.tv_folder_record)
+    TextView tv_folder_record;
 
     @ViewById(R.id.btn_confirm)
     Button btn_comfirm;
@@ -140,22 +141,27 @@ public class UploadActivity extends AppCompatActivity
     }
 
     public void pickFolder(View v) {
-        pickFolderOrFile(true,false);
+        pickFolderOrFile(true,false,false);
     }
-
+    public void pickRecordFolder(View v){
+        pickFolderOrFile(true,false,true);
+    }
     public  void pickVoiceFolder(View v){
-        pickFolderOrFile(true,true);
+        pickFolderOrFile(true,true,false);
     }
 
     public void pickFile(View v) {
-        pickFolderOrFile(false,false);
+        pickFolderOrFile(false,false,false);
     }
 
-    void pickFolderOrFile(boolean folder, boolean isVoice) {
+    void pickFolderOrFile(boolean folder, boolean isVoice, boolean isRecord) {
 
         if (Build.VERSION.SDK_INT < 23) {
             if(folder && isVoice){
                 pickVoiceFolder();
+            }
+            else if(folder && isRecord){
+                pickRecordFolder();
             }
             else if (folder)
                 pickFolder();
@@ -167,6 +173,9 @@ public class UploadActivity extends AppCompatActivity
             if (storagePermissionAvailable()) {
                 if(folder && isVoice){
                     pickVoiceFolder();
+                }
+                else if(folder && isRecord){
+                    pickRecordFolder();
                 }
                 else if (folder)
                     pickFolder();
@@ -235,6 +244,11 @@ public class UploadActivity extends AppCompatActivity
         Intent intent = new Intent(this, FolderPicker.class);
         startActivityForResult(intent, FOLDER_VOICE_PICKER_CODE);
     }
+    void pickRecordFolder() {
+
+        Intent intent = new Intent(this, FolderPicker.class);
+        startActivityForResult(intent, FOLDER_VOICE_PICKER_CODE);
+    }
     void pickFile() {
         Intent intent = new Intent(this, FolderPicker.class);
 
@@ -261,10 +275,15 @@ public class UploadActivity extends AppCompatActivity
             userPrefs.isFolder().put(true);
             userPrefs.folder().put(folderLocation);
         }
-        else if(requestCode == FOLDER_VOICE_PICKER_CODE && resultCode == Activity.RESULT_OK){
+//        else if(requestCode == FOLDER_VOICE_PICKER_CODE && resultCode == Activity.RESULT_OK){
+//            String folderLocation = intent.getExtras().getString("data");
+//            tv_folder_voice.setText(folderLocation);
+//            userPrefs.voiceFolder().put(folderLocation);
+//        }
+        else if(requestCode == FOLDER_RECORD_PICKER_CODE && resultCode == Activity.RESULT_OK){
             String folderLocation = intent.getExtras().getString("data");
-            tv_folder_voice.setText(folderLocation);
-            userPrefs.voiceFolder().put(folderLocation);
+            tv_folder_record.setText(folderLocation);
+            userPrefs.recordFolder().put(folderLocation);
         }
         else if (requestCode == FILE_PICKER_CODE && resultCode == Activity.RESULT_OK) {
             String folderLocation = intent.getExtras().getString("data");

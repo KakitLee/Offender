@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<IntelRecord xmlns="http://www.smartconservationsoftware.org/xml/1.0/org.wcs.smart.i2.record">
+    <title>MP_20170923_03_Foraging</title>
+    <status>COMPLETE</status>
+    <source>
+        <name>patrol</name>
+        <uuid>db83830d21ef4ffca9f588329e526371</uuid>
+    </source>
+    <narrative>Report type: Patrol Alpha&#xD;
+        Report source: GRIM&#xD;
+        Date entered:	23 Sept 17&#xD;
+        Date of observation: 23 Sept 17, 14:12&#xD;
+        &#xD;
+        Biographical details of man stopped by Patrol Team Alpha in Muadzam Park&#xD;
+        &#xD;
+        Name:			Nabeeha bin Taqiyya&#xD;
+        Age:			35&#xD;
+        Home Address:		Kampung Permatang Durian&#xD;
+        ID Number:		IR648239&#xD;
+        Marital status:		Single&#xD;
+        Father’s name:		Chahaya Taqiyya&#xD;
+        Physical description:	5’8” tall, skinny, thick black hair. Wearing white T shirt, and black shorts and sandals.&#xD;
+        Items carried:		Unidentified item, potentially weapon; rucksack.&#xD;
+        Details of stop:		&#xD;
+        &#xD;
+        Taqiyya was stopped entering Muadzam Park because he was carrying a rucksack and long item, potentially a firearm or spear.  On sighting the patrol he threw it into an area of bush, and the patrol was unable to find it.  &#xD;
+        &#xD;
+        Taqiyya stated that he was foraging for fruit.  We advised him that he was not permitted to forage inside the Protected Area. He stated that he did not know where the edge of the Protected Area was. &#xD;
+        &#xD;
+        Taqiyya denied that he had been carrying a weapon, or any other item.  &#xD;
+        &#xD;
+        Comment: there is little fruit on the east side of the Park.  Taqqiya appeared restless and defensive, and may well have been hunting or heading towards the Central River to spear fish.  Comment ends. &#xD;
+        &#xD;
+        Since Taqiyya had not technically done anything wrong, he was released with a reminder about illegal foraging.  &#xD;
+        &#xD;
+        &#xD;
+        Nabeeha bin Taqiyya, Sep 17&#xD;
+        &#xD;
+    </narrative>
+    <primary_date>2017-09-23+10:00</primary_date>
+    <attributes type="SINGLE_ATTRIBUTE">
+        <record_attribute>
+            <name>gpslocation1</name>
+            <uuid>e7b5b98f67e0463e9949e1c7a2b61b6a</uuid>
+        </record_attribute>
+        <number_value_1>103.35471041746172</number_value_1>
+        <number_value_2>3.050261916758624</number_value_2>
+    </attributes>
+    <attributes type="SINGLE_ATTRIBUTE">
+        <record_attribute>
+            <name>date</name>
+            <uuid>65fa122a84f34cdea4c1a26927723703</uuid>
+        </record_attribute>
+        <string_value>2017-09-23</string_value>
+    </attributes>
+    <attributes type="SINGLE_ATTRIBUTE">
+        <record_attribute>
+            <name>place</name>
+            <uuid>1a61f713ba2c48bc99e0d9e32b7ef7e8</uuid>
+        </record_attribute>
+        <string_value>Eastern Muadzam Park</string_value>
+    </attributes>
+    <attributes type="SINGLE_ATTRIBUTE">
+        <record_attribute>
+            <name>patrolleader</name>
+            <uuid>8c51edc40e37432798fdf65e900cbc72</uuid>
+        </record_attribute>
+        <string_value>Suriani bin Heryati</string_value>
+    </attributes>
+    <attributes type="SINGLE_ATTRIBUTE">
+        <record_attribute>
+            <name>actiontaken</name>
+            <uuid>b2f9c361a7d9429f9fb4103513f3dbd5</uuid>
+        </record_attribute>
+        <string_value>Warning</string_value>
+    </attributes>
+    <attributes type="SINGLE_ATTRIBUTE">
+        <record_attribute>
+            <name>patrolid</name>
+            <uuid>5cd19e5380194812ba8c87023762a1d8</uuid>
+        </record_attribute>
+        <string_value>MP_20170923_GR</string_value>
+    </attributes>
+    <attributes type="SINGLE_ATTRIBUTE">
+        <record_attribute>
+            <name>offence</name>
+            <uuid>2ccdee65145f44218fd13620a4cdade4</uuid>
+        </record_attribute>
+        <string_value>Potential illegal foraging</string_value>
+    </attributes>
+    <entities keyid="person">
+        <name>TAQIYYA_bin_Nabeeha_MP/00387</name>
+        <uuid>cd14bee97c844b53b25d87bf3788794b</uuid>
+    </entities>
+    <entities keyid="person">
+        <name>SANG HEILI</name>
+        <uuid>70f56fe8589344579f66a0dbd0315724</uuid>
+    </entities>
+    <attachments>
+        <filename>20170923 Patrol Alpha #0087.docx</filename>
+    </attachments>
+    <locations>
+        <id>Intercept #01</id>
+        <datetime>2017-09-23 14:12:09.000</datetime>
+        <comment>TAQIYYA_bin_Nabeeha_MP/00387 poss hunting / fishing / foraging</comment>
+        <geometry>00800000014059D6B3B0FFF627400866E0DD98A6517FF8000000000000</geometry>
+        <entities keyid="person">
+            <name>TAQIYYA_bin_Nabeeha_MP/00387</name>
+            <uuid>cd14bee97c844b53b25d87bf3788794b</uuid>
+        </entities>
+        <entities keyid="person">
+            <name>SANG HEILI</name>
+            <uuid>70f56fe8589344579f66a0dbd0315724</uuid>
+        </entities>
+    </locations>
+</IntelRecord>
