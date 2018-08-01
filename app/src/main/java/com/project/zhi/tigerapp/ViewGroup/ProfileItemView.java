@@ -29,7 +29,7 @@ public class ProfileItemView extends RelativeLayout {
         super(context);
     }
     public void bind(Attributes attributes) {
-        tvProfileSubTitle.setText(Utils.displayKeyAsTitle(attributes.getAttributeKey()));
+        tvProfileSubTitle.setText(attributes.getLabel());
         if(attributes.getType() == "TEXT") {
             tvProfileContent.setText(Utils.displayKeyAsTitle(attributes.getStringValue()));
         }

@@ -11,6 +11,7 @@ import com.project.zhi.tigerapp.Entities.Entities;
 import com.project.zhi.tigerapp.Entities.Locations;
 import com.project.zhi.tigerapp.Entities.Person;
 import com.project.zhi.tigerapp.Entities.Record.IntelAttributes;
+import com.project.zhi.tigerapp.Entities.Record.IntelEntities;
 import com.project.zhi.tigerapp.Entities.Record.IntelRecord;
 import com.project.zhi.tigerapp.FaceUtils.Application;
 import com.project.zhi.tigerapp.R;
@@ -262,6 +263,13 @@ public class DataSourceServices implements IDataSourceServices {
         }
     }
     public Data mergeEntitiesAndRecords(Data data, ArrayList<IntelRecord> records){
+        for (IntelRecord record: records){
+            for (IntelEntities entity: record.getLocations().getIntelEntities()
+                 ) {
+
+            }
+        }
+
         for (Entities entity: data.getEntitiesList()
                 ) {
             ArrayList<Locations> locations = entity.getLocations();
@@ -312,7 +320,9 @@ public class DataSourceServices implements IDataSourceServices {
                 for (File file: files) {
                     if(FilenameUtils.getExtension(file.getName()).toLowerCase().contains("xml")){
                         IntelRecord recordSingle = serializer.read(IntelRecord.class, file);
-                        records.add(recordSingle);
+                        if(recordSingle.getLocations() != null) {
+                            records.add(recordSingle);
+                        }
                     }
                 }
             }

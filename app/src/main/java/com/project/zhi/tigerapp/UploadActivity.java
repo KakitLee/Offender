@@ -247,7 +247,7 @@ public class UploadActivity extends AppCompatActivity
     void pickRecordFolder() {
 
         Intent intent = new Intent(this, FolderPicker.class);
-        startActivityForResult(intent, FOLDER_VOICE_PICKER_CODE);
+        startActivityForResult(intent, FOLDER_RECORD_PICKER_CODE);
     }
     void pickFile() {
         Intent intent = new Intent(this, FolderPicker.class);
