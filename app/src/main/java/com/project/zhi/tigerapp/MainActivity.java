@@ -122,6 +122,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         }
                     }
                     userPrefs.file().put(null);
+                    if(userPrefs.recordFolder().get() != null){
+                        File folder = new File(userPrefs.recordFolder().get());
+                        ArrayList<File> filesRecord = Utils.getAllFilesInDir(folder);
+                        if (filesRecord != null) {
+                            for (File folderFile : filesRecord
+                                    ) {
+                                if (Utils.isExpiredFile(folderFile)) {
+                                    folderFile.delete();
+                                }
+                            }
+                        }
+                    }
                     dataSourceServices.dataSourceChange(this);
                 }
             }
