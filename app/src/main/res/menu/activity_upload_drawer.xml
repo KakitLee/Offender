@@ -5,10 +5,10 @@
     tools:showIn="navigation_view">
 
     <group android:checkableBehavior="single">
-        <item
-            android:id="@+id/nav_login"
-            android:icon="@drawable/login"
-            android:title="Login" />
+        <!--<item-->
+            <!--android:id="@+id/nav_login"-->
+            <!--android:icon="@drawable/login"-->
+            <!--android:title="Login" />-->
         <item
             android:id="@+id/nav_search"
             android:icon="@drawable/ic_menu_search2"
@@ -17,19 +17,14 @@
             android:id="@+id/nav_gallery"
             android:icon="@drawable/upload"
             android:title="Upload" />
-        <item
-            android:id="@+id/nav_sound"
-            android:icon="@drawable/sound"
-            android:title="Sound"/>
+        <!--<item-->
+            <!--android:id="@+id/nav_sound"-->
+            <!--android:icon="@drawable/sound"-->
+            <!--android:title="Sound"/>-->
         <item
             android:id="@+id/nav_photo"
             android:icon="@drawable/photo"
             android:title="Photo" />
-        <item
-            android:id="@+id/nav_syn"
-            android:icon="@drawable/syn"
-            android:title="Setting"/>
-
     </group>
 
 </menu>

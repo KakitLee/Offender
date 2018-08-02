@@ -19,19 +19,28 @@ import com.qingyangli.offender.activities.MainActivityVoice;
 public class NavigationService {
     public Intent getActivity(Context activity, MenuItem item){
         int id = item.getItemId();
+//
+//        if (id == R.id.nav_search) {
+//            return new Intent(activity, MainActivity_.class);
+//        } else if (id == R.id.nav_gallery) {
+//            return new Intent(activity, UploadActivity_.class);
+//        }else if(id == R.id.nav_sound){
+//            return new Intent(activity, MainActivityVoice.class);
+//        }else if(id == R.id.nav_photo){
+//            return new Intent(activity, PhotoActivity_.class);
+//        }else if (id == R.id.nav_syn){
+//            return new Intent(activity, SettingsActivity_.class);
+//        }else if (id == R.id.nav_login){
+//            return new Intent(activity, LoginActivity_.class);
+//        }
+//
 
         if (id == R.id.nav_search) {
             return new Intent(activity, MainActivity_.class);
         } else if (id == R.id.nav_gallery) {
             return new Intent(activity, UploadActivity_.class);
-        }else if(id == R.id.nav_sound){
-            return new Intent(activity, MainActivityVoice.class);
         }else if(id == R.id.nav_photo){
             return new Intent(activity, PhotoActivity_.class);
-        }else if (id == R.id.nav_syn){
-            return new Intent(activity, SettingsActivity_.class);
-        }else if (id == R.id.nav_login){
-            return new Intent(activity, LoginActivity_.class);
         }
         return new Intent(activity, activity.getClass());
     }

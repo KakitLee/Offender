@@ -41,16 +41,16 @@
             android:layout_marginRight="@dimen/px_44"
             android:inputType="numberDecimal"
             android:hint="Radius in KM"/>
-        <Button
-            android:id="@+id/btn_location_Clear"
-            android:layout_marginTop="@dimen/px_20"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:divider="@null"
-            android:text="Clear"
-            android:layout_marginLeft="@dimen/px_44"
-            android:layout_marginRight="@dimen/px_44"
-            android:scrollbars="none" />
+        <!--<Button-->
+            <!--android:id="@+id/btn_location_Clear"-->
+            <!--android:layout_marginTop="@dimen/px_20"-->
+            <!--android:layout_width="fill_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:divider="@null"-->
+            <!--android:text="Clear"-->
+            <!--android:layout_marginLeft="@dimen/px_44"-->
+            <!--android:layout_marginRight="@dimen/px_44"-->
+            <!--android:scrollbars="none" />-->
 
         <Button
             android:id="@+id/btn_location_Search"
