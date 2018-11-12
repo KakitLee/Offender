@@ -354,21 +354,21 @@ public class localTest {
 
     }
 
-    @Test
-    public void testGeo() {
-        SpatialContext ctx = SpatialContext.GEO;
-        Double degree = DistanceUtils.dist2Degrees(6.76,DistanceUtils.EARTH_EQUATORIAL_RADIUS_KM);
-        PointImpl pp = new PointImpl(103.35471041746172,3.050261916758624,ctx);
-        CircleImpl cc = new CircleImpl(pp, degree,ctx);
-        CartesianDistCalc dc = new CartesianDistCalc();
-        boolean isWhitn = dc.within(pp,103.306411,3.013046,degree);
-        boolean iswhitn2 = cc.contains(103.306411,3.013046);
-        assertEquals(isWhitn,iswhitn2);
-        cc.getArea(ctx);
-
-
-
-    }
+//    @Test
+//    public void testGeo() {
+//        SpatialContext ctx = SpatialContext.GEO;
+//        Double degree = DistanceUtils.dist2Degrees(6.76,DistanceUtils.EARTH_EQUATORIAL_RADIUS_KM);
+//        PointImpl pp = new PointImpl(103.35471041746172,3.050261916758624,ctx);
+//        CircleImpl cc = new CircleImpl(pp, degree,ctx);
+//        CartesianDistCalc dc = new CartesianDistCalc();
+//        boolean isWhitn = dc.within(pp,103.306411,3.013046,degree);
+//        boolean iswhitn2 = cc.contains(103.306411,3.013046);
+//        assertEquals(isWhitn,iswhitn2);
+//        cc.getArea(ctx);
+//
+//
+//
+//    }
 
 
 

@@ -2,6 +2,7 @@ package com.project.zhi.tigerapp.Utils;
 
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.Entity;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -24,6 +25,7 @@ import com.project.zhi.tigerapp.R;
 import com.project.zhi.tigerapp.complexmenu.MenuModel;
 
 import org.apache.commons.text.WordUtils;
+import org.simpleframework.xml.Attribute;
 
 import java.io.File;
 import java.io.IOException;
@@ -48,6 +50,13 @@ public class Utils {
     }
     public static String displayKeyAsTitle(String key){
         return WordUtils.capitalize(key);
+    }
+
+    public static String getDisplayAttributeLabel(Attributes attribute){
+        if(attribute.getLabel() != null && !attribute.getLabel().isEmpty()){
+            return attribute.getLabel();
+        }
+        return attribute.getAttributeKey();
     }
 
     public static Comparator<MenuModel> getComparatorMenuModelAlphabetically(){
@@ -95,7 +104,7 @@ public class Utils {
             }
             return "No";
         }
-        return null;
+        return attribute.getStringValue();
     }
 
     public static Attachments getPrimaryAttachent(ArrayList<Attachments> attachments){

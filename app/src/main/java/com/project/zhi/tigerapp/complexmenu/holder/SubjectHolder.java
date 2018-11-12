@@ -144,7 +144,7 @@ public class SubjectHolder extends BaseWidgetHolder<ArrayList<ArrayList<MenuMode
     private void dialog(final TextView displayView, MenuModel menuModel, final ImageView imageView){
         final String[] m_Text = {""};
         AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
-        builder.setTitle(Utils.displayKeyAsTitle(menuModel.getAttributeKey()));
+        builder.setTitle(Utils.displayKeyAsTitle(menuModel.getAttributeDisplayText()));
         final EditText input = new EditText(mContext);
         RangeSeekBar<Integer> rangeSeekBar = new RangeSeekBar<Integer>(mContext);
         Switch toggleSwitch = new Switch(mContext);

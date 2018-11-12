@@ -50,7 +50,7 @@ public class ProfileAdapter extends ArrayAdapter<Attributes> {
         TextView tvValue = (TextView) convertView.findViewById(R.id.tvProfileContent);
 
         Attributes item = attributes.get(position);
-        tvTitle.setText(item.getLabel());
+        tvTitle.setText(Utils.getDisplayAttributeLabel(item));
         String value = Utils.getAttributeValues(item);
 
         tvValue.setText(value);

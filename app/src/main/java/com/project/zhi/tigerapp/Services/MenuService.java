@@ -125,7 +125,7 @@ public class MenuService {
             if(key.toLowerCase().contains("name") || key.toLowerCase().contains("nationalid")){
                     MenuModel newModel= new MenuModel();
                     newModel.setAttributeKey(key);
-                    newModel.setAttributeDisplayText(attribute.getLabel());
+                    newModel.setAttributeDisplayText(Utils.getDisplayAttributeLabel(attribute));
                     newModel.setAttributeType(AttributeType.valueOf(attribute.getType().toUpperCase(Locale.ENGLISH)));
                     newListModel.add(newModel);
                     iterator.remove();
@@ -146,7 +146,7 @@ public class MenuService {
             if(key.toLowerCase().contains("gender") || key.toLowerCase().contains("height") || key.toLowerCase().contains("address") || key.toLowerCase().contains("phone") || key.toLowerCase().contains("age")){
                     MenuModel newModel= new MenuModel();
                     newModel.setAttributeKey(key);
-                    newModel.setAttributeDisplayText(attribute.getLabel());
+                    newModel.setAttributeDisplayText(Utils.getDisplayAttributeLabel(attribute));
                     newModel.setAttributeType(AttributeType.valueOf(attribute.getType().toUpperCase(Locale.ENGLISH)));
                     newListModel.add(newModel);
                     iterator.remove();
@@ -166,7 +166,7 @@ public class MenuService {
              ) {
             MenuModel newModel= new MenuModel();
             newModel.setAttributeKey(otherDemo.getAttributeKey());
-            newModel.setAttributeDisplayText(otherDemo.getLabel());
+            newModel.setAttributeDisplayText(Utils.getDisplayAttributeLabel(otherDemo));
             newModel.setAttributeType(AttributeType.valueOf(otherDemo.getType().toUpperCase(Locale.ENGLISH)));
             newListModel.add(newModel);
         }

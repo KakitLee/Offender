@@ -2,7 +2,6 @@ package com.project.zhi.tigerapp.Services;
 
 import android.content.Context;
 
-import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.project.zhi.tigerapp.Entities.Attributes;
 import com.project.zhi.tigerapp.Entities.Entities;
@@ -21,13 +20,10 @@ import org.apache.commons.collections4.Predicate;
 import org.locationtech.spatial4j.context.SpatialContext;
 import org.locationtech.spatial4j.distance.CartesianDistCalc;
 import org.locationtech.spatial4j.distance.DistanceUtils;
-import org.locationtech.spatial4j.shape.impl.CircleImpl;
 import org.locationtech.spatial4j.shape.impl.PointImpl;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
 
 import lombok.experimental.var;
 import lombok.val;
@@ -242,7 +238,7 @@ public class DataFilteringService {
         return false;
     }
 
-    public ArrayList<Person> mergeAll(Context context){
+    public ArrayList<Person> mergeAll(Context context, boolean isClear){
         ArrayList<Person> filteredPersonList = new ArrayList<Person>();
         ArrayList<Entities> entities = dataSourceServices.getPeopleSource(context).getEntitiesList();
         String gsonAllMenu = userPrefs.allMenu().get();
@@ -256,6 +252,7 @@ public class DataFilteringService {
             mainDempMenu = allMenus.get(2);
             otherDemoMenu = allMenus.get(3);
         }
+
         ArrayList<Entities> updatedEntities = update(entities,nameMenu,mainDempMenu,otherDemoMenu);
         ArrayList<Person> people = dataSourceServices.getPeopleFromEntities(updatedEntities);
         //ArrayList<Entities> filterList= new ArrayList<Entities>();

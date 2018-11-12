@@ -39,9 +39,10 @@ public class NavigationService {
             return new Intent(activity, MainActivity_.class);
         } else if (id == R.id.nav_gallery) {
             return new Intent(activity, UploadActivity_.class);
-        }else if(id == R.id.nav_photo){
-            return new Intent(activity, PhotoActivity_.class);
         }
+//        else if(id == R.id.nav_photo){
+//            return new Intent(activity, PhotoActivity_.class);
+//        }
         return new Intent(activity, activity.getClass());
     }
 

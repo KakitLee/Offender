@@ -318,7 +318,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
     @Background
     void updateAdapter(){
-        ArrayList<Person> people = dataFilteringService.mergeAll(this);
+        ArrayList<Person> people = dataFilteringService.mergeAll(this, false);
         setAdapterUi(people);
         onDismiss();
     }

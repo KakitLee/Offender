@@ -94,7 +94,9 @@ public class UploadActivity extends AppCompatActivity
         if(userPrefs.isFile().get()) {
             tv_filePath.setText(userPrefs.file().get());
         }
-        tv_folder_record.setText(userPrefs.recordFolder().get());
+        if(userPrefs.recordFolder().get() != null && !userPrefs.recordFolder().get().isEmpty()) {
+            tv_folder_record.setText(userPrefs.recordFolder().get());
+        }
     }
 
     @Override

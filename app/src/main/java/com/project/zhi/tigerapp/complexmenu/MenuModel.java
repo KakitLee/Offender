@@ -12,4 +12,11 @@ public class MenuModel {
     private Double minValue;
     private Double maxValue;
     private String value;
+
+    public String getAttributeDisplayText(){
+        if(this.attributeDisplayText == null || this.attributeDisplayText.isEmpty()){
+            return this.attributeKey;
+        }
+        return attributeDisplayText;
+    }
 }

@@ -5,4 +5,6 @@ public enum AttributeType {
     LIST,
     BOOLEAN,
     NUMERIC,
+    DATE,
+    POSITION
 }

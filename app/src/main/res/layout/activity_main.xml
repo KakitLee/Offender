@@ -26,7 +26,7 @@
             android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true"
             android:layout_alignParentTop="true"
-            android:text="Clear Recognition" />
+            android:text="Clear All" />
 
         <com.project.zhi.tigerapp.complexmenu.SelectMenuView
             android:id="@+id/menu"
