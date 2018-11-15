@@ -66,15 +66,23 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
 
-    android:layout_height="@dimen/px_720"
+    android:layout_height="match_parent"
     >
     <fragment xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="@dimen/px_700"
         android:id="@+id/map"
-        tools:context=".MapsActivity"
         android:name="com.google.android.gms.maps.SupportMapFragment" />
+    <!--<Button-->
+    <!--android:id="@+id/btn_location_Search"-->
+    <!--android:layout_width="fill_parent"-->
+    <!--android:layout_height="@dimen/px_20"-->
+    <!--android:layout_marginLeft="@dimen/px_44"-->
+    <!--android:layout_marginRight="@dimen/px_44"-->
+    <!--android:text="Search"-->
+    <!--android:layout_below="@id/map"-->
+    <!--android:scrollbars="none" />-->
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="50dp"
