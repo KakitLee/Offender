@@ -6,7 +6,6 @@ import android.preference.PreferenceFragment;
 import android.preference.SwitchPreference;
 import android.webkit.URLUtil;
 
-import com.google.android.gms.common.util.IOUtils;
 import com.project.zhi.tigerapp.R;
 import com.project.zhi.tigerapp.Services.DataSourceServices;
 import com.project.zhi.tigerapp.Services.UserPrefs_;
@@ -18,8 +17,8 @@ import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.EFragment;
 import org.androidannotations.annotations.PreferenceByKey;
 import org.androidannotations.annotations.PreferenceChange;
-import org.androidannotations.annotations.PreferenceScreen;
 import org.androidannotations.annotations.PreferenceClick;
+import org.androidannotations.annotations.PreferenceScreen;
 import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.sharedpreferences.Pref;
 
@@ -166,8 +165,8 @@ public class NotificationFragment extends PreferenceFragment {
                 while ((bytesRead = inputStream.read(buffer)) != -1) {
                     outStream.write(buffer, 0, bytesRead);
                 }
-                IOUtils.closeQuietly(inputStream);
-                IOUtils.closeQuietly(outStream);
+                inputStream.close();
+                outStream.close();
                 if(dataSourceServices.isValidDataSource(targetFile.getAbsolutePath())) {
                     dataSourceServices.dataSourceChange(this.getActivity());
                     onFinishLoading();
@@ -224,8 +223,9 @@ public class NotificationFragment extends PreferenceFragment {
                 while ((bytesRead = inputStream.read(buffer)) != -1) {
                     outStream.write(buffer, 0, bytesRead);
                 }
-                IOUtils.closeQuietly(inputStream);
-                IOUtils.closeQuietly(outStream);
+                inputStream.close();
+                outStream.close();
+
                 onFinishLoading();
                 return true;
             }

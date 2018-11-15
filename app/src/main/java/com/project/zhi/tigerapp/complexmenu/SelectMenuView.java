@@ -1,28 +1,18 @@
 package com.project.zhi.tigerapp.complexmenu;
 
-import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.graphics.drawable.ColorDrawable;
 import android.preference.PreferenceManager;
 import android.util.AttributeSet;
-import android.util.Printer;
-import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-
-import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.project.zhi.tigerapp.Entities.Attributes;
-import com.project.zhi.tigerapp.Entities.Data;
 import com.project.zhi.tigerapp.R;
 import com.project.zhi.tigerapp.Services.DataSourceServices;
 import com.project.zhi.tigerapp.Services.MenuService;
@@ -31,15 +21,9 @@ import com.project.zhi.tigerapp.complexmenu.holder.SelectHolder;
 import com.project.zhi.tigerapp.complexmenu.holder.SortHolder;
 import com.project.zhi.tigerapp.complexmenu.holder.SubjectHolder;
 
-import org.androidannotations.annotations.Bean;
-import org.androidannotations.annotations.EBean;
-import org.androidannotations.api.sharedpreferences.StringPrefField;
-
 import java.util.ArrayList;
-import java.util.List;
 
 import lombok.Getter;
-import lombok.experimental.var;
 
 /**
  *
@@ -98,6 +82,8 @@ public class SelectMenuView extends LinearLayout{
 
     private OnSearchingBtnListener onSearchingBtnListener;
 
+    private boolean mLocationPermissionsGranted = false;
+
     MenuService menuService = new MenuService();
 
     DataSourceServices dataSourceServices = new DataSourceServices();
@@ -120,6 +106,7 @@ public class SelectMenuView extends LinearLayout{
     }
 
     private void init(){
+
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mContext);
         String gsonAllMenu = prefs.getString("allMenu",null);
         if(gsonAllMenu == null || gsonAllMenu.isEmpty()) {
@@ -313,7 +300,7 @@ public class SelectMenuView extends LinearLayout{
         else {
             mMainContentLayout.removeAllViews();
             mMainContentLayout.addView(mSelectHolder.getRootView(), ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-            mMainContentLayout.getLayoutParams().height =  mContext.getResources().getDimensionPixelSize(R.dimen.px_500);
+            mMainContentLayout.getLayoutParams().height =  mContext.getResources().getDimensionPixelSize(R.dimen.px_720);
             popUpWindow(TAB_SELECT);
         }
 
@@ -424,6 +411,10 @@ public class SelectMenuView extends LinearLayout{
         //清除菜单栏显示
         mSubjectText.setText("Filter");
         mSortText.setText("Sort");
+    }
+
+    public void setLocationPermission(boolean granted){
+        this.mLocationPermissionsGranted = granted;
     }
 
     public void setOnFilteringBtnListener(OnFilteringBtnListener onFilteringBtnListener){
