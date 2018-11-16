@@ -1,88 +1,92 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
-    <!--android:layout_width="match_parent"-->
-
-    <!--android:layout_height="@dimen/px_500"-->
-    <!--android:orientation="vertical">-->
-    <!--<LinearLayout-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:background="@color/white"-->
-        <!--android:orientation="vertical"-->
-        <!--android:layout_height="wrap_content">-->
-        <!--<EditText-->
-            <!--android:id="@+id/tv_longitude"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_centerHorizontal="true"-->
-            <!--android:layout_centerVertical="true"-->
-            <!--android:layout_marginLeft="@dimen/px_44"-->
-            <!--android:layout_marginRight="@dimen/px_44"-->
-            <!--android:inputType="numberDecimal"-->
-            <!--android:hint="Longitude"/>-->
-        <!--<EditText-->
-            <!--android:id="@+id/tv_latitude"-->
-            <!--android:layout_below="@id/tv_longitude"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_centerHorizontal="true"-->
-            <!--android:layout_centerVertical="true"-->
-            <!--android:layout_marginLeft="@dimen/px_44"-->
-            <!--android:layout_marginRight="@dimen/px_44"-->
-            <!--android:inputType="numberDecimal"-->
-            <!--android:hint="Latitude"/>-->
-        <!--<EditText-->
-            <!--android:id="@+id/tv_radius"-->
-            <!--android:layout_below="@id/tv_latitude"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_centerHorizontal="true"-->
-            <!--android:layout_centerVertical="true"-->
-            <!--android:layout_marginLeft="@dimen/px_44"-->
-            <!--android:layout_marginRight="@dimen/px_44"-->
-            <!--android:inputType="numberDecimal"-->
-            <!--android:hint="Radius in KM"/>-->
-        <!--&lt;!&ndash;<Button&ndash;&gt;-->
-            <!--&lt;!&ndash;android:id="@+id/btn_location_Clear"&ndash;&gt;-->
-            <!--&lt;!&ndash;android:layout_marginTop="@dimen/px_20"&ndash;&gt;-->
-            <!--&lt;!&ndash;android:layout_width="fill_parent"&ndash;&gt;-->
-            <!--&lt;!&ndash;android:layout_height="wrap_content"&ndash;&gt;-->
-            <!--&lt;!&ndash;android:divider="@null"&ndash;&gt;-->
-            <!--&lt;!&ndash;android:text="Clear"&ndash;&gt;-->
-            <!--&lt;!&ndash;android:layout_marginLeft="@dimen/px_44"&ndash;&gt;-->
-            <!--&lt;!&ndash;android:layout_marginRight="@dimen/px_44"&ndash;&gt;-->
-            <!--&lt;!&ndash;android:scrollbars="none" />&ndash;&gt;-->
-
-        <!--<Button-->
-            <!--android:id="@+id/btn_location_Search"-->
-            <!--android:layout_width="fill_parent"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_marginLeft="@dimen/px_44"-->
-            <!--android:layout_marginRight="@dimen/px_44"-->
-            <!--android:text="Search"-->
-            <!--android:scrollbars="none" />-->
-    <!--</LinearLayout>-->
-
-<!--</LinearLayout>-->
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-
     android:layout_height="match_parent"
+    >
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/px_500"
+    android:id="@+id/layout_location_search"
+    android:orientation="vertical">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:background="@color/white"
+        android:orientation="vertical"
+        android:layout_height="wrap_content">
+        <EditText
+            android:id="@+id/tv_longitude"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="@dimen/px_44"
+            android:layout_marginRight="@dimen/px_44"
+            android:inputType="numberDecimal"
+            android:hint="Longitude"/>
+        <EditText
+            android:id="@+id/tv_latitude"
+            android:layout_below="@id/tv_longitude"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="@dimen/px_44"
+            android:layout_marginRight="@dimen/px_44"
+            android:inputType="numberDecimal"
+            android:hint="Latitude"/>
+        <EditText
+            android:id="@+id/tv_radius"
+            android:layout_below="@id/tv_latitude"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="@dimen/px_44"
+            android:layout_marginRight="@dimen/px_44"
+            android:inputType="numberDecimal"
+            android:hint="Radius in KM"/>
+        <Button
+            android:id="@+id/btn_location_select"
+            android:layout_marginTop="@dimen/px_20"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:divider="@null"
+            android:text="Click to select location from map"
+            android:layout_marginLeft="@dimen/px_44"
+            android:layout_marginRight="@dimen/px_44"
+            android:scrollbars="none" />
+
+        <Button
+            android:id="@+id/btn_location_Search"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/px_44"
+            android:layout_marginRight="@dimen/px_44"
+            android:text="Search"
+            android:scrollbars="none" />
+    </LinearLayout>
+
+</LinearLayout>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/layout_map"
     >
     <fragment xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/px_700"
+        android:layout_height="@dimen/px_801"
         android:id="@+id/map"
         android:name="com.google.android.gms.maps.SupportMapFragment" />
-    <!--<Button-->
-    <!--android:id="@+id/btn_location_Search"-->
-    <!--android:layout_width="fill_parent"-->
-    <!--android:layout_height="@dimen/px_20"-->
-    <!--android:layout_marginLeft="@dimen/px_44"-->
-    <!--android:layout_marginRight="@dimen/px_44"-->
-    <!--android:text="Search"-->
-    <!--android:layout_below="@id/map"-->
-    <!--android:scrollbars="none" />-->
+    <Button
+    android:id="@+id/btn_location_Search_Back"
+    android:layout_width="fill_parent"
+    android:layout_height="@dimen/px_99"
+    android:layout_marginLeft="@dimen/px_44"
+    android:layout_marginRight="@dimen/px_44"
+    android:text="Select"
+    android:layout_below="@id/map"
+    android:scrollbars="none" />
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="50dp"
@@ -132,4 +136,5 @@
         <!--android:src="@drawable/ic_info_black_24dp"/>-->
 
 
+    </RelativeLayout>
 </RelativeLayout>

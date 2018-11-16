@@ -300,7 +300,7 @@ public class SelectMenuView extends LinearLayout{
         else {
             mMainContentLayout.removeAllViews();
             mMainContentLayout.addView(mSelectHolder.getRootView(), ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-            mMainContentLayout.getLayoutParams().height =  mContext.getResources().getDimensionPixelSize(R.dimen.px_720);
+            mMainContentLayout.getLayoutParams().height =  mContext.getResources().getDimensionPixelSize(R.dimen.px_900);
             popUpWindow(TAB_SELECT);
         }
 

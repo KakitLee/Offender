@@ -14,11 +14,15 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.WindowManager;
+import android.view.animation.TranslateAnimation;
 import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -44,6 +48,8 @@ import com.project.zhi.tigerapp.Adapter.CustomInfoWindowAdapter;
 import com.project.zhi.tigerapp.Adapter.PlaceAutocompleteAdapter;
 import com.project.zhi.tigerapp.Entities.PlaceInfo;
 import com.project.zhi.tigerapp.R;
+
+import org.apache.commons.lang3.math.NumberUtils;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -102,7 +108,9 @@ public class SelectHolder extends BaseWidgetHolder<List<String>> {
     private static final LatLngBounds LAT_LNG_BOUNDS = new LatLngBounds(
             new LatLng(-40, -168), new LatLng(71, 136));
     private PlaceInfo mPlace;
-
+    private Button mBtnSearchBack;
+    private Button mBtnSelectMap;
+    private LatLng selectedLatLng;
     public SelectHolder(Context context) {
         super(context);
     }
@@ -111,6 +119,7 @@ public class SelectHolder extends BaseWidgetHolder<List<String>> {
         super(context);
         this.mLocationPermissionsGranted = mLocationPermissionsGranted;
     }
+
     private ResultCallback<PlaceBuffer> mUpdatePlaceDetailsCallback = new ResultCallback<PlaceBuffer>() {
         @Override
         public void onResult(@NonNull PlaceBuffer places) {
@@ -233,12 +242,35 @@ public class SelectHolder extends BaseWidgetHolder<List<String>> {
     @Override
     public View initView() {
         View view = View.inflate(mContext, R.layout.layout_holder_select, null);
+        initSearchBox(view);
+        RelativeLayout mapLayout = view.findViewById(R.id.layout_map);
+        LinearLayout layout_location_search = view.findViewById(R.id.layout_location_search);
+        mBtnSearchBack = view.findViewById(R.id.btn_location_Search_Back);
+        mBtnSearchBack.setOnClickListener(view1 -> {
+            refreshLatLng();
+            TranslateAnimation animate = new TranslateAnimation(0,view.getWidth(),0,0);
+            animate.setDuration(500);
+            animate.setFillAfter(true);
+            mapLayout.startAnimation(animate);
+            mapLayout.setVisibility(View.GONE);
+            layout_location_search.setVisibility(View.VISIBLE);
+        });
+        mBtnSelectMap = view.findViewById(R.id.btn_location_select);
+        mBtnSelectMap.setOnClickListener(view1 -> {
+            TranslateAnimation animate = new TranslateAnimation(0,view.getWidth(),0,0);
+            animate.setDuration(500);
+            animate.setFillAfter(true);
+            layout_location_search.startAnimation(animate);
+            layout_location_search.setVisibility(View.GONE);
+            mapLayout.setVisibility(View.VISIBLE);
+        });
 
         AppCompatActivity act = (AppCompatActivity) mContext;
         if (ContextCompat.checkSelfPermission(mContext.getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED &&
                 ContextCompat.checkSelfPermission(mContext.getApplicationContext(), Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             mLocationPermissionsGranted = true;
         }
+
         if (mMap == null && mLocationPermissionsGranted) {
             android.support.v4.app.FragmentManager fmanager = act.getSupportFragmentManager();
             Fragment fragment = fmanager.findFragmentById(R.id.map);
@@ -255,32 +287,33 @@ public class SelectHolder extends BaseWidgetHolder<List<String>> {
             });
         }
 
-//        mLongitudeView = view.findViewById(R.id.tv_longitude);
-//        mLatitudeView = view.findViewById(R.id.tv_latitude);
-//        mRadiusView = view.findViewById(R.id.tv_radius);
-//
-//        mSureBtn = (TextView) view.findViewById(R.id.btn_location_Search);
-//
-//        mSureBtn.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//
-//                Double longitude = NumberUtils.toDouble(mLongitudeView.getText().toString());
-//                Double latitude = NumberUtils.toDouble(mLatitudeView.getText().toString());
-//                Double radius = NumberUtils.toDouble(mRadiusView.getText().toString());
-//                onLocationSearchBtnListener.OnLocationSearchBtnListener(longitude, latitude, radius);
-//            }
-//        });
 
-//        initViewListners();
-//        initGenderListener();
-//        initTypeListener();
-
-        //默认不限
-//        mGenderNoRuleRIView.setSelected(true);
-//        mTypeNoRuleRIView.setSelected(true);
 
         return view;
+    }
+
+    private void initSearchBox(View view){
+        mLongitudeView = view.findViewById(R.id.tv_longitude);
+        mLatitudeView = view.findViewById(R.id.tv_latitude);
+        mRadiusView = view.findViewById(R.id.tv_radius);
+
+        mSureBtn = (TextView) view.findViewById(R.id.btn_location_Search);
+
+        mSureBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Double longitude = NumberUtils.toDouble(mLongitudeView.getText().toString());
+                Double latitude = NumberUtils.toDouble(mLatitudeView.getText().toString());
+                Double radius = NumberUtils.toDouble(mRadiusView.getText().toString());
+                onLocationSearchBtnListener.OnLocationSearchBtnListener(longitude, latitude, radius);
+            }
+        });
+    }
+
+    private void refreshLatLng(){
+        mLongitudeView.setText(String.valueOf(selectedLatLng.longitude));
+        mLatitudeView.setText(String.valueOf(selectedLatLng.latitude));
     }
 
     private void initViewListners(){
@@ -394,6 +427,7 @@ public class SelectHolder extends BaseWidgetHolder<List<String>> {
                         .draggable(true)
                         .snippet(snippet);
                 mMarker = mMap.addMarker(options);
+                selectedLatLng = latLng;
             }catch (NullPointerException e){
             }
         }else{
@@ -416,6 +450,7 @@ public class SelectHolder extends BaseWidgetHolder<List<String>> {
                 .title(title)
                 .snippet(snippet);
         mMarker = mMap.addMarker(options);
+        selectedLatLng = latLng;
 
 
         hideSoftKeyboard();
