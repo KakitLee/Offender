@@ -90,7 +90,7 @@ public class SelectMenuView extends LinearLayout{
 
     private int mTabRecorder = -1;
     private OnLocationSearchingBtnListener onLocationSearchingBtnListener;
-
+    private SharedPreferences prefs;
     public SelectMenuView(Context context) {
         super(context);
         this.mContext = context;
@@ -107,7 +107,7 @@ public class SelectMenuView extends LinearLayout{
 
     private void init(){
 
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mContext);
+        prefs = PreferenceManager.getDefaultSharedPreferences(mContext);
         String gsonAllMenu = prefs.getString("allMenu",null);
         if(gsonAllMenu == null || gsonAllMenu.isEmpty()) {
             //dataSourceServices.dataSourceChange(mContext);
@@ -158,10 +158,7 @@ public class SelectMenuView extends LinearLayout{
 
             @Override
             public void OnClearBtnListenerClick() {
-                menuService.clearMenuValue(mPrimaryList);
-                menuService.clearMenuValue(mJuniorList);
-                menuService.clearMenuValue(mHighList);
-                mSubjectHolder.notifyListChange();
+                clearFilterSearch();
             }
         });
 
@@ -198,6 +195,18 @@ public class SelectMenuView extends LinearLayout{
             }
 
         });
+    }
+
+    public void clearFilterSearch() {
+        menuService.clearMenuValue(mPrimaryList);
+        menuService.clearMenuValue(mJuniorList);
+        menuService.clearMenuValue(mHighList);
+        updateMenuItems();
+        mSubjectHolder.notifyListChange();
+    }
+
+    public void clearSeachBox(){
+        mSortHolder.clearSeachBox();
     }
 
     private int getSubjectId(int index){
@@ -324,9 +333,11 @@ public class SelectMenuView extends LinearLayout{
     private void dismissPopupWindow(){
         mContentLayout.removeAllViews();
         setTabClose();
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mContext);
-        SharedPreferences.Editor editor = prefs.edit();
+        updateMenuItems();
+    }
 
+    public void updateMenuItems() {
+        SharedPreferences.Editor editor = prefs.edit();
         editor.putString("allMenu", (Utils.gson.toJson(mSubjectDataList)));
         editor.commit();
     }

@@ -64,8 +64,6 @@ public class DataFilteringService {
         ArrayList<Entities> filteredEntities = new ArrayList<>();
         for (String oneQuery: queries
              ) {
-            String cleanQuery = oneQuery.trim();
-
             for (Entities entity: entities){
                 if(isSatisySingleQuery(oneQuery.trim(),entity.getList())){
                     filteredEntities.add(entity);
@@ -78,7 +76,7 @@ public class DataFilteringService {
     }
 
     public ArrayList<Entities> searchLocation(ArrayList<Entities> entities, Double longitude, Double latitude, Double radius){
-        if(entities == null ||entities.size() == 1) {
+        if(entities == null ||entities.size() == 0) {
             return entities;
         }
         SpatialContext ctx = SpatialContext.GEO;

@@ -165,7 +165,6 @@ public class SelectHolder extends BaseWidgetHolder<List<String>> {
         }
     };
 
-
     private void geoLocate() {
         String searchString = mSearchText.getText().toString();
         Geocoder geocoder = new Geocoder(mContext);

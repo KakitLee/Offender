@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.text.InputType;
 import android.view.View;
-import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
@@ -13,15 +12,10 @@ import android.widget.ImageView;
 import android.widget.SearchView;
 import android.widget.TextView;
 
-
 import com.project.zhi.tigerapp.R;
 import com.project.zhi.tigerapp.Utils.Utils;
 
-import org.w3c.dom.Text;
-
 import java.util.List;
-
-import static android.content.Context.INPUT_METHOD_SERVICE;
 
 /**
  *
@@ -116,6 +110,12 @@ public class SortHolder extends BaseWidgetHolder<List<String>>{
         mLowPriceImage.setVisibility(View.INVISIBLE);
         mHighPriceImage.setVisibility(View.INVISIBLE);
         mDistanceImage.setVisibility(View.INVISIBLE);
+    }
+
+    public void clearSeachBox(){
+        if(mSearchView != null){
+            mSearchView.setQuery("",false);
+        }
     }
 
     private void retSortInfo(String info, ImageView imageView){

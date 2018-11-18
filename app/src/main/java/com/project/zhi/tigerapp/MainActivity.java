@@ -371,12 +371,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
     @Background
     void updateAdapter(){
+//        selectMenuView.clearAllInfo();
         ArrayList<Person> people = dataFilteringService.mergeAll(this, false);
         setAdapterUi(people);
         onDismiss();
     }
     @Background
     void onClearAll(){
+        selectMenuView.clearFilterSearch();
+        selectMenuView.clearSeachBox();
         updateAdapter();
     }
 
