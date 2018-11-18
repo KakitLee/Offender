@@ -21,10 +21,10 @@
             <!--android:id="@+id/nav_sound"-->
             <!--android:icon="@drawable/sound"-->
             <!--android:title="Sound"/>-->
-        <item
-            android:id="@+id/nav_photo"
-            android:icon="@drawable/photo"
-            android:title="Photo" />
+        <!--<item-->
+            <!--android:id="@+id/nav_photo"-->
+            <!--android:icon="@drawable/photo"-->
+            <!--android:title="Photo" />-->
     </group>
 
 </menu>
