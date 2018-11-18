@@ -2,7 +2,6 @@ package com.project.zhi.tigerapp.Utils;
 
 import android.app.AlertDialog;
 import android.content.Context;
-import android.content.Entity;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -25,18 +24,17 @@ import com.project.zhi.tigerapp.R;
 import com.project.zhi.tigerapp.complexmenu.MenuModel;
 
 import org.apache.commons.text.WordUtils;
-import org.simpleframework.xml.Attribute;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.security.SecureRandom;
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Comparator;
 import java.util.Date;
-import java.util.List;
 import java.util.Stack;
 
 public class Utils {
@@ -57,6 +55,11 @@ public class Utils {
             return attribute.getLabel();
         }
         return attribute.getAttributeKey();
+    }
+
+    public static SimpleDateFormat getDateFormate(){
+        SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd");
+        return dateFormatter;
     }
 
     public static Comparator<MenuModel> getComparatorMenuModelAlphabetically(){

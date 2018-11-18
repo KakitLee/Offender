@@ -3,7 +3,6 @@ package com.project.zhi.tigerapp.complexmenu.holder;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.os.Build;
 import android.text.InputType;
 import android.view.Gravity;
 import android.view.View;
@@ -11,12 +10,12 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Switch;
 import android.widget.TextView;
-
 
 import com.project.zhi.tigerapp.Enums.AttributeType;
 import com.project.zhi.tigerapp.R;
@@ -25,8 +24,10 @@ import com.project.zhi.tigerapp.complexmenu.MenuModel;
 
 import org.florescu.android.rangeseekbar.RangeSeekBar;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Date;
 
 /**
  * 科目
@@ -148,13 +149,31 @@ public class SubjectHolder extends BaseWidgetHolder<ArrayList<ArrayList<MenuMode
         final EditText input = new EditText(mContext);
         RangeSeekBar<Integer> rangeSeekBar = new RangeSeekBar<Integer>(mContext);
         Switch toggleSwitch = new Switch(mContext);
-
+        DatePicker picker = new DatePicker(mContext);
 
         if(menuModel.getAttributeType() == AttributeType.BOOLEAN){
             toggleSwitch.setText(("Is " + menuModel.getAttributeDisplayText() + " ?"));
             toggleSwitch.setGravity(Gravity.RIGHT);
             toggleSwitch.setChecked(menuModel.getValue() != null && menuModel.getValue().equalsIgnoreCase("Yes") ? true : false);
             builder.setView(toggleSwitch);
+        }
+        else if(menuModel.getAttributeType() == AttributeType.DATE){
+            picker.setCalendarViewShown(false);
+            String currentDate = menuModel.getValue();
+            if(currentDate != null && !currentDate.isEmpty()){
+                SimpleDateFormat dateFormater = Utils.getDateFormate();
+                try {
+                    Date date = dateFormater.parse(currentDate);
+                    picker.updateDate(date.getYear() + 1900,date.getMonth(),date.getDate());
+
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+            }
+            builder.setTitle(menuModel.getAttributeDisplayText());
+            builder.setView(picker);
+            builder.setNegativeButton("Cancel", null);
+            builder.setPositiveButton("Set", null);
         }
         else if(menuModel.getAttributeType() != AttributeType.NUMERIC){
             input.setText(menuModel.getValue());
@@ -178,6 +197,14 @@ public class SubjectHolder extends BaseWidgetHolder<ArrayList<ArrayList<MenuMode
                 String value = "";
                 if(menuModel.getAttributeType() == AttributeType.BOOLEAN){
                     value = toggleSwitch.isChecked() ? "Yes" : "No";
+                }
+                else if(menuModel.getAttributeType() == AttributeType.DATE){
+                    int day = picker.getDayOfMonth();
+                    int month = picker.getMonth();
+                    int year = picker.getYear();
+                    SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd");
+                    Date d = new Date(year-1900, month, day);
+                    value = dateFormatter.format(d);
                 }
                 else if(menuModel.getAttributeType() != AttributeType.NUMERIC){
                     value = input.getText().toString();
