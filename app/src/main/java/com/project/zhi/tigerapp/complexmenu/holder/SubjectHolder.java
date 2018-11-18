@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.text.InputType;
+import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +14,7 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -147,7 +149,9 @@ public class SubjectHolder extends BaseWidgetHolder<ArrayList<ArrayList<MenuMode
         AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
         builder.setTitle(Utils.displayKeyAsTitle(menuModel.getAttributeDisplayText()));
         final EditText input = new EditText(mContext);
+
         RangeSeekBar<Integer> rangeSeekBar = new RangeSeekBar<Integer>(mContext);
+        RangeSeekBar<Integer> rangeSeekBar2 = new RangeSeekBar<Integer>(mContext);
         Switch toggleSwitch = new Switch(mContext);
         DatePicker picker = new DatePicker(mContext);
 
@@ -175,10 +179,48 @@ public class SubjectHolder extends BaseWidgetHolder<ArrayList<ArrayList<MenuMode
             builder.setNegativeButton("Cancel", null);
             builder.setPositiveButton("Set", null);
         }
+        else if (menuModel.getAttributeType() == AttributeType.POSITION){
+            rangeSeekBar.setRangeValues(0, 180);
+            Integer minValue = menuModel.getMinValue() != null ? menuModel.getMinValue().intValue() : 0;
+            Integer maxValue = menuModel.getMaxValue() != null ? menuModel.getMaxValue().intValue() : 170;
+            rangeSeekBar.setSelectedMinValue(minValue);
+            rangeSeekBar.setSelectedMaxValue(maxValue);
+            rangeSeekBar.setTextAboveThumbsColorResource(R.color.black);
+
+            rangeSeekBar2.setRangeValues(0, 90);
+            Integer minValue2 = menuModel.getMinValue() != null ? menuModel.getMinValue2().intValue() : 0;
+            Integer maxValue2 = menuModel.getMaxValue() != null ? menuModel.getMaxValue2().intValue() : 70;
+            rangeSeekBar2.setSelectedMinValue(minValue2);
+            rangeSeekBar2.setSelectedMaxValue(maxValue2);
+            rangeSeekBar2.setTextAboveThumbsColorResource(R.color.black);
+
+            LinearLayout ll = new LinearLayout(mContext);
+            ll.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+            ll.setOrientation(LinearLayout.VERTICAL);
+            TextView tvLong = new TextView(mContext);
+            tvLong.setText("Longitude");
+            tvLong.setTextSize(TypedValue.COMPLEX_UNIT_SP, 15);
+            tvLong.setPadding(90,0,0,0);
+            tvLong.setTextColor(mContext.getResources().getColor(R.color.black));
+            TextView tvLatidue = new TextView(mContext);
+            tvLatidue.setText("Latitude");
+            tvLatidue.setTextSize(TypedValue.COMPLEX_UNIT_SP, 15);
+            tvLatidue.setPadding(90,0,0,0);
+            tvLatidue.setTextColor(mContext.getResources().getColor(R.color.black));
+
+            ll.setPadding(0,20,0,0);
+            ll.addView(tvLong);
+            ll.addView(rangeSeekBar);
+            ll.addView(tvLatidue);
+            ll.addView(rangeSeekBar2);
+
+            builder.setView(ll);
+        }
         else if(menuModel.getAttributeType() != AttributeType.NUMERIC){
             input.setText(menuModel.getValue());
             input.setInputType(InputType.TYPE_CLASS_TEXT);
             builder.setView(input);
+
         }
         else{
             rangeSeekBar.setRangeValues(0, 100);

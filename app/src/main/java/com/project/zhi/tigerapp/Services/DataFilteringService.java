@@ -221,13 +221,19 @@ public class DataFilteringService {
             }
             else if(attribute.getType().equalsIgnoreCase(AttributeType.LIST.name())){
                 value = attribute.getListKey();
-                if(criteria.getAttributeKey().equalsIgnoreCase(key) && value.toLowerCase().equalsIgnoreCase(criteria.getValue().toLowerCase())){
+                if(value != null &&criteria.getAttributeKey().equalsIgnoreCase(key) && value.toLowerCase().equalsIgnoreCase(criteria.getValue().toLowerCase())){
                     return true;
                 }
             }
+            else if (attribute.getType().equalsIgnoreCase(AttributeType.POSITION.name())){
+                value = attribute.getStringValue();
+//                if(criteria.getAttributeKey().equalsIgnoreCase(key) && value.toLowerCase().contains(criteria.getValue().toLowerCase())){
+//                    return true;
+//                }
+            }
             else{
                 value = attribute.getStringValue();
-                if(criteria.getAttributeKey().equalsIgnoreCase(key) && value.toLowerCase().contains(criteria.getValue().toLowerCase())){
+                if(value != null && criteria.getAttributeKey().equalsIgnoreCase(key) && value.toLowerCase().contains(criteria.getValue().toLowerCase())){
                     return true;
                 }
             }

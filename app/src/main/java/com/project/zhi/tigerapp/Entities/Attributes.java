@@ -19,5 +19,7 @@ public class Attributes{
     @Attribute(required=false)
     protected Double doubleValue;
     @Attribute(required=false)
+    protected Double doubleValue2;
+    @Attribute(required=false)
     protected String listKey;
 }

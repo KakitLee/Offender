@@ -11,6 +11,8 @@ public class MenuModel {
     private AttributeType attributeType;
     private Double minValue;
     private Double maxValue;
+    private Double minValue2;
+    private Double maxValue2;
     private String value;
 
     public String getAttributeDisplayText(){
