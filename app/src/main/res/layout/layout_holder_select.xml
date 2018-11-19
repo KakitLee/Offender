@@ -1,8 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    >
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-
     android:layout_height="@dimen/px_500"
+    android:id="@+id/layout_location_search"
+    android:visibility="invisible"
     android:orientation="vertical">
     <LinearLayout
         android:layout_width="match_parent"
@@ -41,17 +46,16 @@
             android:layout_marginRight="@dimen/px_44"
             android:inputType="numberDecimal"
             android:hint="Radius in KM"/>
-        <!--<Button-->
-            <!--android:id="@+id/btn_location_Clear"-->
-            <!--android:layout_marginTop="@dimen/px_20"-->
-            <!--android:layout_width="fill_parent"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:divider="@null"-->
-            <!--android:text="Clear"-->
-            <!--android:layout_marginLeft="@dimen/px_44"-->
-            <!--android:layout_marginRight="@dimen/px_44"-->
-            <!--android:scrollbars="none" />-->
-
+        <Button
+            android:id="@+id/btn_location_select"
+            android:layout_marginTop="@dimen/px_20"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:divider="@null"
+            android:text="Click to select location from map"
+            android:layout_marginLeft="@dimen/px_44"
+            android:layout_marginRight="@dimen/px_44"
+            android:scrollbars="none" />
         <Button
             android:id="@+id/btn_location_Search"
             android:layout_width="fill_parent"
@@ -63,3 +67,95 @@
     </LinearLayout>
 
 </LinearLayout>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/layout_map"
+    >
+    <fragment xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/px_801"
+        android:id="@+id/map"
+        android:name="com.google.android.gms.maps.SupportMapFragment" />
+    <Button
+    android:id="@+id/btn_location_Search_Back"
+    android:layout_width="fill_parent"
+    android:layout_height="@dimen/px_99"
+    android:layout_marginLeft="10dp"
+    android:layout_marginRight="10dp"
+    android:text="Select the marked coordinate"
+    android:layout_below="@id/map"
+    android:scrollbars="none" />
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginLeft="10dp"
+        android:elevation="10dp"
+        android:background="@drawable/white_border"
+        android:id="@+id/relLayout1">
+        <ImageView
+            android:layout_width="15dp"
+            android:layout_height="15dp"
+            android:id="@+id/ic_magnify"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="10dp"
+            android:src="@drawable/places_ic_search"/>
+        <AutoCompleteTextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_toRightOf="@+id/ic_magnify"
+            android:layout_centerVertical="true"
+            android:textSize="15sp"
+            android:textColor="#000"
+            android:id="@+id/input_search"
+            android:background="@null"
+            android:maxLines="1"
+            android:hint="Enter Address or City"
+            android:imeOptions="actionSearch"/>
+    </RelativeLayout>
+    <ImageView
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_below="@id/relLayout1"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="10dp"
+        android:scaleType="centerCrop"
+        android:id="@+id/ic_gps"
+        android:src="@drawable/ic_gps"/>
+    <ImageView
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_below="@id/ic_gps"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="10dp"
+        android:scaleType="centerCrop"
+        android:id="@+id/ic_btn_location_select"
+        android:src="@drawable/ic_check"/>
+    <ImageView
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_below="@id/ic_btn_location_select"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="10dp"
+        android:scaleType="centerCrop"
+        android:id="@+id/ic_btn_location_cancel"
+        android:src="@drawable/ic_cancel"/>
+    <!--<ImageView-->
+        <!--android:layout_width="40dp"-->
+        <!--android:layout_height="40dp"-->
+        <!--android:layout_below="@+id/relLayout1"-->
+        <!--android:layout_marginLeft="10dp"-->
+        <!--android:layout_marginTop="15dp"-->
+        <!--android:scaleType="centerCrop"-->
+        <!--android:id="@+id/place_info"-->
+        <!--android:src="@drawable/ic_info_black_24dp"/>-->
+
+
+    </RelativeLayout>
+</RelativeLayout>

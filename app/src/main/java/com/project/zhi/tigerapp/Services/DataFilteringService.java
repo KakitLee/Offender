@@ -64,8 +64,6 @@ public class DataFilteringService {
         ArrayList<Entities> filteredEntities = new ArrayList<>();
         for (String oneQuery: queries
              ) {
-            String cleanQuery = oneQuery.trim();
-
             for (Entities entity: entities){
                 if(isSatisySingleQuery(oneQuery.trim(),entity.getList())){
                     filteredEntities.add(entity);
@@ -78,7 +76,7 @@ public class DataFilteringService {
     }
 
     public ArrayList<Entities> searchLocation(ArrayList<Entities> entities, Double longitude, Double latitude, Double radius){
-        if(entities == null ||entities.size() == 1) {
+        if(entities == null ||entities.size() == 0) {
             return entities;
         }
         SpatialContext ctx = SpatialContext.GEO;
@@ -90,17 +88,24 @@ public class DataFilteringService {
              ) {
             if(entity.getRecordLocations() != null && entity.getRecordLocations().size() > 0) {
                 for (IntelRecord record : entity.getRecordLocations()) {
-                    Double recordLongitude = record.getLocationAttribute().getNumberValue1();
-                    Double recordLatitude = record.getLocationAttribute().getNumberValue2();
-                    boolean isWithin = cdc.within(point, recordLongitude, recordLatitude, degree);
+                    boolean isWithin = isWithin(degree, point, cdc, record.getLocationAttribute().getNumberValue1(),record.getLocationAttribute().getNumberValue2() );
                     if (isWithin) searchedEntites.add(entity);
                     break;
                 }
+            }
+            for(Attributes attribute: entity.getList()){
+               if(attribute.getType().equalsIgnoreCase(AttributeType.POSITION.name())){
+
+               }
             }
         }
 
 
         return searchedEntites;
+    }
+
+    public boolean isWithin(Double degree, PointImpl point, CartesianDistCalc cdc, Double recordLongitude, Double recordLatitude) {
+        return cdc.within(point, recordLongitude, recordLatitude, degree);
     }
 
     public ArrayList<Entities> update(ArrayList<Entities> entities, ArrayList<MenuModel> nameMenu, ArrayList<MenuModel> mainDemoMenu, ArrayList<MenuModel> otherDemoMenu) {
@@ -223,13 +228,23 @@ public class DataFilteringService {
             }
             else if(attribute.getType().equalsIgnoreCase(AttributeType.LIST.name())){
                 value = attribute.getListKey();
-                if(criteria.getAttributeKey().equalsIgnoreCase(key) && value.toLowerCase().equalsIgnoreCase(criteria.getValue().toLowerCase())){
+                if(value != null &&criteria.getAttributeKey().equalsIgnoreCase(key) && value.toLowerCase().equalsIgnoreCase(criteria.getValue().toLowerCase())){
                     return true;
                 }
             }
+            else if (attribute.getType().equalsIgnoreCase(AttributeType.POSITION.name())){
+                Double longitude = attribute.getDoubleValue();
+                Double latitude = attribute.getDoubleValue2();
+
+                if(criteria.getAttributeKey().equalsIgnoreCase(key) && longitude >= criteria.getMinValue() && longitude <= criteria.getMaxValue() ){
+                    if(criteria.getAttributeKey().equalsIgnoreCase(key) && latitude >= criteria.getMinValue2() && latitude <= criteria.getMaxValue2() )
+                        return true;
+                }
+
+            }
             else{
                 value = attribute.getStringValue();
-                if(criteria.getAttributeKey().equalsIgnoreCase(key) && value.toLowerCase().contains(criteria.getValue().toLowerCase())){
+                if(value != null && criteria.getAttributeKey().equalsIgnoreCase(key) && value.toLowerCase().contains(criteria.getValue().toLowerCase())){
                     return true;
                 }
             }

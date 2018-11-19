@@ -1,10 +1,15 @@
 package com.project.zhi.tigerapp;
 
+import android.Manifest;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -14,6 +19,8 @@ import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.GridView;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.gson.Gson;
 import com.project.zhi.tigerapp.Adapter.PeopleAdapter;
 import com.project.zhi.tigerapp.Entities.Data;
@@ -80,6 +87,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private SubjectHolder.OnSearchBtnListener onSearchBtnListener;
     Context context = this;
+    private static final String FINE_LOCATION = Manifest.permission.ACCESS_FINE_LOCATION;
+    private static final String COURSE_LOCATION = Manifest.permission.ACCESS_COARSE_LOCATION;
+    private static final int LOCATION_PERMISSION_REQUEST_CODE = 1234;
+    private Boolean mLocationPermissionsGranted = false;
+
 
     @AfterViews
     void bindAdapter() {
@@ -90,6 +102,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             onInitGridView();
         }
         onSetMenu();
+        getLocationPermission();
+        if(mLocationPermissionsGranted){
+            selectMenuView.setLocationPermission(mLocationPermissionsGranted);
+        }
     }
 
     public void onStart() {
@@ -100,7 +116,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         boolean isExpired = false;
         if(userPrefs.isFile().get()){
             File file = new File(userPrefs.file().get());
-            if(Utils.isExpiredFile(file)){
+            if(Utils.isExpiredFile(file,userPrefs.burnDays().get())){
                 isExpired = true;
                 try {
                     Utils.secureDelete(file);
@@ -115,7 +131,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         if (files != null) {
                             for (File folderFile : files
                                     ) {
-                                if (Utils.isExpiredFile(folderFile)) {
+                                if (Utils.isExpiredFile(folderFile,userPrefs.burnDays().get())) {
                                     folderFile.delete();
                                 }
                             }
@@ -128,7 +144,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         if (filesRecord != null) {
                             for (File folderFile : filesRecord
                                     ) {
-                                if (Utils.isExpiredFile(folderFile)) {
+                                if (Utils.isExpiredFile(folderFile,userPrefs.burnDays().get())) {
                                     folderFile.delete();
                                 }
                             }
@@ -161,6 +177,42 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 dataSourceServices.dataSourceChange(this);
             }
             return isValid;
+        }
+    }
+
+    private void getLocationPermission(){
+        String[] permissions = {Manifest.permission.ACCESS_FINE_LOCATION,
+                Manifest.permission.ACCESS_COARSE_LOCATION};
+        if(ContextCompat.checkSelfPermission(this.getApplicationContext(),
+                FINE_LOCATION) == PackageManager.PERMISSION_GRANTED){
+            if(ContextCompat.checkSelfPermission(this.getApplicationContext(),
+                    COURSE_LOCATION) == PackageManager.PERMISSION_GRANTED){
+                mLocationPermissionsGranted = true;
+            }else{
+                ActivityCompat.requestPermissions(this,
+                        permissions,
+                        LOCATION_PERMISSION_REQUEST_CODE);
+            }
+        }else{
+            ActivityCompat.requestPermissions(this,
+                    permissions,
+                    LOCATION_PERMISSION_REQUEST_CODE);
+        }
+    }
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        mLocationPermissionsGranted = false;
+        switch(requestCode){
+            case LOCATION_PERMISSION_REQUEST_CODE:{
+                if(grantResults.length > 0){
+                    for(int i = 0; i < grantResults.length; i++){
+                        if(grantResults[i] != PackageManager.PERMISSION_GRANTED){
+                            mLocationPermissionsGranted = false;
+                            return;
+                        }
+                    }
+                    mLocationPermissionsGranted = true;
+                }
+            }
         }
     }
 
@@ -209,6 +261,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 onLocationSearching(longitude,latitude,radius);
             }
         });
+
 
     }
 
@@ -318,12 +371,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
     @Background
     void updateAdapter(){
+//        selectMenuView.clearAllInfo();
         ArrayList<Person> people = dataFilteringService.mergeAll(this, false);
         setAdapterUi(people);
         onDismiss();
     }
     @Background
     void onClearAll(){
+        selectMenuView.clearFilterSearch();
+        selectMenuView.clearSeachBox();
         updateAdapter();
     }
 
@@ -335,5 +391,20 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    private boolean isServicesOk(){
+        int available = GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(this);
+        if(available == ConnectionResult.SUCCESS){
+            return true;
+        }
+        else if(GoogleApiAvailability.getInstance().isUserResolvableError(available)){
+            //an error occured but we can resolve it
+            Dialog dialog = GoogleApiAvailability.getInstance().getErrorDialog(MainActivity.this, available, 9001);
+            dialog.show();
+        }else{
+            Utils.setAlertDialog("Error","You can't make map requrests",this).show();
+        }
+        return false;
     }
 }

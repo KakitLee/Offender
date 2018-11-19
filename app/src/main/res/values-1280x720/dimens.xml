@@ -721,6 +721,27 @@
     <dimen name="px_718">359.0dp</dimen>
     <dimen name="px_719">359.5dp</dimen>
     <dimen name="px_720">360.0dp</dimen>
+    <dimen name="px_729">370.5dp</dimen>
+    <dimen name="px_738">375.0dp</dimen>
+    <dimen name="px_747">379.5dp</dimen>
+    <dimen name="px_756">384.0dp</dimen>
+    <dimen name="px_765">388.5dp</dimen>
+    <dimen name="px_774">393.0dp</dimen>
+    <dimen name="px_783">397.5dp</dimen>
+
+    <dimen name="px_792">402.0dp</dimen>
+    <dimen name="px_801">406.5dp</dimen>
+    <dimen name="px_810">411.0dp</dimen>
+    <dimen name="px_819">415.5dp</dimen>
+    <dimen name="px_828">420.0dp</dimen>
+    <dimen name="px_837">424.5dp</dimen>
+    <dimen name="px_846">429.0dp</dimen>
+    <dimen name="px_855">433.5dp</dimen>
+    <dimen name="px_864">438.0dp</dimen>
+    <dimen name="px_873">442.5dp</dimen>
+    <dimen name="px_882">447.0dp</dimen>
+    <dimen name="px_891">451.5dp</dimen>
+    <dimen name="px_900">455.0dp</dimen>
     <dimen name="text_size_16_px">8.5sp</dimen>
     <dimen name="text_size_20_px">10.0sp</dimen>
     <dimen name="text_size_22_px">11.0sp</dimen>

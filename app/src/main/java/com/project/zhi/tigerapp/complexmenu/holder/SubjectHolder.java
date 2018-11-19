@@ -3,20 +3,21 @@ package com.project.zhi.tigerapp.complexmenu.holder;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.os.Build;
 import android.text.InputType;
+import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Switch;
 import android.widget.TextView;
-
 
 import com.project.zhi.tigerapp.Enums.AttributeType;
 import com.project.zhi.tigerapp.R;
@@ -25,8 +26,10 @@ import com.project.zhi.tigerapp.complexmenu.MenuModel;
 
 import org.florescu.android.rangeseekbar.RangeSeekBar;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Date;
 
 /**
  * 科目
@@ -146,9 +149,11 @@ public class SubjectHolder extends BaseWidgetHolder<ArrayList<ArrayList<MenuMode
         AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
         builder.setTitle(Utils.displayKeyAsTitle(menuModel.getAttributeDisplayText()));
         final EditText input = new EditText(mContext);
-        RangeSeekBar<Integer> rangeSeekBar = new RangeSeekBar<Integer>(mContext);
-        Switch toggleSwitch = new Switch(mContext);
 
+        RangeSeekBar<Integer> rangeSeekBar = new RangeSeekBar<Integer>(mContext);
+        RangeSeekBar<Integer> rangeSeekBar2 = new RangeSeekBar<Integer>(mContext);
+        Switch toggleSwitch = new Switch(mContext);
+        DatePicker picker = new DatePicker(mContext);
 
         if(menuModel.getAttributeType() == AttributeType.BOOLEAN){
             toggleSwitch.setText(("Is " + menuModel.getAttributeDisplayText() + " ?"));
@@ -156,10 +161,66 @@ public class SubjectHolder extends BaseWidgetHolder<ArrayList<ArrayList<MenuMode
             toggleSwitch.setChecked(menuModel.getValue() != null && menuModel.getValue().equalsIgnoreCase("Yes") ? true : false);
             builder.setView(toggleSwitch);
         }
+        else if(menuModel.getAttributeType() == AttributeType.DATE){
+            picker.setCalendarViewShown(false);
+            String currentDate = menuModel.getValue();
+            if(currentDate != null && !currentDate.isEmpty()){
+                SimpleDateFormat dateFormater = Utils.getDateFormate();
+                try {
+                    Date date = dateFormater.parse(currentDate);
+                    picker.updateDate(date.getYear() + 1900,date.getMonth(),date.getDate());
+
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+            }
+            builder.setTitle(menuModel.getAttributeDisplayText());
+            builder.setView(picker);
+            builder.setNegativeButton("Cancel", null);
+            builder.setPositiveButton("Set", null);
+        }
+        else if (menuModel.getAttributeType() == AttributeType.POSITION){
+            rangeSeekBar.setRangeValues(0, 180);
+            Integer minValue = menuModel.getMinValue() != null ? menuModel.getMinValue().intValue() : 0;
+            Integer maxValue = menuModel.getMaxValue() != null ? menuModel.getMaxValue().intValue() : 170;
+            rangeSeekBar.setSelectedMinValue(minValue);
+            rangeSeekBar.setSelectedMaxValue(maxValue);
+            rangeSeekBar.setTextAboveThumbsColorResource(R.color.black);
+
+            rangeSeekBar2.setRangeValues(0, 90);
+            Integer minValue2 = menuModel.getMinValue() != null ? menuModel.getMinValue2().intValue() : 0;
+            Integer maxValue2 = menuModel.getMaxValue() != null ? menuModel.getMaxValue2().intValue() : 70;
+            rangeSeekBar2.setSelectedMinValue(minValue2);
+            rangeSeekBar2.setSelectedMaxValue(maxValue2);
+            rangeSeekBar2.setTextAboveThumbsColorResource(R.color.black);
+
+            LinearLayout ll = new LinearLayout(mContext);
+            ll.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+            ll.setOrientation(LinearLayout.VERTICAL);
+            TextView tvLong = new TextView(mContext);
+            tvLong.setText("Longitude");
+            tvLong.setTextSize(TypedValue.COMPLEX_UNIT_SP, 15);
+            tvLong.setPadding(90,0,0,0);
+            tvLong.setTextColor(mContext.getResources().getColor(R.color.black));
+            TextView tvLatidue = new TextView(mContext);
+            tvLatidue.setText("Latitude");
+            tvLatidue.setTextSize(TypedValue.COMPLEX_UNIT_SP, 15);
+            tvLatidue.setPadding(90,0,0,0);
+            tvLatidue.setTextColor(mContext.getResources().getColor(R.color.black));
+
+            ll.setPadding(0,20,0,0);
+            ll.addView(tvLong);
+            ll.addView(rangeSeekBar);
+            ll.addView(tvLatidue);
+            ll.addView(rangeSeekBar2);
+
+            builder.setView(ll);
+        }
         else if(menuModel.getAttributeType() != AttributeType.NUMERIC){
             input.setText(menuModel.getValue());
             input.setInputType(InputType.TYPE_CLASS_TEXT);
             builder.setView(input);
+
         }
         else{
             rangeSeekBar.setRangeValues(0, 100);
@@ -178,6 +239,22 @@ public class SubjectHolder extends BaseWidgetHolder<ArrayList<ArrayList<MenuMode
                 String value = "";
                 if(menuModel.getAttributeType() == AttributeType.BOOLEAN){
                     value = toggleSwitch.isChecked() ? "Yes" : "No";
+                }
+                else if(menuModel.getAttributeType() == AttributeType.DATE){
+                    int day = picker.getDayOfMonth();
+                    int month = picker.getMonth();
+                    int year = picker.getYear();
+                    SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd");
+                    Date d = new Date(year-1900, month, day);
+                    value = dateFormatter.format(d);
+                }
+                else if(menuModel.getAttributeType() == AttributeType.POSITION){
+                    value = rangeSeekBar.getSelectedMinValue().toString() + " to " + rangeSeekBar.getSelectedMaxValue().toString() + " and " + rangeSeekBar2.getSelectedMinValue().toString() + " to " + rangeSeekBar2.getSelectedMaxValue().toString();
+                    menuModel.setMinValue(rangeSeekBar.getSelectedMinValue().doubleValue());
+                    menuModel.setMaxValue(rangeSeekBar.getSelectedMaxValue().doubleValue());
+                    menuModel.setMinValue2(rangeSeekBar2.getSelectedMinValue().doubleValue());
+                    menuModel.setMaxValue2(rangeSeekBar2.getSelectedMaxValue().doubleValue());
+
                 }
                 else if(menuModel.getAttributeType() != AttributeType.NUMERIC){
                     value = input.getText().toString();
