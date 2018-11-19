@@ -248,6 +248,14 @@ public class SubjectHolder extends BaseWidgetHolder<ArrayList<ArrayList<MenuMode
                     Date d = new Date(year-1900, month, day);
                     value = dateFormatter.format(d);
                 }
+                else if(menuModel.getAttributeType() == AttributeType.POSITION){
+                    value = rangeSeekBar.getSelectedMinValue().toString() + " to " + rangeSeekBar.getSelectedMaxValue().toString() + " and " + rangeSeekBar2.getSelectedMinValue().toString() + " to " + rangeSeekBar2.getSelectedMaxValue().toString();
+                    menuModel.setMinValue(rangeSeekBar.getSelectedMinValue().doubleValue());
+                    menuModel.setMaxValue(rangeSeekBar.getSelectedMaxValue().doubleValue());
+                    menuModel.setMinValue2(rangeSeekBar2.getSelectedMinValue().doubleValue());
+                    menuModel.setMaxValue2(rangeSeekBar2.getSelectedMaxValue().doubleValue());
+
+                }
                 else if(menuModel.getAttributeType() != AttributeType.NUMERIC){
                     value = input.getText().toString();
                 }

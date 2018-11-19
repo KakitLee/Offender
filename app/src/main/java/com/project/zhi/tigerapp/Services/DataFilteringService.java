@@ -226,10 +226,14 @@ public class DataFilteringService {
                 }
             }
             else if (attribute.getType().equalsIgnoreCase(AttributeType.POSITION.name())){
-                value = attribute.getStringValue();
-//                if(criteria.getAttributeKey().equalsIgnoreCase(key) && value.toLowerCase().contains(criteria.getValue().toLowerCase())){
-//                    return true;
-//                }
+                Double longitude = attribute.getDoubleValue();
+                Double latitude = attribute.getDoubleValue2();
+
+                if(criteria.getAttributeKey().equalsIgnoreCase(key) && longitude >= criteria.getMinValue() && longitude <= criteria.getMaxValue() ){
+                    if(criteria.getAttributeKey().equalsIgnoreCase(key) && latitude >= criteria.getMinValue2() && latitude <= criteria.getMaxValue2() )
+                        return true;
+                }
+
             }
             else{
                 value = attribute.getStringValue();
