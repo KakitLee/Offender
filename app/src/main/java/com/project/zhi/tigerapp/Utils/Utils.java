@@ -204,10 +204,10 @@ public class Utils {
         return dialog;
     }
 
-    public static boolean isExpiredFile(File file){
+    public static boolean isExpiredFile(File file, int expireDays){
         if(file.exists()){
             Calendar time = Calendar.getInstance();
-            time.add(Calendar.DAY_OF_YEAR,- 28);
+            time.add(Calendar.DAY_OF_YEAR,- expireDays);
 
             Date lastModified = new Date(file.lastModified());
             if(lastModified.before(time.getTime())) {

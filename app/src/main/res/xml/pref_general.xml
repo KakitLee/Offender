@@ -1,37 +1,9 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-    <SwitchPreference
-        android:defaultValue="true"
-        android:key="pref_url_switch"
-        android:summary="@string/pref_description_using_url"
-        android:title="@string/pref_title_using_url" />
-
-    <!-- NOTE: EditTextPreference accepts EditText attributes. -->
-    <!-- NOTE: EditTextPreference's summary should be set to its value by the activity code. -->
-    <!--<EditTextPreference-->
-        <!--android:capitalize="words"-->
-        <!--android:defaultValue="@string/pref_url"-->
-        <!--android:inputType="textCapWords"-->
-        <!--android:key="pref_url_details"-->
-        <!--android:maxLines="1"-->
-        <!--android:selectAllOnFocus="true"-->
-        <!--android:singleLine="true"-->
-        <!--android:title="@string/pref_title_url" />-->
-    <Preference android:title="Synchronize"
-        android:key="@string/synButton"
-        android:summary="Click here to synchronize from service"/>
-
-    <!--<Button-->
-    <!--android:id="@+id/btn_syn"-->
-    <!--android:layout_width="wrap_content"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:layout_centerHorizontal="true"-->
-    <!--android:layout_centerVertical="true"-->
-    <!--android:padding="20dp"-->
-    <!--android:layout_marginTop="25dp"-->
-    <!--android:layout_centerInParent="true"-->
-    <!--android:text="Synchronize" />-->
-    <!--tools:ignore="OnClick"-->
-    <!--android:onClick="Synchronize"-->
-
-
+    <EditTextPreference
+        android:defaultValue="28"
+        android:dialogTitle="Number of days for burn the source file"
+        android:inputType="number"
+        android:key="@string/pref_no_burn_days"
+        android:summary="Number of days for burn"
+        android:title="Number of days for burn" />
 </PreferenceScreen>

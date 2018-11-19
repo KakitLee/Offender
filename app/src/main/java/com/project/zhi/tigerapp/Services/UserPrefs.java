@@ -1,6 +1,7 @@
 package com.project.zhi.tigerapp.Services;
 
 import org.androidannotations.annotations.sharedpreferences.DefaultBoolean;
+import org.androidannotations.annotations.sharedpreferences.DefaultInt;
 import org.androidannotations.annotations.sharedpreferences.SharedPref;
 
     @SharedPref(value = SharedPref.Scope.APPLICATION_DEFAULT)
@@ -31,6 +32,10 @@ import org.androidannotations.annotations.sharedpreferences.SharedPref;
         String appId();
         String host();
         String username();
+
+        @DefaultInt(28)
+        int burnDays();
+
         String token();
         String facialEntities();
         String voiceEntities();

@@ -116,7 +116,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         boolean isExpired = false;
         if(userPrefs.isFile().get()){
             File file = new File(userPrefs.file().get());
-            if(Utils.isExpiredFile(file)){
+            if(Utils.isExpiredFile(file,userPrefs.burnDays().get())){
                 isExpired = true;
                 try {
                     Utils.secureDelete(file);
@@ -131,7 +131,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         if (files != null) {
                             for (File folderFile : files
                                     ) {
-                                if (Utils.isExpiredFile(folderFile)) {
+                                if (Utils.isExpiredFile(folderFile,userPrefs.burnDays().get())) {
                                     folderFile.delete();
                                 }
                             }
@@ -144,7 +144,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         if (filesRecord != null) {
                             for (File folderFile : filesRecord
                                     ) {
-                                if (Utils.isExpiredFile(folderFile)) {
+                                if (Utils.isExpiredFile(folderFile,userPrefs.burnDays().get())) {
                                     folderFile.delete();
                                 }
                             }
