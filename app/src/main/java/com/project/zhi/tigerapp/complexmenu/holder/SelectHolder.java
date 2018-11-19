@@ -66,34 +66,14 @@ import static android.content.Context.LOCATION_SERVICE;
  */
 public class SelectHolder extends BaseWidgetHolder<List<String>> {
 
-    private View mNoRuleView;
-    private View mTeacherGenderView;
-    private View mCourseTypeView;
     private TextView mSureBtn;
-
-    private View mGenderView;
-    private View mTypeView;
-
-    private RadioItemView mGenderNoRuleRIView;
-    private RadioItemView mGenderMaleRIView;
-    private RadioItemView mGenderFemaleRIView;
-    private RadioItemView mTypeNoRuleRIView;
-    private RadioItemView mTypeTeacherToHomeRIView;
-    private RadioItemView mTypeStudentToSchoolRIView;
 
     private RadioItemView mGenderRecorder = null;
     private RadioItemView mTypeRecorder = null;
 
-    private TextView mTeacherGenderText;
-    private TextView mTypeText;
-
     private boolean mIsFirstExtendGender = true;
     private boolean mIsFirstExtendType = true;
 
-    private String mRetGender = "";
-    private String mRetType = "";
-    private ImageView mTeacherGenderArrorImage;
-    private ImageView mTypeArrorImage;
     private EditText mLongitudeView;
     private EditText mLatitudeView;
     private EditText mRadiusView;
@@ -206,13 +186,22 @@ public class SelectHolder extends BaseWidgetHolder<List<String>> {
         });
 
         mGps = view.findViewById(R.id.ic_gps);
-        mGps.setOnClickListener(view1 -> getDeviceLocation(false));
+        mGps.setOnClickListener(view1 -> {
+            getDeviceLocation(false);
+            hideSoftKeyboard();
+        });
 
         mSelectLocation = view.findViewById(R.id.ic_btn_location_select);
-        mSelectLocation.setOnClickListener(view2 -> selectCurrentLocation(true));
+        mSelectLocation.setOnClickListener(view2 -> {
+            selectCurrentLocation(true);
+            hideSoftKeyboard();
+        });
 
         mSelectCancel = view.findViewById(R.id.ic_btn_location_cancel);
-        mSelectCancel.setOnClickListener(view2 -> selectCurrentLocation(false));
+        mSelectCancel.setOnClickListener(view2 -> {
+            selectCurrentLocation(false);
+            hideSoftKeyboard();
+        });
 
         mMap.setOnMarkerDragListener(new GoogleMap.OnMarkerDragListener() {
             @Override
@@ -268,6 +257,11 @@ public class SelectHolder extends BaseWidgetHolder<List<String>> {
         return view;
     }
 
+    @Override
+    public void refreshView(List<String> data) {
+
+    }
+
     private void initSearchBtns(View view) {
         mapLayout = view.findViewById(R.id.layout_map);
         layout_location_search = view.findViewById(R.id.layout_location_search);
@@ -308,50 +302,6 @@ public class SelectHolder extends BaseWidgetHolder<List<String>> {
     private void refreshLatLng() {
         mLongitudeView.setText(String.valueOf(selectedLatLng.longitude));
         mLatitudeView.setText(String.valueOf(selectedLatLng.latitude));
-    }
-
-    private void clearGenderInfo(RadioItemView radioItemView, String text) {
-
-        if (mIsFirstExtendGender) {
-            mIsFirstExtendGender = false;
-            mGenderRecorder = mGenderNoRuleRIView;
-        }
-
-        if (radioItemView != mGenderRecorder && mGenderRecorder != null) {
-            mGenderRecorder.setSelected(false);
-        }
-        mGenderRecorder = radioItemView;
-        mGenderView.setVisibility(View.GONE);
-        mTeacherGenderText.setText(text);
-
-        mTeacherGenderText.setTextColor(mContext.getResources().getColor(R.color.text_color_gey));
-        mTeacherGenderArrorImage.setImageResource(R.mipmap.ic_down);
-    }
-
-    private void clearTypeInfo(RadioItemView radioItemView, String text) {
-
-        if (mIsFirstExtendType) {
-            mIsFirstExtendType = false;
-            mTypeRecorder = mTypeNoRuleRIView;
-        }
-
-        if (radioItemView != mTypeRecorder && mTypeRecorder != null) {
-            mTypeRecorder.setSelected(false);
-        }
-        mTypeRecorder = radioItemView;
-        mTypeView.setVisibility(View.GONE);
-        mTypeText.setText(text);
-
-        mTypeText.setTextColor(mContext.getResources().getColor(R.color.text_color_gey));
-        mTypeArrorImage.setImageResource(R.mipmap.ic_down);
-    }
-
-    @Override
-    public void refreshView(List<String> data) {
-        clearTypeInfo(mTypeNoRuleRIView, "no rule");
-        mRetType = "";
-        clearGenderInfo(mGenderNoRuleRIView, "no rule");
-        mRetGender = "";
     }
 
     public interface OnLocationSearchBtnListener {

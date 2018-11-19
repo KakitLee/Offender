@@ -95,7 +95,11 @@ public class DataFilteringService {
             }
             for(Attributes attribute: entity.getList()){
                if(attribute.getType().equalsIgnoreCase(AttributeType.POSITION.name())){
-
+                   Double attLongitude = attribute.getDoubleValue();
+                   Double attLatitude = attribute.getDoubleValue2();
+                   boolean isWithin = isWithin(degree, point, cdc, attLongitude,attLatitude);
+                   if(isWithin) searchedEntites.add(entity);
+                   break;
                }
             }
         }
