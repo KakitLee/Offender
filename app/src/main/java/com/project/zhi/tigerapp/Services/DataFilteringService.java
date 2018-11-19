@@ -103,8 +103,6 @@ public class DataFilteringService {
                }
             }
         }
-
-
         return searchedEntites;
     }
 
