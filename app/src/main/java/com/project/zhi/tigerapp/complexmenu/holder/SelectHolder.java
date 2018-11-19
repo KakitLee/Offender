@@ -26,6 +26,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
@@ -176,6 +177,8 @@ public class SelectHolder extends BaseWidgetHolder<List<String>> {
         }
         if (list.size() > 0) {
             Address address = list.get(0);
+            moveCamera(new LatLng(address.getLatitude(), address.getLongitude()), DEFAULT_ZOOM,
+                    address.getAddressLine(0));
         }
     }
 
@@ -399,7 +402,7 @@ public class SelectHolder extends BaseWidgetHolder<List<String>> {
                     moveCamera(new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude()),
                             DEFAULT_ZOOM,"My Location");
                 }else{
-
+                    Toast.makeText(mContext, "unable to get current location", Toast.LENGTH_SHORT).show();
                 }
             });
 
