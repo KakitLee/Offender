@@ -18,6 +18,7 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
@@ -187,20 +188,20 @@ public class SelectHolder extends BaseWidgetHolder<List<String>> {
 
         mGps = view.findViewById(R.id.ic_gps);
         mGps.setOnClickListener(view1 -> {
+            hideKeyboard(view1);
             getDeviceLocation(false);
-            hideSoftKeyboard();
         });
 
         mSelectLocation = view.findViewById(R.id.ic_btn_location_select);
         mSelectLocation.setOnClickListener(view2 -> {
+            hideKeyboard(view2);
             selectCurrentLocation(true);
-            hideSoftKeyboard();
         });
 
         mSelectCancel = view.findViewById(R.id.ic_btn_location_cancel);
         mSelectCancel.setOnClickListener(view2 -> {
+            hideKeyboard(view2);
             selectCurrentLocation(false);
-            hideSoftKeyboard();
         });
 
         mMap.setOnMarkerDragListener(new GoogleMap.OnMarkerDragListener() {
@@ -221,6 +222,12 @@ public class SelectHolder extends BaseWidgetHolder<List<String>> {
             }
         });
         hideSoftKeyboard();
+    }
+
+    private void hideKeyboard(View view){
+        InputMethodManager imm = (InputMethodManager)act.getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(view.getWindowToken(), InputMethodManager.RESULT_UNCHANGED_SHOWN);
+
     }
 
     private void hideSoftKeyboard() {
@@ -269,10 +276,12 @@ public class SelectHolder extends BaseWidgetHolder<List<String>> {
         mapLayout.setVisibility(View.GONE);
         mBtnSearchBack = view.findViewById(R.id.btn_location_Search_Back);
         mBtnSearchBack.setOnClickListener(view1 -> {
+            hideKeyboard(view1);
             selectCurrentLocation(true);
         });
         mBtnSelectMap = view.findViewById(R.id.btn_location_select);
         mBtnSelectMap.setOnClickListener(view1 -> {
+            hideKeyboard(view1);
             layout_location_search.setVisibility(View.GONE);
             mapLayout.setVisibility(View.VISIBLE);
         });
@@ -292,6 +301,7 @@ public class SelectHolder extends BaseWidgetHolder<List<String>> {
         mSureBtn = view.findViewById(R.id.btn_location_Search);
 
         mSureBtn.setOnClickListener(v -> {
+            hideKeyboard(v);
             Double longitude = NumberUtils.toDouble(mLongitudeView.getText().toString());
             Double latitude = NumberUtils.toDouble(mLatitudeView.getText().toString());
             Double radius = NumberUtils.toDouble(mRadiusView.getText().toString());
