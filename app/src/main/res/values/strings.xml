@@ -25,6 +25,13 @@
     <string name="title_activity_settings">Settings</string>
     <string name="synButton">synButton</string>
 
+    <string name="license_title_fab"></string>
+    <string name="license_author_fab"></string>
+    <string name="license_content_fab"></string>
+    <string name="license_title_tabs"></string>
+    <string name="license_author_tabs"></string>
+    <string name="license_content_tabs"></string>
+
     <!-- Strings related to Settings -->
 
     <!-- Example General settings -->

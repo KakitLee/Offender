@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <item name="pref_url_switch" type="id">pref_url_switch</item>
+    <item name="pref_url_switch" type="id"></item>
 </resources>

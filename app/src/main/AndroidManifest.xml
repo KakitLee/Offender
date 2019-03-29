@@ -35,18 +35,18 @@
             android:label="@string/title_activity_filter">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <activity
             android:name=".ProfileActivity_"
             android:label="@string/title_activity_profile"
-            android:theme="@style/AppTheme">
-        </activity>
+            android:theme="@style/AppTheme" />
+
         <activity android:name="com.qingyangli.offender.activities.MainActivityVoice"
-            android:label="@string/app_name" >
-        </activity>
+            android:label="@string/app_name" />
+
         <activity
             android:name="com.qingyangli.offender.activities.SettingsActivityVoice"
             android:screenOrientation="portrait"
@@ -60,8 +60,7 @@
         <activity
             android:name=".UploadActivity_"
             android:label="@string/title_activity_upload"
-            android:theme="@style/AppTheme">
-        </activity>
+            android:theme="@style/AppTheme" />
         <activity
             android:name=".SoundActivity_"
             android:label="@string/SoundActivity"
@@ -72,14 +71,12 @@
             android:theme="@style/AppTheme" />
         <activity
             android:name=".SettingsActivity_"
-            android:label="@string/title_activity_settings">
-            android:theme="@style/AppTheme">
-        </activity>
+            android:label="@string/title_activity_settings"
+            android:theme="@style/AppTheme" />
         <activity
             android:name=".LoginActivity_"
             android:label="@string/LoginActivity"
-            android:theme="@style/AppTheme">
-        </activity>
+            android:theme="@style/AppTheme" />
     </application>
 
 </manifest>
