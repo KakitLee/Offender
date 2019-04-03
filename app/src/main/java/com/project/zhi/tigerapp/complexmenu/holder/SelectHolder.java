@@ -359,15 +359,19 @@ public class SelectHolder extends BaseWidgetHolder<List<String>> {
             location.addOnCompleteListener(task -> {
                 if(task.isSuccessful()){
                     Location currentLocation = (Location) task.getResult();
-                    moveCamera(new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude()),
-                            DEFAULT_ZOOM,"My Location");
+                    if(currentLocation == null) {
+                        Toast.makeText(mContext, "Unable to get current location", Toast.LENGTH_SHORT).show();
+                    } else {
+                        moveCamera(new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude()),
+                                DEFAULT_ZOOM, "My Location");
+                    }
                 }else{
-                    Toast.makeText(mContext, "unable to get current location", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(mContext, "Unable to get current location", Toast.LENGTH_SHORT).show();
                 }
             });
 
-        }catch (SecurityException e){
-
+        } catch (SecurityException e){
+            System.out.print("Here");
         }
     }
     private void moveCamera(LatLng latLng, float zoom, PlaceInfo placeInfo){

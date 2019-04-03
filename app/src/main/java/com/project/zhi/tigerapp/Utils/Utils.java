@@ -207,7 +207,7 @@ public class Utils {
     public static boolean isExpiredFile(File file, int expireDays){
         if(file.exists()){
             Calendar time = Calendar.getInstance();
-            time.add(Calendar.DAY_OF_YEAR,- expireDays);
+            time.add(Calendar.DAY_OF_YEAR, -expireDays);
 
             Date lastModified = new Date(file.lastModified());
             if(lastModified.before(time.getTime())) {
@@ -249,6 +249,7 @@ public class Utils {
             File dirCurrent = dirlist.pop();
 
             File[] fileList = dirCurrent.listFiles();
+            //TODO there is a bug here some how the file list is empty
             for (File aFileList : fileList) {
                 if (aFileList.isDirectory())
                     dirlist.push(aFileList);

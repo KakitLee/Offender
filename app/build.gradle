@@ -88,4 +88,7 @@ dependencies {
     implementation 'com.daimajia.slider:library:1.1.5@aar'
     implementation 'com.github.chrisbanes:PhotoView:2.0.0'
     implementation 'org.locationtech.spatial4j:spatial4j:0.7'
+
+
+    implementation 'com.android.support:percent:27.0.0'
 }
