@@ -3,6 +3,7 @@
     <color name="colorPrimary">#FFCF16</color>
     <color name="colorPrimaryDark">#CCA612</color>
     <color name="colorAccent">#FFCF16</color>
+    <color name="colorSecondPrimary">#2c9fd1</color>
     <!--LG-->
     <color name="pop_bg">#4c000000</color>
     <color name="table_list">#E4EBF5</color>

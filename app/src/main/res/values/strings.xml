@@ -18,7 +18,7 @@
     <string name="select_file">Select file</string>
     <string name="select_file_data">Select file for data source</string>
     <string name="file_not_selected">File not selected</string>
-    <string name="comfirm_upload">Comfirm upload</string>
+    <string name="confirm_upload">Save</string>
     <string name="SoundActivity">Sound</string>
     <string name="PhotoActivity">Photo</string>
     <string name="LoginActivity">Login</string>
